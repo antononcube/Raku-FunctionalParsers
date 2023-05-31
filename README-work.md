@@ -21,27 +21,17 @@ use FunctionalParsers;
 
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
-```
-# -> @x { #`(Block|5468891663912) ... }
-```
 
 Here we parse sentences adhering to the grammar of the defined parser:
 
 ```perl6
 .say for ("numerical integration", "symbolic integration")>>.words.map({ $_ => &p1($_)});
 ```
-```
-# (numerical integration) => ((() (numerical integration)))
-# (symbolic integration) => ((() (symbolic integration)))
-```
 
 These sentences are not be parsed:
 
 ```perl6
 ("numeric integration", "symbolic summation")>>.words.map({ $_ => &p1($_)});
-```
-```
-# ((numeric integration) => () (symbolic summation) => ())
 ```
 
 -----
