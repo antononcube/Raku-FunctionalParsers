@@ -24,12 +24,12 @@ plan *;
 ok token('one')($query.comb);
 
 ## 2
-ok seq(&p1, &pM)(@words);
+ok sequence(&p1, &pM)(@words);
 
 ## 3
-ok alt(&p1, &p2)(@words);
+ok alternatives(&p1, &p2)(@words);
 
 ## 4
-ok seq(alt(&p1, &p2), &pM)(@words);
+ok sequence(alternatives(&p1, &p2), &pM)(@words);
 
 done-testing;

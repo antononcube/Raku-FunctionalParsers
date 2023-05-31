@@ -21,7 +21,7 @@ my @intNames = <zero one two three four five six seven eight nine ten>;
 #note (@intNames Z ^10);
 my @pDigits = (@intNames Z ^10).map( -> $p { apply({$p[1]}, symbol($p[0])) });
 
-my &pDigit = alt(@pDigits);
+my &pDigit = alternatives(@pDigits);
 
 #note @pDigits;
 
@@ -30,29 +30,29 @@ say &p1(@words).raku;
 
 say token('one')($query.comb).raku;
 
-say seq-comp(&p1, &pM)(@words).raku;
+say sequence-comp(&p1, &pM)(@words).raku;
 
-say alt-comp(&p1, &p2)(@words).raku;
+say alternatives-comp(&p1, &p2)(@words).raku;
 
-say seq-comp(alt-comp(&p1, &p2), &pM)(@words).raku;
+say sequence-comp(alternatives-comp(&p1, &p2), &pM)(@words).raku;
 ]
 
-#say seq-comp(alt-comp(&p1, &p2), &pM)(@words).raku;
+#say sequence-comp(alternatives-comp(&p1, &p2), &pM)(@words).raku;
 
 say '=' x 120;
 
-#say seq(alt(&p1, &p2), &pM, &pT)(@words);
+#say sequence(alternatives(&p1, &p2), &pM, &pT)(@words);
 #say ((&p1 (|) &p2 (|) &p3 (|) &p4) «&» &pM «&» &pT)(@words);
-say (alt(@pDigits) «&» &pM «&» &pTh)(@words);
+say (alternatives(@pDigits) «&» &pM «&» &pTh)(@words);
 
-say @intNames.map({ alt(@pDigits)([$_,]) }).raku;
+say @intNames.map({ alternatives(@pDigits)([$_,]) }).raku;
 
 say '=' x 120;
 
-#my &pN = apply( {[*] $_}, seq(alt(apply({1}, &p1), apply({2}, &p2)), apply({10**6}, &pM)));
-#my &pN = apply( {[*] $_}, seq(alt(apply({1}, &p1), apply({2}, &p2)), apply({10**6}, &pM)));
-#my &pN = apply( {[*] $_}, alt(@pDigits) (&) apply({10**6}, &pM));
-#my &pN = apply( {[*] $_}, seq(alt(@pDigits), {10**6} «o» &pM));
+#my &pN = apply( {[*] $_}, sequence(alternatives(apply({1}, &p1), apply({2}, &p2)), apply({10**6}, &pM)));
+#my &pN = apply( {[*] $_}, sequence(alternatives(apply({1}, &p1), apply({2}, &p2)), apply({10**6}, &pM)));
+#my &pN = apply( {[*] $_}, alternatives(@pDigits) (&) apply({10**6}, &pM));
+#my &pN = apply( {[*] $_}, sequence(alternatives(@pDigits), {10**6} «o» &pM));
 my &pN = ( &pDigit «&» &pM «o {10**6}) «o {[*] $_};
 
 say &pN('two million'.words);
