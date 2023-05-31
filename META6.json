@@ -1,0 +1,30 @@
+{
+  "name": "FunctionalParsers",
+  "description": "A system of functional parsers (combinators, transformers, generators.)",
+  "version": "0.0.1",
+  "perl": "6.d",
+  "authors": [
+    "Anton Antonov"
+  ],
+  "auth": "zef:antononcube",
+  "depends": [],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "FunctionalParsers": "lib/FunctionalParsers.rakumod"
+  },
+  "resources": [],
+  "license": "Artistic-2.0",
+  "tags": [
+    "BNF",
+    "EBNF",
+    "combinator",
+    "generator",
+    "grammar",
+    "interpreter",
+    "parser",
+    "transformer"
+  ],
+  "api": "0",
+  "source-url": "https://github.com/antononcube/Raku-FunctionalParsers.git"
+}
