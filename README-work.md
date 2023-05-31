@@ -36,6 +36,35 @@ These sentences are not be parsed:
 
 -----
 
+## Infix operators
+
+Several notation alternatives are considered for the infix operations corresponding to
+the different combinators and transformers. Here is a table with different notation styles:
+
+| Description              | 1st  | 2nd | 3rd |
+|--------------------------|------|----|----|
+| sequential combination   | (&)  | «&» | ⨂  |
+| left sequential pick     | (<&) | «& | ◀  |
+| right sequential pick    | (&>) | &» | ▶  |
+| alternatives combination | (⎸)  | «⎸» | ⨁  |
+| function application     | (^)  | «o | ⨀  |
+
+Here are spec examples for each style:
+
+```
+# 1st
+(&p1 (|) &p2 (|) &p3 (|) &p4) (&) &pM (^) {10**6} (&) &pT
+
+# 2nd 
+(&p1 «|» &p2 «|» &p3 «|» &p4) «&» &pM «o {10**6} «&» &pT
+
+# 3rd
+(&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ⨂ &pT
+
+```
+
+-----
+
 ## References
 
 ### Articles
