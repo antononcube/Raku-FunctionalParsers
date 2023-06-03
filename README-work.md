@@ -49,17 +49,33 @@ the different combinators and transformers. Here is a table with different notat
 | alternatives combination | (⎸)  | «⎸»    | ⨁   |
 | function application     | (^)  | «o     | ⨀   |
 
-Here are spec examples for each style:
+Consider the parsers:
+
+```perl6
+my &p1 = apply( {1}, symbol('one'));
+my &p2 = apply( {2}, symbol('two'));
+my &p3 = apply( {3}, symbol('three'));
+my &p4 = apply( {4}, symbol('four'));
+my &pM = symbol('million');
+my &pTh = symbol('things');
+```
+
+Here are spec examples for each style of infix operators:
+
+```perl6
+# set
+my &p = (&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (&) &pTh;
+&p('three million things'.words.List).head.tail;
+```
 
 ```
-# set
-(&p1 (|) &p2 (|) &p3 (|) &p4) (&) &pM (^) {10**6} (<&) &pT
-
 # double 
-(&p1 «|» &p2 «|» &p3 «|» &p4) «&» &pM «o {10**6} «& &pT
+(&p1 «|» &p2 «|» &p3 «|» &p4) «&» &pM «o {10**6} «&» &pTh;
+```
 
+```
 # n-ary
-(&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ◁ &pT
+(&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ⨂ &pTh
 ```
 
 **Remark:** The arguments of the apply operator `⨀` are "reversed" when compared to the arguments of the operators `(^)` and `«0`. 

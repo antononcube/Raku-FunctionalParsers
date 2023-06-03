@@ -22,7 +22,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|6098943279064) ... }
+# -> @x { #`(Block|6151354843096) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -59,17 +59,39 @@ the different combinators and transformers. Here is a table with different notat
 | alternatives combination | (⎸)  | «⎸»    | ⨁   |
 | function application     | (^)  | «o     | ⨀   |
 
-Here are spec examples for each style:
+Consider the parsers:
+
+```perl6
+my &p1 = apply( {1}, symbol('one'));
+my &p2 = apply( {2}, symbol('two'));
+my &p3 = apply( {3}, symbol('three'));
+my &p4 = apply( {4}, symbol('four'));
+my &pM = symbol('million');
+my &pTh = symbol('things');
+```
+```
+# -> @x { #`(Block|6151355049480) ... }
+```
+
+Here are spec examples for each style of infix operators:
+
+```perl6
+# set
+my &p = (&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (&) &pTh;
+&p('three million things'.words.List).head.tail;
+```
+```
+# ((3 1000000) things)
+```
 
 ```
-# set
-(&p1 (|) &p2 (|) &p3 (|) &p4) (&) &pM (^) {10**6} (<&) &pT
-
 # double 
-(&p1 «|» &p2 «|» &p3 «|» &p4) «&» &pM «o {10**6} «& &pT
+(&p1 «|» &p2 «|» &p3 «|» &p4) «&» &pM «o {10**6} «&» &pTh;
+```
 
+```
 # n-ary
-(&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ◁ &pT
+(&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ⨂ &pTh
 ```
 
 **Remark:** The arguments of the apply operator `⨀` are "reversed" when compared to the arguments of the operators `(^)` and `«0`. 
