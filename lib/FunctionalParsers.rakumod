@@ -7,27 +7,27 @@ unit module FunctionParsers;
 #============================================================
 
 ## Symbol
-sub symbol(Str $a) is export {
+sub symbol(Str $a) is export(:MANDATORY) {
     -> @x { @x.elems && @x[0] eq $a ?? ((@x.tail(*- 1).List, $a),) !! () };
 }
 
 ## Token
-sub token(Str $k) is export {
+sub token(Str $k) is export(:MANDATORY) {
     -> @x { @x.elems >= $k.chars && @x[^$k.chars].join eq $k ?? ((@x.tail(*- $k.chars).List, $k),) !! () };
 }
 
 ## Satisfy
-sub satisfy(&pred) is export {
+sub satisfy(&pred) is export(:MANDATORY) {
     -> @x { @x.elems && &pred(@x[0]) ?? ((@x.tail(*- 1).List, @x.head),) !! () };
 }
 
 ## Epsilon
-sub epsilon() is export {
+sub epsilon() is export(:MANDATORY) {
     -> @x { (@x, ()) }
 }
 
 ## Succeed
-proto sub success(|) is export {*}
+proto sub success(|) is export(:MANDATORY) {*}
 
 multi sub success() {
     -> @x { (@x, ()) }
@@ -38,7 +38,7 @@ multi sub success($v){
 }
 
 ## Fail
-sub failure is export {
+sub failure is export(:MANDATORY) {
     { () }
 }
 
@@ -46,7 +46,7 @@ sub failure is export {
 # Parse combinators
 #============================================================
 
-sub compose-with-results(&p) is export {
+sub compose-with-results(&p) is export(:MANDATORY) {
     -> @res {
         given @res {
             when $_.elems == 0 { () }
@@ -64,7 +64,7 @@ sub compose-with-results(&p) is export {
 }
 
 ## Sequence
-proto sub sequence(|) is export {*}
+proto sub sequence(|) is export(:MANDATORY) {*}
 
 multi sub sequence(&p)  {
     -> @x { &p(@x) }
@@ -74,17 +74,33 @@ multi sub sequence(*@args where @args.elems > 1)  {
     -> @x { @args[0](@x); reduce({ compose-with-results($^b)($^a) }, @args[0](@x), |@args.tail(*-1).List) }
 }
 
-sub infix:<«&»>( *@args ) is equiv( &[&] ) is export {
+sub infix:<«&»>( *@args ) is equiv( &[&] ) is export(:double, :ALL) {
+    sequence(|@args);
+}
+
+sub infix:<(&)>( *@args ) is equiv( &[&] ) is export(:set) {
+    sequence(|@args);
+}
+
+sub infix:<⨂>( *@args ) is equiv( &[&] ) is export(:n-ary) {
     sequence(|@args);
 }
 
 ## Alternatives
-sub alternatives(*@args) is export {
+sub alternatives(*@args) is export(:MANDATORY) {
     -> @x { my @res; @args.map({ @res.append( $_(@x) ) }); @res.List }
 }
 
 # ⨁
-sub infix:<«|»>( *@args )  is equiv( &[|] ) is export {
+sub infix:<«|»>( *@args )  is equiv( &[|] ) is export(:double, :ALL) {
+    alternatives(|@args);
+}
+
+sub infix:<(|)>( *@args )  is equiv( &[|] ) is export(:set, :ALL) {
+    alternatives(|@args);
+}
+
+sub infix:<⨁>( *@args )  is equiv( &[|] ) is export(:n-ary, :ALL) {
     alternatives(|@args);
 }
 
@@ -93,7 +109,7 @@ sub infix:<«|»>( *@args )  is equiv( &[|] ) is export {
 #============================================================
 
 ## Space
-sub sp(&p) is export {
+sub sp(&p) is export(:MANDATORY) {
     -> @x {
         my $k=0;
         for @x { last if !($_.head ~~ / \s+ /); $k++ };
@@ -102,39 +118,63 @@ sub sp(&p) is export {
 }
 
 ## Just
-sub just(&p) is export {
+sub just(&p) is export(:MANDATORY) {
     -> @x { my @res = &p(@x); @res.grep({ $_[0].elems == 0 }); }
 }
 
 ## Some
-sub some(&p) is export {
+sub some(&p) is export(:MANDATORY) {
     -> @x { just(&p)(@x).head[1] }
 }
 
 ## Apply
-sub apply(&f, &p) is export {
+sub apply(&f, &p) is export(:MANDATORY) {
     -> @x { &p(@x).map({ ($_[0], &f($_[1])) }) }
 }
 
 # ⨀
-sub infix:<«o>( &p, &f ) is equiv( &[o] ) is export {
+sub infix:<«o>( &p, &f ) is equiv( &[xx] ) is export(:double, :ALL) {
+    apply(&f, &p);
+}
+
+sub infix:<(^)>( &p, &f ) is equiv( &[xx] ) is export(:set, :ALL) {
+    apply(&f, &p);
+}
+
+sub infix:<⨀>( &f, &p ) is equiv( &[xx] ) is export(:n-ary, :ALL) {
     apply(&f, &p);
 }
 
 ## Pick left
-sub sequence-left(&p1, &p2) is export {
+sub sequence-left(&p1, &p2) is export(:MANDATORY) {
     apply( {$_[0]}, sequence(&p1, &p2))
 }
 
-sub infix:<«&>( &p1, &p2 ) is equiv( &[&] ) is export {
+sub infix:<«&>( &p1, &p2 ) is equiv( &[&] ) is export(:double, :ALL) {
+    sequence-left(&p1, &p2);
+}
+
+sub infix:<(\<&)>( &p1, &p2 ) is equiv( &[&] ) is export(:set, :ALL) {
+    sequence-left(&p1, &p2);
+}
+
+sub infix:<◁>( &p1, &p2 ) is equiv( &[&] ) is export(:n-ary, :ALL) {
     sequence-left(&p1, &p2);
 }
 
 ## Pick right
-sub sequence-right(&p1, &p2) is export {
+sub sequence-right(&p1, &p2) is export(:MANDATORY) {
     apply( {$_[1]}, sequence(&p1, &p2))
 }
 
-sub infix:<&»>( &p1, &p2 ) is equiv( &[&] ) is export {
+sub infix:<\&\>>( &p1, &p2 ) is equiv( &[&] ) is export(:double, :ALL) {
+    sequence-right(&p1, &p2);
+}
+
+sub infix:<(»)>( &p1, &p2 ) is equiv( &[&] ) is export(:set, :ALL) {
+    sequence-right(&p1, &p2);
+}
+
+sub infix:<▷>( &p1, &p2 ) is equiv( &[&] ) is export(:n-ary, :ALL) {
     sequence-right(&p1, &p2);
 }
