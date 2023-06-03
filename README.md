@@ -17,12 +17,12 @@ Raku package with a system of functional parsers.
 Make a parser for a family of (two) simple sentences:
 
 ```perl6
-use FunctionalParsers;
+use FunctionalParsers :ALL;
 
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|5972409448152) ... }
+# -> @x { #`(Block|6098943279064) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -51,27 +51,29 @@ These sentences are not be parsed:
 Several notation alternatives are considered for the infix operations corresponding to
 the different combinators and transformers. Here is a table with different notation styles:
 
-| Description              | 1st  | 2nd | 3rd |
-|--------------------------|------|----|----|
-| sequential combination   | (&)  | «&» | ⨂  |
-| left sequential pick     | (<&) | «& | ◀  |
-| right sequential pick    | (&>) | &» | ▶  |
-| alternatives combination | (⎸)  | «⎸» | ⨁  |
-| function application     | (^)  | «o | ⨀  |
+| Description              | set  | double | n-ary |
+|--------------------------|------|--------|-----|
+| sequential combination   | (&)  | «&»    | ⨂   |
+| left sequential pick     | (<&) | «&     | ◁   |
+| right sequential pick    | (&>) | &»     | ▷   |
+| alternatives combination | (⎸)  | «⎸»    | ⨁   |
+| function application     | (^)  | «o     | ⨀   |
 
 Here are spec examples for each style:
 
 ```
-# 1st
-(&p1 (|) &p2 (|) &p3 (|) &p4) (&) &pM (^) {10**6} (&) &pT
+# set
+(&p1 (|) &p2 (|) &p3 (|) &p4) (&) &pM (^) {10**6} (<&) &pT
 
-# 2nd 
-(&p1 «|» &p2 «|» &p3 «|» &p4) «&» &pM «o {10**6} «&» &pT
+# double 
+(&p1 «|» &p2 «|» &p3 «|» &p4) «&» &pM «o {10**6} «& &pT
 
-# 3rd
-(&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ⨂ &pT
-
+# n-ary
+(&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ◁ &pT
 ```
+
+**Remark:** The arguments of the apply operator `⨀` are "reversed" when compared to the arguments of the operators `(^)` and `«0`. 
+For `⨀` the function to be applied is the first argument. 
 
 -----
 
