@@ -110,3 +110,8 @@ First International Spring School on Advanced Functional Programming Techniques-
 [List-based parser combinator library in Raku](https://github.com/wimvanderbauwhede/list-based-combinators-raku),
 (2020),
 [GitHub/wimvanderbauwhede](https://github.com/wimvanderbauwhede).
+
+[WV2] Wim Vanderbauwhede,
+[Parser::Combinators Perl package](https://github.com/wimvanderbauwhede/Perl-Parser-Combinators),
+(2013-2015),
+[GitHub/wimvanderbauwhede](https://github.com/wimvanderbauwhede).
