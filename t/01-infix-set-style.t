@@ -31,7 +31,11 @@ my &pt3 = (&p1 (|) &p2 (|) &p3 (|) &p4) (&) &pM (&) &pTh;
 is &pt3('three million things'.words).head.tail, (3, 'million', 'things');
 
 ## 4
-my &pt4 = ((&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (<&) &pTh) (^) {[*] $_};
-is &pt4('three million things'.words).head.tail, 3_000_000;
+my &pt4 = (&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (&) &pTh;
+is &pt4('three million things'.words).head.tail, (3, 1_000_000, 'things');
+
+## 5
+my &pt5 = ((&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (<&) &pTh) (^) {[*] $_};
+is &pt5('three million things'.words).head.tail, 3_000_000;
 
 done-testing;
