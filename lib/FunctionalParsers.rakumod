@@ -74,15 +74,15 @@ multi sub sequence(*@args where @args.elems > 1)  {
     -> @x { @args[0](@x); reduce({ compose-with-results($^b)($^a) }, @args[0](@x), |@args.tail(*-1).List) }
 }
 
-sub infix:<«&»>( *@args ) is equiv( &[&] ) is export(:double, :ALL) {
+sub infix:<«&»>( *@args ) is equiv( &[(&)] ) is export(:double, :ALL) {
     sequence(|@args);
 }
 
-sub infix:<(&)>( *@args ) is equiv( &[&] ) is export(:set) {
+sub infix:<(&)>( *@args ) is equiv( &[(&)] ) is export(:set) {
     sequence(|@args);
 }
 
-sub infix:<⨂>( *@args ) is equiv( &[&] ) is export(:n-ary) {
+sub infix:<⨂>( *@args ) is equiv( &[(&)] ) is export(:n-ary) {
     sequence(|@args);
 }
 
@@ -92,15 +92,15 @@ sub alternatives(*@args) is export(:DEFAULT) {
 }
 
 # ⨁
-sub infix:<«|»>( *@args )  is equiv( &[|] ) is export(:double, :ALL) {
+sub infix:<«|»>( *@args ) is equiv( &[(|)] ) is export(:double, :ALL) {
     alternatives(|@args);
 }
 
-sub infix:<(|)>( *@args )  is equiv( &[|] ) is export(:set, :ALL) {
+sub infix:<(|)>( *@args ) is equiv( &[(|)] ) is export(:set, :ALL) {
     alternatives(|@args);
 }
 
-sub infix:<⨁>( *@args )  is equiv( &[|] ) is export(:n-ary, :ALL) {
+sub infix:<⨁>( *@args ) is equiv( &[(|)] ) is export(:n-ary, :ALL) {
     alternatives(|@args);
 }
 
@@ -150,15 +150,15 @@ sub sequence-pick-left(&p1, &p2) is export(:DEFAULT) {
     apply( {$_[0]}, sequence(&p1, &p2))
 }
 
-sub infix:<«&>( &p1, &p2 ) is equiv( &[&] ) is export(:double, :ALL) {
+sub infix:<«&>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
     sequence-pick-left(&p1, &p2);
 }
 
-sub infix:<(\<&)>( &p1, &p2 ) is equiv( &[&] ) is export(:set, :ALL) {
+sub infix:<(\<&)>( &p1, &p2 ) is equiv( &[(&)] ) is export(:set, :ALL) {
     sequence-pick-left(&p1, &p2);
 }
 
-sub infix:<◁>( &p1, &p2 ) is equiv( &[&] ) is export(:n-ary, :ALL) {
+sub infix:<◁>( &p1, &p2 ) is equiv( &[(&)] ) is export(:n-ary, :ALL) {
     sequence-pick-left(&p1, &p2);
 }
 
@@ -167,14 +167,14 @@ sub sequence-pick-right(&p1, &p2) is export(:DEFAULT) {
     apply( {$_[1]}, sequence(&p1, &p2))
 }
 
-sub infix:<\&\>>( &p1, &p2 ) is equiv( &[&] ) is export(:double, :ALL) {
+sub infix:<\&\>>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
     sequence-pick-right(&p1, &p2);
 }
 
-sub infix:<(»)>( &p1, &p2 ) is equiv( &[&] ) is export(:set, :ALL) {
+sub infix:<(»)>( &p1, &p2 ) is equiv( &[(&)] ) is export(:set, :ALL) {
     sequence-pick-right(&p1, &p2);
 }
 
-sub infix:<▷>( &p1, &p2 ) is equiv( &[&] ) is export(:n-ary, :ALL) {
+sub infix:<▷>( &p1, &p2 ) is equiv( &[(&)] ) is export(:n-ary, :ALL) {
     sequence-pick-right(&p1, &p2);
 }
