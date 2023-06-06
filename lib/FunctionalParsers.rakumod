@@ -23,18 +23,18 @@ sub satisfy(&pred) is export(:DEFAULT) {
 
 ## Epsilon
 sub epsilon() is export(:DEFAULT) {
-    -> @x { (@x, ()) }
+    -> @x {((@x, ()),) }
 }
 
 ## Succeed
 proto sub success(|) is export(:DEFAULT) {*}
 
 multi sub success() {
-    -> @x { (@x, ()) }
+    -> @x { ((@x, ()),) }
 }
 
 multi sub success($v){
-    -> @x { (@x, $v) }
+    -> @x { ((@x, $v),) }
 }
 
 ## Fail
@@ -66,9 +66,7 @@ sub compose-with-results(&p) is export(:DEFAULT) {
 ## Sequence
 proto sub sequence(|) is export(:DEFAULT) {*}
 
-multi sub sequence(&p)  {
-    -> @x { &p(@x) }
-}
+multi sub sequence(&p) { &p }
 
 multi sub sequence(*@args where @args.elems > 1)  {
     -> @x { @args[0](@x); reduce({ compose-with-results($^b)($^a) }, @args[0](@x), |@args.tail(*-1).List) }
@@ -171,10 +169,44 @@ sub infix:<\&\>>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
     sequence-pick-right(&p1, &p2);
 }
 
-sub infix:<(»)>( &p1, &p2 ) is equiv( &[(&)] ) is export(:set, :ALL) {
+sub infix:<(&»)>( &p1, &p2 ) is equiv( &[(&)] ) is export(:set, :ALL) {
     sequence-pick-right(&p1, &p2);
 }
 
 sub infix:<▷>( &p1, &p2 ) is equiv( &[(&)] ) is export(:n-ary, :ALL) {
     sequence-pick-right(&p1, &p2);
 }
+
+#============================================================
+# Second next combinators
+#============================================================
+
+# Parse pack
+sub pack(&s1, &p, &s2) is export(:DEFAULT) {
+    -> @x { sequence-pick-left(sequence-pick-right(&s1, &p), &s2) }
+}
+
+# Parse parenthesized
+sub parenthesized(&p) is export(:DEFAULT) {
+    pack(symbol('('), &p, symbol(')'))
+}
+
+# Parse bracketed
+sub bracketed(&p) is export(:DEFAULT) {
+    pack(symbol('['), &p, symbol(']'))
+}
+
+# Parse curly bracketed
+sub curly-bracketed(&p) is export(:DEFAULT) {
+    pack(symbol('{'), &p, symbol('}'))
+}
+
+# Parse option
+sub option(&p) is export(:DEFAULT) {
+    alternatives( apply({($_,)}, &p), epsilon)
+}
+
+# Parse many
+
+# Parse many1
+
