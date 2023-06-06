@@ -8,17 +8,17 @@ unit module FunctionParsers;
 
 ## Symbol
 sub symbol(Str $a) is export(:DEFAULT) {
-    -> @x { @x.elems && @x[0] eq $a ?? ((@x.tail(*- 1).List, $a),) !! () };
+    -> @x { @x.elems && @x[0] eq $a ?? ((@x.tail(*- 1).List, $a),) !! () }
 }
 
 ## Token
 sub token(Str $k) is export(:DEFAULT) {
-    -> @x { @x.elems >= $k.chars && @x[^$k.chars].join eq $k ?? ((@x.tail(*- $k.chars).List, $k),) !! () };
+    -> @x { @x.elems >= $k.chars && @x[^$k.chars].join eq $k ?? ((@x.tail(*- $k.chars).List, $k),) !! () }
 }
 
 ## Satisfy
 sub satisfy(&pred) is export(:DEFAULT) {
-    -> @x { @x.elems && &pred(@x[0]) ?? ((@x.tail(*- 1).List, @x.head),) !! () };
+    -> @x { @x.elems && &pred(@x[0]) ?? ((@x.tail(*- 1).List, @x.head),) !! () }
 }
 
 ## Epsilon
@@ -73,15 +73,15 @@ multi sub sequence(*@args where @args.elems > 1)  {
 }
 
 sub infix:<«&»>( *@args ) is equiv( &[(&)] ) is export(:double, :ALL) {
-    sequence(|@args);
+    sequence(|@args)
 }
 
 sub infix:<(&)>( *@args ) is equiv( &[(&)] ) is export(:set) {
-    sequence(|@args);
+    sequence(|@args)
 }
 
 sub infix:<⨂>( *@args ) is equiv( &[(&)] ) is export(:n-ary) {
-    sequence(|@args);
+    sequence(|@args)
 }
 
 ## Alternatives
@@ -91,15 +91,15 @@ sub alternatives(*@args) is export(:DEFAULT) {
 
 # ⨁
 sub infix:<«|»>( *@args ) is equiv( &[(|)] ) is export(:double, :ALL) {
-    alternatives(|@args);
+    alternatives(|@args)
 }
 
 sub infix:<(|)>( *@args ) is equiv( &[(|)] ) is export(:set, :ALL) {
-    alternatives(|@args);
+    alternatives(|@args)
 }
 
 sub infix:<⨁>( *@args ) is equiv( &[(|)] ) is export(:n-ary, :ALL) {
-    alternatives(|@args);
+    alternatives(|@args)
 }
 
 #============================================================
@@ -117,12 +117,17 @@ sub sp(&p) is export(:DEFAULT) {
 
 ## Just
 sub just(&p) is export(:DEFAULT) {
-    -> @x { my @res = &p(@x); @res.grep({ $_[0].elems == 0 }); }
+    -> @x { my @res = &p(@x); @res.grep({ $_[0].elems == 0 }) }
 }
 
 ## Some
 sub some(&p) is export(:DEFAULT) {
     -> @x { just(&p)(@x).head[1] }
+}
+
+## Shortest
+sub shortest(&p) is export(:DEFAULT) {
+    -> @x { &p(@x).sort({ $_.head.elems }).head }
 }
 
 ## Apply
@@ -132,15 +137,15 @@ sub apply(&f, &p) is export(:DEFAULT) {
 
 # ⨀
 sub infix:<«o>( &p, &f ) is equiv( &[xx] ) is export(:double, :ALL) {
-    apply(&f, &p);
+    apply(&f, &p)
 }
 
 sub infix:<(^)>( &p, &f ) is equiv( &[xx] ) is export(:set, :ALL) {
-    apply(&f, &p);
+    apply(&f, &p)
 }
 
 sub infix:<⨀>( &f, &p ) is equiv( &[xx] ) is export(:n-ary, :ALL) {
-    apply(&f, &p);
+    apply(&f, &p)
 }
 
 ## Pick left
@@ -149,15 +154,15 @@ sub sequence-pick-left(&p1, &p2) is export(:DEFAULT) {
 }
 
 sub infix:<«&>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
-    sequence-pick-left(&p1, &p2);
+    sequence-pick-left(&p1, &p2)
 }
 
 sub infix:<(\<&)>( &p1, &p2 ) is equiv( &[(&)] ) is export(:set, :ALL) {
-    sequence-pick-left(&p1, &p2);
+    sequence-pick-left(&p1, &p2)
 }
 
 sub infix:<◁>( &p1, &p2 ) is equiv( &[(&)] ) is export(:n-ary, :ALL) {
-    sequence-pick-left(&p1, &p2);
+    sequence-pick-left(&p1, &p2)
 }
 
 ## Pick right
@@ -166,15 +171,15 @@ sub sequence-pick-right(&p1, &p2) is export(:DEFAULT) {
 }
 
 sub infix:<\&\>>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
-    sequence-pick-right(&p1, &p2);
+    sequence-pick-right(&p1, &p2)
 }
 
 sub infix:<(&»)>( &p1, &p2 ) is equiv( &[(&)] ) is export(:set, :ALL) {
-    sequence-pick-right(&p1, &p2);
+    sequence-pick-right(&p1, &p2)
 }
 
 sub infix:<▷>( &p1, &p2 ) is equiv( &[(&)] ) is export(:n-ary, :ALL) {
-    sequence-pick-right(&p1, &p2);
+    sequence-pick-right(&p1, &p2)
 }
 
 #============================================================
@@ -203,10 +208,13 @@ sub curly-bracketed(&p) is export(:DEFAULT) {
 
 # Parse option
 sub option(&p) is export(:DEFAULT) {
-    alternatives( apply({($_,)}, &p), epsilon)
+    alternatives(apply({($_,)}, &p), epsilon)
 }
 
 # Parse many
+sub many(&p) is export(:DEFAULT) {
+    -> @x { alternatives(apply( {$_.flat.List}, sequence(&p, many(&p))), success())(@x) }
+}
 
 # Parse many1
 
