@@ -110,7 +110,7 @@ sub infix:<⨁>( *@args ) is equiv( &[(|)] ) is export(:n-ary, :ALL) {
 sub sp(&p) is export(:DEFAULT) {
     -> @x {
         my $k=0;
-        for @x { last if !($_.head ~~ / \s+ /); $k++ };
+        for @x { last if $_.head.chars && $_.head !~~ / \s+ /; $k++ };
         &p(@x[$k..*-1])
     }
 }
@@ -188,7 +188,7 @@ sub infix:<▷>( &p1, &p2 ) is equiv( &[(&)] ) is export(:n-ary, :ALL) {
 
 # Parse pack
 sub pack(&s1, &p, &s2) is export(:DEFAULT) {
-    -> @x { sequence-pick-left(sequence-pick-right(&s1, &p), &s2) }
+    sequence-pick-left(sequence-pick-right(&s1, &p), &s2)
 }
 
 # Parse parenthesized
@@ -213,8 +213,25 @@ sub option(&p) is export(:DEFAULT) {
 
 # Parse many
 sub many(&p) is export(:DEFAULT) {
-    -> @x { alternatives(apply( {$_.flat.List}, sequence(&p, many(&p))), success())(@x) }
+    -> @x { alternatives(apply( {($_[0], |$_[1])}, sequence(&p, many(&p))), success())(@x) }
 }
 
 # Parse many1
+sub many1(&p) is export(:DEFAULT) {
+    apply({($_[0], |$_[1])}, sequence(&p, many(&p)))
+}
 
+# List of
+sub list-of($sep, &p) is export(:DEFAULT) {
+    sequence(&p, many(sequence-pick-right($sep, &p)))
+}
+
+# Chain left
+sub chain-left($sep, &p) is export(:DEFAULT) {
+    apply( { reduce( { $^b[0]($^a, $^b[1]) }, $_.head, |$_[1]) }, sequence(&p, just(many(sequence($sep, &p)))))
+}
+
+# Chain right
+sub chain-right($sep, &p) is export(:DEFAULT) {
+    apply( { reduce( { $^b[1]($^b[0], $^a) }, $_[1], |$_[0].reverse) }, just(sequence(many(sequence(&p, $sep)), &p)))
+}
