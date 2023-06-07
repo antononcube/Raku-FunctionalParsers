@@ -43,7 +43,7 @@ sub failure is export(:DEFAULT) {
 }
 
 #============================================================
-# Parse combinators
+# Combinators
 #============================================================
 
 sub compose-with-results(&p) is export(:DEFAULT) {
@@ -72,6 +72,7 @@ multi sub sequence(*@args where @args.elems > 1)  {
     -> @x { @args[0](@x); reduce({ compose-with-results($^b)($^a) }, @args[0](@x), |@args.tail(*-1).List) }
 }
 
+# Infix ⨂
 sub infix:<«&»>( *@args ) is equiv( &[(&)] ) is export(:double, :ALL) {
     sequence(|@args)
 }
@@ -89,7 +90,7 @@ sub alternatives(*@args) is export(:DEFAULT) {
     -> @x { my @res; @args.map({ @res.append( $_(@x) ) }); @res.List }
 }
 
-# ⨁
+# Infix ⨁
 sub infix:<«|»>( *@args ) is equiv( &[(|)] ) is export(:double, :ALL) {
     alternatives(|@args)
 }
@@ -107,6 +108,7 @@ sub infix:<⨁>( *@args ) is equiv( &[(|)] ) is export(:n-ary, :ALL) {
 #============================================================
 
 ## Space
+## (Should we use 'space'?)
 sub sp(&p) is export(:DEFAULT) {
     -> @x {
         my $k=0;
@@ -135,7 +137,7 @@ sub apply(&f, &p) is export(:DEFAULT) {
     -> @x { &p(@x).map({ ($_[0], &f($_[1])) }) }
 }
 
-# ⨀
+# Infix ⨀
 sub infix:<«o>( &p, &f ) is equiv( &[xx] ) is export(:double, :ALL) {
     apply(&f, &p)
 }
@@ -153,6 +155,7 @@ sub sequence-pick-left(&p1, &p2) is export(:DEFAULT) {
     apply( {$_[0]}, sequence(&p1, &p2))
 }
 
+# Infix ◁
 sub infix:<«&>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
     sequence-pick-left(&p1, &p2)
 }
@@ -170,6 +173,7 @@ sub sequence-pick-right(&p1, &p2) is export(:DEFAULT) {
     apply( {$_[1]}, sequence(&p1, &p2))
 }
 
+# Infix ▷
 sub infix:<\&\>>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
     sequence-pick-right(&p1, &p2)
 }
@@ -223,7 +227,7 @@ sub many1(&p) is export(:DEFAULT) {
 
 # List of
 sub list-of($sep, &p) is export(:DEFAULT) {
-    sequence(&p, many(sequence-pick-right($sep, &p)))
+    alternatives(apply({($_[0], |$_[1])}, sequence(&p, many(sequence-pick-right($sep, &p)))), success())
 }
 
 # Chain left
@@ -235,3 +239,84 @@ sub chain-left($sep, &p) is export(:DEFAULT) {
 sub chain-right($sep, &p) is export(:DEFAULT) {
     apply( { reduce( { $^b[1]($^b[0], $^a) }, $_[1], |$_[0].reverse) }, just(sequence(many(sequence(&p, $sep)), &p)))
 }
+
+#============================================================
+# Backtracking related
+#============================================================
+
+# First
+sub take-first(&p) is export(:DEFAULT) {
+    -> @x { my $res = &p(@x); ($res.head,) }
+}
+
+# Greedy
+sub greedy(&p) is export(:DEFAULT) {
+    take-first(many(&p))
+}
+
+# Greedy1
+sub greedy1(&p) is export(:DEFAULT) {
+    take-first(many1(&p))
+}
+
+# Compulsion
+sub compulsion(&p) is export(:DEFAULT) {
+    take-first(option(&p))
+}
+
+#============================================================
+# Self application
+#============================================================
+
+sub is-quoted($x) { so ($x ~~ / ^ \' .*? \' $ / || $x ~~ / ^ \" .*? \" $ /) };
+
+sub is-ebnf-symbol($x) { $x ∈ ['|', '&', '&>', '<&', ';', ','] };
+
+sub is-non-terminal($x) { so $x ~~ / ^ '<' <-[<>]>+ '>' /}
+
+our &pGTerminal = satisfy({ $_ ~~ Str && is-quoted($_) });
+
+our &pGNonTerminal = satisfy({ $_ ~~ Str && is-non-terminal($_) && !is-ebnf-symbol($_) });
+
+our &pGOption = apply( {Pair.new('EBNFOption', $_)}, bracketed(&pGExpr));
+
+our &pGRepetition = apply( {Pair.new('EBNFRepetition', $_)}, curly-bracketed(&pGExpr));
+
+our &pGNode =
+    alternatives(
+            apply( {Pair.new('EBNFTerminal', $_)}, &pGTerminal),
+            apply( {Pair.new('EBNFNonTerminal', $_)}, &pGNonTerminal),
+            parenthesized(&pGExpr),
+            &pGRepetition,
+            &pGOption
+    );
+
+our &pGTerm = apply({Pair.new('EBNFSequence', $_)}, chain-right(&pGNode, alternatives(symbol(','), token('<&'), token('&>'))));
+
+our &pGExpr = apply({Pair.new('EBNFAlterantives', $_)}, list-of(symbol('|'), &pGTerm));
+
+our &pGRule = apply( {Pair.new('EBNFRule', $_)}, sequence(&pGNonTerminal, symbol('='), &pGExpr, symbol(';')));
+
+our &pEBNF = apply( {Pair.new('EBNF', $_)}, many1(&pGRule));
+
+proto sub parse-ebnf($x) is export {*}
+
+multi sub parse-ebnf(@x) {
+    #&pEBNF(@x)
+    #note &pGNonTerminal([@x.head,]);
+    note is-quoted(@x[2]);
+    note &pGExpr([@x[2],]);
+    note &pGNode([@x[2],]);
+    note &pGExpr([@x[2],]);
+    note &pGRule(@x);
+    &pGRule(@x)
+}
+
+#============================================================
+# Interpretation
+#============================================================
+
+
+#============================================================
+# Random sentences
+#============================================================
