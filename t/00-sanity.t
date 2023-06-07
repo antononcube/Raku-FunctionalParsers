@@ -32,4 +32,16 @@ ok alternatives(&p1, &p2)(@words);
 ## 4
 ok sequence(alternatives(&p1, &p2), &pM)(@words);
 
+## 5
+is
+        sequence-pick-left(&p1, &p2)(<one two>).head,
+        ((), 'one'),
+        "one <& two";
+
+## 6
+is
+        sequence-pick-right(&p1, &p2)(<one two>).head,
+        ((), 'two'),
+        "one &> two";
+
 done-testing;

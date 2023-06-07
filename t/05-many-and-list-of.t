@@ -71,14 +71,14 @@ is
 
 ## 8
 is
-        list-of(&sep, alternatives(@pDigits))('one, four, three and one'.split(/<wb> | \s/, :skip-empty)).head.tail,
+        list-of(alternatives(@pDigits), &sep)('one, four, three and one'.split(/<wb> | \s/, :skip-empty)).head.tail,
         (1, 4, 3, 1),
         'list of on : one, four, three and one';
 
 
 ## 8
 is
-        list-of(&sep, alternatives(@pDigits))(['one',]).head.tail,
+        list-of(alternatives(@pDigits), &sep)(['one',]).head.tail,
         (1,),
         'list of on : one';
 

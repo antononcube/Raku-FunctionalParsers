@@ -38,4 +38,10 @@ is
         (1, 4),
         'bracketed on : { one four }';
 
+## 5
+is
+        curly-bracketed(&p1 (&) &p4)(<{ one four } three>).head,
+        ('three', (1, 4)),
+        'bracketed on : { one four } three';
+
 done-testing;
