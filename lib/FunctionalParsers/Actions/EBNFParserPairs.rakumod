@@ -1,7 +1,7 @@
 use v6.d;
 
 class FunctionalParsers::Actions::EBNFParserPairs {
-    has &.terminal = {Pair.new('EBNFterminal', $_)};
+    has &.terminal = {Pair.new('EBNFTerminal', $_)};
 
     has &.non-terminal = {Pair.new('EBNFNonTerminal', $_)};
 
