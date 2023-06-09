@@ -1,5 +1,6 @@
 use v6.d;
 
+use FunctionalParsers::Actions::EBNFParserGenerators;
 use FunctionalParsers::Actions::EBNFParserPairs;
 
 unit module FunctionParsers;
@@ -371,9 +372,17 @@ sub pEBNF(@x) {
     apply($ebnfActions.grammar, shortest(many(&pGRule)))(@x)
 }
 
-proto sub parse-ebnf($x) is export {*}
+proto sub parse-ebnf($x,|) is export {*}
 
-multi sub parse-ebnf(@x) {
+multi sub parse-ebnf(@x, :$actions = Whatever) {
+    given $actions {
+        when Whatever {
+            $ebnfActions = FunctionalParsers::Actions::EBNFParserPairs.new;
+        }
+        when $_ ∈ <generators geneator ebnf-generators> {
+            $ebnfActions = FunctionalParsers::Actions::EBNFParserGenerators.new;
+        }
+    }
     pEBNF(@x)
 }
 
