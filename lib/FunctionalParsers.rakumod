@@ -46,19 +46,25 @@ sub failure is export(:DEFAULT) {
 # Combinators
 #============================================================
 
-sub compose-with-results(&p) is export(:DEFAULT) {
-    -> @res {
-        given @res {
-            when $_.elems == 0 { () }
-            when $_ ~~ Positional && $_.all ~~ Positional {
-                my @flatRes;
-                $_.map(-> @r {
-                    if @r.elems {
-                        my @t = &p(@r[0]);
-                        if @t { @flatRes.append( @t.map({ ($_[0], (@r[1], $_[1])) })) }
-                    }});
-                @flatRes.List
-            }
+sub compose-with-results(&p, @res) is export(:DEFAULT) {
+    return do given @res {
+        when $_.elems == 0 { () }
+        when $_ ~~ Positional && $_.all ~~ Positional {
+            my @flatRes;
+            $_.map(-> @r {
+                if @r ~~ List && @r.elems == 2 {
+                    my @t = &p(@r[0]);
+                    @t = @t.grep({ $_.elems });
+                    if @t {
+                        @flatRes.append( @t.map({ ($_[0], (@r[1], $_[1])) }))
+                    }
+                }});
+            @flatRes.List
+        }
+        default {
+            # Is there something better to do here?
+            note "Unhandled case in compose-with-results: {@res.gist} : {&p.gist}";
+            ()
         }
     }
 }
@@ -68,9 +74,43 @@ proto sub sequence(|) is export(:DEFAULT) {*}
 
 multi sub sequence(&p) { &p }
 
-multi sub sequence(*@args where @args.elems > 1)  {
-    -> @x { reduce({ compose-with-results($^b)($^a) }, @args[0](@x), |@args.tail(*-1).List) }
+# Original
+multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
+    -> @x { reduce({ compose-with-results($^b, $^a) }, @args[0](@x), |@args.tail(*-1).List) }
 }
+
+# Is this easier to maintain or debug with?
+#multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
+#    -> @x {
+#        my @res = @args[0](@x);
+#        for @args.tail(*-1) -> &p {
+#            last if !(@res ~~ Iterable && @res.elems);
+#            @res = compose-with-results(&p, @res);
+#        }
+#        (@res ~~ Iterable && @res.elems) ?? @res !! ();
+#    }
+#}
+
+# This might be useful re-writing.
+#`[
+multi sub sequence(&p1, &p2) {
+    -> @x {
+        my @res1 = &p1(@x);
+        @res1.map( -> @r {
+            my @res2 = &p2($_.head);
+            if @res2 {
+                @res2.map({ ($_[0], (@r[1], $_[1])) })
+            } else {
+                Empty
+            }
+        });
+    }
+}
+
+multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
+    -> @x { reduce( sequence($^a, $^b), @args) } # Not complete
+}
+]
 
 # Infix ⨂
 sub infix:<«&»>( *@args ) is equiv( &[(&)] ) is export(:double, :ALL) {
@@ -275,47 +315,63 @@ sub is-ebnf-symbol($x) { $x ∈ ['|', '&', '&>', '<&', ';', ','] };
 
 sub is-non-terminal($x) { $x.match(/ ^ '<' <-[<>]>+ '>' /).Bool }
 
-my &pGTerminal = satisfy({ ($_ ~~ Str) && is-quoted($_) });
+sub pGTerminal(@x) {
+    satisfy({ ($_ ~~ Str) && is-quoted($_) })(@x)
+}
 
-my &pGNonTerminal =
+sub pGNonTerminal(@x) {
         satisfy({
             my $res = ($_ ~~ Str) && is-non-terminal($_) && !is-ebnf-symbol($_);
-            $res});
+            $res})(@x)
+}
 
-my &pGOption = apply({Pair.new('EBNFOption', $_)}, bracketed(&pGExpr));
+sub pGOption(@x) {
+    apply({Pair.new('EBNFOption', $_)}, bracketed(&pGExpr))(@x)
+}
 
-my &pGRepetition = apply({Pair.new('EBNFRepetition', $_)}, curly-bracketed(&pGExpr));
+sub pGRepetition(@x) {
+    apply({Pair.new('EBNFRepetition', $_)}, curly-bracketed(&pGExpr))(@x)
+}
 
-my &pGNode = alternatives(
-        apply( {Pair.new('EBNFTerminal', $_)}, &pGTerminal),
-        apply( {Pair.new('EBNFNonTerminal', $_)}, &pGNonTerminal),
-        parenthesized(&pGExpr),
+sub pGParens(@x) {
+    parenthesized(&pGExpr)(@x)
+}
+
+sub pGNode(@x) { alternatives(
+        apply({Pair.new('EBNFTerminal', $_)}, &pGTerminal),
+        apply({Pair.new('EBNFNonTerminal', $_)}, &pGNonTerminal),
+        &pGParens,
         &pGRepetition,
-        &pGOption);
+        &pGOption)(@x)
+}
 
 my &seqSepForm = {Pair.new($^a,$^b)};
 my &seqSep = alternatives(symbol(','), symbol('<&'), symbol('&>'));
 
-my &pGTerm = alternatives(
-        &pGNode,
-        apply({ ($_ ~~ Positional && $_.elems > 1) ?? Pair.new('EBNFSequence', $_) !! $_ },
-                list-of(&pGNode, &seqSep)
-              ));
+sub pGTerm(@x) {
+    apply({ $_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFSequence', $_) !! $_ }, list-of(&pGNode, &seqSep))(@x)
+}
 
-my &pGExpr = apply({ $_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFAlternatives', $_) !! $_ }, list-of(&pGTerm, symbol('|')));
+sub pGExpr(@x) {
+    apply({ $_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFAlternatives', $_) !! $_ }, list-of(&pGTerm, symbol('|')))(@x)
+}
 
-my &pGRule = apply(
+sub pGRule(@x) {
+    apply(
         {Pair.new('EBNFRule', $_)},
         sequence(
                 sequence-pick-left(&pGNonTerminal, symbol('=')),
-                sequence-pick-left(&pGExpr, symbol(';'))));
+                sequence-pick-left(&pGExpr, symbol(';'))))(@x);
+}
 
-my &pEBNF = apply({Pair.new('EBNF', $_)}, many(&pGRule));
+sub pEBNF(@x) {
+    apply({ Pair.new('EBNF', $_) }, shortest(many(&pGRule)))(@x)
+}
 
 proto sub parse-ebnf($x) is export {*}
 
 multi sub parse-ebnf(@x) {
-    &pEBNF(@x)
+    pEBNF(@x)
 }
 
 #============================================================
