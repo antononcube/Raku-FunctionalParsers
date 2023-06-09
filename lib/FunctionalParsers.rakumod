@@ -1,5 +1,7 @@
 use v6.d;
 
+use FunctionalParsers::Actions::EBNFParserPairs;
+
 unit module FunctionParsers;
 
 #============================================================
@@ -309,6 +311,8 @@ sub compulsion(&p) is export(:DEFAULT) {
 # Self application
 #============================================================
 
+our $ebnfActions = FunctionalParsers::Actions::EBNFParserPairs.new;
+
 sub is-quoted($x) { $x.match(/ ^ [ \' .*? \' |  \" .*? \" ] $ /).Bool };
 
 sub is-ebnf-symbol($x) { $x ∈ ['|', '&', '&>', '<&', ';', ','] };
@@ -326,11 +330,11 @@ sub pGNonTerminal(@x) {
 }
 
 sub pGOption(@x) {
-    apply({Pair.new('EBNFOption', $_)}, bracketed(&pGExpr))(@x)
+    apply($ebnfActions.option, bracketed(&pGExpr))(@x)
 }
 
 sub pGRepetition(@x) {
-    apply({Pair.new('EBNFRepetition', $_)}, curly-bracketed(&pGExpr))(@x)
+    apply($ebnfActions.repetition, curly-bracketed(&pGExpr))(@x)
 }
 
 sub pGParens(@x) {
@@ -338,8 +342,8 @@ sub pGParens(@x) {
 }
 
 sub pGNode(@x) { alternatives(
-        apply({Pair.new('EBNFTerminal', $_)}, &pGTerminal),
-        apply({Pair.new('EBNFNonTerminal', $_)}, &pGNonTerminal),
+        apply($ebnfActions.terminal, &pGTerminal),
+        apply($ebnfActions.non-terminal, &pGNonTerminal),
         &pGParens,
         &pGRepetition,
         &pGOption)(@x)
@@ -349,23 +353,22 @@ my &seqSepForm = {Pair.new($^a,$^b)};
 my &seqSep = alternatives(symbol(','), symbol('<&'), symbol('&>'));
 
 sub pGTerm(@x) {
-    apply({ $_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFSequence', $_) !! $_ }, list-of(&pGNode, &seqSep))(@x)
+    apply($ebnfActions.term, list-of(&pGNode, &seqSep))(@x)
 }
 
 sub pGExpr(@x) {
-    apply({ $_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFAlternatives', $_) !! $_ }, list-of(&pGTerm, symbol('|')))(@x)
+    apply($ebnfActions.alternatives, list-of(&pGTerm, symbol('|')))(@x)
 }
 
 sub pGRule(@x) {
-    apply(
-        {Pair.new('EBNFRule', $_)},
+    apply($ebnfActions.rule,
         sequence(
                 sequence-pick-left(&pGNonTerminal, symbol('=')),
                 sequence-pick-left(&pGExpr, symbol(';'))))(@x);
 }
 
 sub pEBNF(@x) {
-    apply({ Pair.new('EBNF', $_) }, shortest(many(&pGRule)))(@x)
+    apply($ebnfActions.grammar, shortest(many(&pGRule)))(@x)
 }
 
 proto sub parse-ebnf($x) is export {*}
