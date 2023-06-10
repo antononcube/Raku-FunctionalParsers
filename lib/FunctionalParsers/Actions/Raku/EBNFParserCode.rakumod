@@ -1,6 +1,6 @@
 use v6.d;
 
-class FunctionalParsers::Actions::EBNFParserCode {
+class FunctionalParsers::Actions::Raku::EBNFParserCode {
     has Str $.prefix is rw = 'p';
 
     has &.terminal = {"symbol($_)"};

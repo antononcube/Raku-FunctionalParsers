@@ -1,6 +1,6 @@
 use v6.d;
 
-class FunctionalParsers::Actions::EBNFParserClass {
+class FunctionalParsers::Actions::Raku::EBNFParserClass {
     has Str $.name = 'FP';
     has Str $.prefix = 'p';
 

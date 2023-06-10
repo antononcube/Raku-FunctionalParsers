@@ -12,10 +12,10 @@
   "test-depends": [],
   "provides": {
     "FunctionalParsers": "lib/FunctionalParsers.rakumod",
-    "FunctionalParsers::Actions::EBNFParserClass": "lib/FunctionalParsers/Actions/EBNFParserClass.rakumod",
-    "FunctionalParsers::Actions::EBNFParserClassAttr": "lib/FunctionalParsers/Actions/EBNFParserClassAttr.rakumod",
-    "FunctionalParsers::Actions::EBNFParserCode": "lib/FunctionalParsers/Actions/EBNFParserCode.rakumod",
-    "FunctionalParsers::Actions::EBNFParserPairs": "lib/FunctionalParsers/Actions/EBNFParserPairs.rakumod"
+    "FunctionalParsers::Actions::Raku::EBNFParserClass": "lib/FunctionalParsers/Actions/Raku/EBNFParserClass.rakumod",
+    "FunctionalParsers::Actions::Raku::EBNFParserClassAttr": "lib/FunctionalParsers/Actions/Raku/EBNFParserClassAttr.rakumod",
+    "FunctionalParsers::Actions::Raku::EBNFParserCode": "lib/FunctionalParsers/Actions/Raku/EBNFParserCode.rakumod",
+    "FunctionalParsers::Actions::Raku::EBNFParserPairs": "lib/FunctionalParsers/Actions/Raku/EBNFParserPairs.rakumod"
   },
   "resources": [],
   "license": "Artistic-2.0",

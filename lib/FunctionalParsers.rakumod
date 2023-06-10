@@ -1,8 +1,8 @@
 use v6.d;
 
-use FunctionalParsers::Actions::EBNFParserClass;
-use FunctionalParsers::Actions::EBNFParserCode;
-use FunctionalParsers::Actions::EBNFParserPairs;
+use FunctionalParsers::Actions::Raku::EBNFParserClass;
+use FunctionalParsers::Actions::Raku::EBNFParserCode;
+use FunctionalParsers::Actions::Raku::EBNFParserPairs;
 
 unit module FunctionParsers;
 
@@ -314,7 +314,7 @@ sub compulsion(&p) is export(:DEFAULT, :ALL) {
 # Self application
 #============================================================
 
-our $ebnfActions = FunctionalParsers::Actions::EBNFParserPairs.new;
+our $ebnfActions = FunctionalParsers::Actions::Raku::EBNFParserPairs.new;
 
 sub is-quoted($x) { $x.match(/ ^ [ \' .*? \' |  \" .*? \" ] $ /).Bool };
 
@@ -393,12 +393,12 @@ multi sub parse-ebnf(@x,
 
     given $actions {
         when Whatever {
-            $ebnfActions = FunctionalParsers::Actions::EBNFParserPairs.new;
+            $ebnfActions = FunctionalParsers::Actions::Raku::EBNFParserPairs.new;
             return pEBNF(@x).List;
         }
 
         when $_ ∈ <code parser-code> {
-            $ebnfActions = FunctionalParsers::Actions::EBNFParserCode.new;
+            $ebnfActions = FunctionalParsers::Actions::Raku::EBNFParserCode.new;
             return pEBNF(@x);
         }
 
@@ -410,7 +410,7 @@ multi sub parse-ebnf(@x,
             unless $name ~~ Str;
 
             # Make parser generator
-            $ebnfActions = FunctionalParsers::Actions::EBNFParserClass.new(:$name, prefix => $parser-prefix);
+            $ebnfActions = FunctionalParsers::Actions::Raku::EBNFParserClass.new(:$name, prefix => $parser-prefix);
 
             # Generate code of parser class
             my $res = pEBNF(@x).List;

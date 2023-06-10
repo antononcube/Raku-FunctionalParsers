@@ -4,7 +4,7 @@ use v6.d;
 #   FunctionalParsers::Actions::EBNFParserCode
 # But it seems simpler to just put all definitions here.
 
-class FunctionalParsers::Actions::EBNFParserClassAttr {
+class FunctionalParsers::Actions::Raku::EBNFParserClassAttr {
     has Str $.name = 'FP';
     has Str $.prefix is rw = 'p';
 
