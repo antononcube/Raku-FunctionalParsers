@@ -12,7 +12,8 @@
   "test-depends": [],
   "provides": {
     "FunctionalParsers": "lib/FunctionalParsers.rakumod",
-    "FunctionalParsers::Actions::EBNFParserGenerators": "lib/FunctionalParsers/Actions/EBNFParserGenerators.rakumod",
+    "FunctionalParsers::Actions::EBNFParserClass": "lib/FunctionalParsers/Actions/EBNFParserClass.rakumod",
+    "FunctionalParsers::Actions::EBNFParserCode": "lib/FunctionalParsers/Actions/EBNFParserCode.rakumod",
     "FunctionalParsers::Actions::EBNFParserPairs": "lib/FunctionalParsers/Actions/EBNFParserPairs.rakumod"
   },
   "resources": [],
