@@ -38,4 +38,29 @@ is &pt4('three million things'.words).head.tail, (3, 1_000_000, 'things');
 my &pt5 = ((&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (<&) &pTh) (^) {[*] $_};
 is &pt5('three million things'.words).head.tail, 3_000_000;
 
+## 6
+# Higher precedence of «o compared to «|»
+my &pt6 = &p1 «|» &p2 «|» &p3 «o {$_**2}
+is &pt6('three'.words).head.tail, 9;
+
+## 7
+# Higher precedence of «o compared to «&»
+my &pt7 = {$_ ** 2} ⨀ &p2 ⨂ &p4 ⨂ &p3;
+is &pt7('two four three'.words).head.tail, (4, 4, 3);
+
+## 8
+# Higher precedence of «&» compared to «o
+my &pt8 = {$_.flat>>.Str.join.Int ** 2} ⨀ (&p2 ⨂ &p4 ⨂ &p3);
+is &pt8('two four three'.words).head.tail, (243 ** 2);
+
+## 9
+# Listable «|»
+my &pt9 = &p1 «|» &p2 «|» &p3 «|» &p4;
+is-deeply many(&pt9)('two four three one'.words).head.tail, (2, 4, 3, 1);
+
+## 10
+# Listable «&»
+my &pt10 = &p2 «&» &p4 «&» &p3 «&» &p1;
+is-deeply &pt10('two four three one'.words).head.tail, (2, 4, 3, 1);
+
 done-testing;
