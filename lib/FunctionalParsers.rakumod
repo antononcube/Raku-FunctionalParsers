@@ -11,27 +11,27 @@ unit module FunctionParsers;
 #============================================================
 
 ## Symbol
-sub symbol(Str $a) is export(:DEFAULT) {
+sub symbol(Str $a) is export(:DEFAULT, :ALL) {
     -> @x { @x.elems && @x[0] eq $a ?? ((@x.tail(*- 1).List, $a),) !! () }
 }
 
 ## Token
-sub token(Str $k) is export(:DEFAULT) {
+sub token(Str $k) is export(:DEFAULT, :ALL) {
     -> @x { @x.elems >= $k.chars && @x[^$k.chars].join eq $k ?? ((@x.tail(*- $k.chars).List, $k),) !! () }
 }
 
 ## Satisfy
-sub satisfy(&pred) is export(:DEFAULT) {
+sub satisfy(&pred) is export(:DEFAULT, :ALL) {
     -> @x { @x.elems && &pred(@x[0]) ?? ((@x.tail(*- 1).List, @x.head),) !! () }
 }
 
 ## Epsilon
-sub epsilon() is export(:DEFAULT) {
+sub epsilon() is export(:DEFAULT, :ALL) {
     -> @x {((@x, ()),) }
 }
 
 ## Succeed
-proto sub success(|) is export(:DEFAULT) {*}
+proto sub success(|) is export(:DEFAULT, :ALL) {*}
 
 multi sub success() {
     -> @x { ((@x, ()),) }
@@ -42,7 +42,7 @@ multi sub success($v){
 }
 
 ## Fail
-sub failure is export(:DEFAULT) {
+sub failure is export(:DEFAULT, :ALL) {
     { () }
 }
 
@@ -50,7 +50,7 @@ sub failure is export(:DEFAULT) {
 # Combinators
 #============================================================
 
-sub compose-with-results(&p, @res) is export(:DEFAULT) {
+sub compose-with-results(&p, @res) is export(:DEFAULT, :ALL) {
     return do given @res {
         when $_.elems == 0 { () }
         when $_ ~~ Positional && $_.all ~~ Positional {
@@ -74,7 +74,7 @@ sub compose-with-results(&p, @res) is export(:DEFAULT) {
 }
 
 ## Sequence
-proto sub sequence(|) is export(:DEFAULT) {*}
+proto sub sequence(|) is export(:DEFAULT, :ALL) {*}
 
 multi sub sequence(&p) { &p }
 
@@ -131,7 +131,7 @@ sub infix:<⨂>( *@args ) is equiv( &infix:<&&> ) is assoc<list> is export(:n-ar
 }
 
 ## Alternatives
-sub alternatives(*@args) is export(:DEFAULT) {
+sub alternatives(*@args) is export(:DEFAULT, :ALL) {
     -> @x { my @res; @args.map({ @res.append( $_(@x) ) }); @res.List }
 }
 
@@ -154,7 +154,7 @@ sub infix:<⨁>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:n-ar
 
 ## Space
 ## (Should we use 'space'?)
-sub sp(&p) is export(:DEFAULT) {
+sub sp(&p) is export(:DEFAULT, :ALL) {
     -> @x {
         my $k = 0;
         for @x { last if $_.head.chars && $_.head !~~ / \s+ /; $k++ };
@@ -163,22 +163,22 @@ sub sp(&p) is export(:DEFAULT) {
 }
 
 ## Just
-sub just(&p) is export(:DEFAULT) {
+sub just(&p) is export(:DEFAULT, :ALL) {
     -> @x { my @res = &p(@x); @res.grep({ $_[0].elems == 0 }) }
 }
 
 ## Some
-sub some(&p) is export(:DEFAULT) {
+sub some(&p) is export(:DEFAULT, :ALL) {
     -> @x { just(&p)(@x).head[1] }
 }
 
 ## Shortest
-sub shortest(&p) is export(:DEFAULT) {
+sub shortest(&p) is export(:DEFAULT, :ALL) {
     -> @x { &p(@x).sort({ $_.head.elems })[^1] }
 }
 
 ## Apply
-sub apply(&f, &p) is export(:DEFAULT) {
+sub apply(&f, &p) is export(:DEFAULT, :ALL) {
     -> @x { &p(@x).map({ ($_[0], &f($_[1])) }) }
 }
 
@@ -196,7 +196,7 @@ sub infix:<⨀>( &f, &p ) is equiv( &[*] ) is assoc<right> is export(:n-ary, :AL
 }
 
 ## Pick left
-sub sequence-pick-left(&p1, &p2) is export(:DEFAULT) {
+sub sequence-pick-left(&p1, &p2) is export(:DEFAULT, :ALL) {
     apply( {$_[0]}, sequence(&p1, &p2))
 }
 
@@ -214,7 +214,7 @@ sub infix:<◁>( &p1, &p2 ) is equiv( &[**] ) is assoc<left> is export(:n-ary, :
 }
 
 ## Pick right
-sub sequence-pick-right(&p1, &p2) is export(:DEFAULT) {
+sub sequence-pick-right(&p1, &p2) is export(:DEFAULT, :ALL) {
     apply( {$_[1]}, sequence(&p1, &p2))
 }
 
@@ -236,53 +236,53 @@ sub infix:<▷>( &p1, &p2 ) is equiv( &[**] ) is assoc<right> is export(:n-ary, 
 #============================================================
 
 # Parse pack
-sub pack(&s1, &p, &s2) is export(:DEFAULT) {
+sub pack(&s1, &p, &s2) is export(:DEFAULT, :ALL) {
     # Same as: apply({ $_[0][1]}, sequence(&s1, &p, &s2))
     sequence-pick-left(sequence-pick-right(&s1, &p), &s2)
 }
 
 # Parse parenthesized
-sub parenthesized(&p) is export(:DEFAULT) {
+sub parenthesized(&p) is export(:DEFAULT, :ALL) {
     pack(symbol('('), &p, symbol(')'))
 }
 
 # Parse bracketed
-sub bracketed(&p) is export(:DEFAULT) {
+sub bracketed(&p) is export(:DEFAULT, :ALL) {
     pack(symbol('['), &p, symbol(']'))
 }
 
 # Parse curly bracketed
-sub curly-bracketed(&p) is export(:DEFAULT) {
+sub curly-bracketed(&p) is export(:DEFAULT, :ALL) {
     pack(symbol('{'), &p, symbol('}'))
 }
 
 # Parse option
-sub option(&p) is export(:DEFAULT) {
+sub option(&p) is export(:DEFAULT, :ALL) {
     alternatives(apply({($_,)}, &p), epsilon)
 }
 
 # Parse many
-sub many(&p) is export(:DEFAULT) {
+sub many(&p) is export(:DEFAULT, :ALL) {
     -> @x { alternatives(apply( {($_[0], |$_[1])}, sequence(&p, many(&p))), success())(@x) }
 }
 
 # Parse many1
-sub many1(&p) is export(:DEFAULT) {
+sub many1(&p) is export(:DEFAULT, :ALL) {
     apply({($_[0], |$_[1])}, sequence(&p, many(&p)))
 }
 
 # List of
-sub list-of(&p, &sep) is export(:DEFAULT) {
+sub list-of(&p, &sep) is export(:DEFAULT, :ALL) {
     alternatives(apply({($_[0], |$_[1])}, sequence(&p, many(sequence-pick-right(&sep, &p)))), success())
 }
 
 # Chain left
-sub chain-left(&p, &sep) is export(:DEFAULT) {
+sub chain-left(&p, &sep) is export(:DEFAULT, :ALL) {
     apply( { reduce( { $^b[0]($^a, $^b[1]) }, $_.head, |$_[1]) }, sequence(&p, just(many(sequence(&sep, &p)))))
 }
 
 # Chain right
-sub chain-right(&p, &sep) is export(:DEFAULT) {
+sub chain-right(&p, &sep) is export(:DEFAULT, :ALL) {
     apply( { reduce( { $^b[1]($^b[0], $^a) }, $_[1], |$_[0].reverse) }, just(sequence(many(sequence(&p, &sep)), &p)))
 }
 
@@ -291,22 +291,22 @@ sub chain-right(&p, &sep) is export(:DEFAULT) {
 #============================================================
 
 # First
-sub take-first(&p) is export(:DEFAULT) {
+sub take-first(&p) is export(:DEFAULT, :ALL) {
     -> @x { my $res = &p(@x); ($res.head,) }
 }
 
 # Greedy
-sub greedy(&p) is export(:DEFAULT) {
+sub greedy(&p) is export(:DEFAULT, :ALL) {
     take-first(many(&p))
 }
 
 # Greedy1
-sub greedy1(&p) is export(:DEFAULT) {
+sub greedy1(&p) is export(:DEFAULT, :ALL) {
     take-first(many1(&p))
 }
 
 # Compulsion
-sub compulsion(&p) is export(:DEFAULT) {
+sub compulsion(&p) is export(:DEFAULT, :ALL) {
     take-first(option(&p))
 }
 
@@ -374,43 +374,62 @@ sub pEBNF(@x) {
     apply($ebnfActions.grammar, shortest(many(&pGRule)))(@x)
 }
 
-proto sub parse-ebnf($x,|) is export {*}
+
+#============================================================
+# Interpretation
+#============================================================
+proto sub parse-ebnf($x,|) is export(:DEFAULT, :ALL) {*}
 
 multi sub parse-ebnf(@x,
                      :$actions = Whatever,
-                     :$name is copy = Whatever) {
+                     :$name is copy = Whatever,
+                     :$parser-prefix is copy = Whatever,
+                     Bool :$eval = True) {
+
+    # Process parser-prefix
+    if $parser-prefix.isa(Whatever) { $parser-prefix = 'p'; }
+    die 'he argument $parser-prefix is expected to be a string or Whatever.'
+    unless $parser-prefix ~~ Str;
+
     given $actions {
         when Whatever {
             $ebnfActions = FunctionalParsers::Actions::EBNFParserPairs.new;
-            return pEBNF(@x);
+            return pEBNF(@x).List;
         }
+
         when $_ ∈ <code parser-code> {
             $ebnfActions = FunctionalParsers::Actions::EBNFParserCode.new;
             return pEBNF(@x);
         }
-        when $_ ∈ <class parser-class> {
-            $name = $name.isa(Whatever) ?? 'FP' !! $name;
 
+        when $_ ∈ <class parser-class> {
+
+            # Process name
+            if $name.isa(Whatever) { $name = 'FP'; }
             die "The argument \$name is expected to be a string or Whatever."
             unless $name ~~ Str;
 
-            $ebnfActions = FunctionalParsers::Actions::EBNFParserClass.new(:$name);
+            # Make parser generator
+            $ebnfActions = FunctionalParsers::Actions::EBNFParserClass.new(:$name, prefix => $parser-prefix);
 
-            use MONKEY-SEE-NO-EVAL;
-            my $res = pEBNF(@x);
-            note $res;
-            $res = EVAL $res;
+            # Generate code of parser class
+            my $res = pEBNF(@x).List;
+
+            # Evaluate the class
+            if $eval {
+                use MONKEY-SEE-NO-EVAL;
+                $res = EVAL $res.head.tail;
+            }
+
+            # Result
             return $res;
         }
+
         default {
             die 'Do not know how interpret the value of the argument $actions.';
         }
     }
 }
-
-#============================================================
-# Interpretation
-#============================================================
 
 
 #============================================================
