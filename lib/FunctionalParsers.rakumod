@@ -84,6 +84,7 @@ multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
 }
 
 # Is this easier to maintain or debug with?
+# Fails faster?
 #multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
 #    -> @x {
 #        my @res = @args[0](@x);
@@ -117,15 +118,15 @@ multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
 ]
 
 # Infix ⨂
-sub infix:<«&»>( *@args ) is equiv( &[(&)] ) is export(:double, :ALL) {
+sub infix:<«&»>( *@args ) is equiv( &infix:<&&> ) is assoc<list> is export(:double, :ALL) {
     sequence(|@args)
 }
 
-sub infix:<(&)>( *@args ) is equiv( &[(&)] ) is export(:set) {
+sub infix:<(&)>( *@args ) is equiv( &infix:<&&> ) is assoc<list> is export(:set) {
     sequence(|@args)
 }
 
-sub infix:<⨂>( *@args ) is equiv( &[(&)] ) is export(:n-ary) {
+sub infix:<⨂>( *@args ) is equiv( &infix:<&&> ) is assoc<list> is export(:n-ary) {
     sequence(|@args)
 }
 
@@ -135,15 +136,15 @@ sub alternatives(*@args) is export(:DEFAULT) {
 }
 
 # Infix ⨁
-sub infix:<«|»>( *@args ) is equiv( &[(|)] ) is export(:double, :ALL) {
+sub infix:<«|»>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:double, :ALL) {
     alternatives(|@args)
 }
 
-sub infix:<(|)>( *@args ) is equiv( &[(|)] ) is export(:set, :ALL) {
+sub infix:<(|)>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:set, :ALL) {
     alternatives(|@args)
 }
 
-sub infix:<⨁>( *@args ) is equiv( &[(|)] ) is export(:n-ary, :ALL) {
+sub infix:<⨁>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:n-ary, :ALL) {
     alternatives(|@args)
 }
 
@@ -182,15 +183,15 @@ sub apply(&f, &p) is export(:DEFAULT) {
 }
 
 # Infix ⨀
-sub infix:<«o>( &p, &f ) is equiv( &[xx] ) is export(:double, :ALL) {
+sub infix:<«o>( &p, &f ) is equiv( &[*] ) is assoc<left> is export(:double, :ALL) {
     apply(&f, &p)
 }
 
-sub infix:<(^)>( &p, &f ) is equiv( &[xx] ) is export(:set, :ALL) {
+sub infix:<(^)>( &p, &f ) is equiv( &[*] ) is assoc<left> is export(:set, :ALL) {
     apply(&f, &p)
 }
 
-sub infix:<⨀>( &f, &p ) is equiv( &[xx] ) is export(:n-ary, :ALL) {
+sub infix:<⨀>( &f, &p ) is equiv( &[*] ) is assoc<right> is export(:n-ary, :ALL) {
     apply(&f, &p)
 }
 
@@ -200,15 +201,15 @@ sub sequence-pick-left(&p1, &p2) is export(:DEFAULT) {
 }
 
 # Infix ◁
-sub infix:<«&>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
+sub infix:<«&>( &p1, &p2 ) is equiv( &[**] ) is assoc<left> is export(:double, :ALL) {
     sequence-pick-left(&p1, &p2)
 }
 
-sub infix:<(\<&)>( &p1, &p2 ) is equiv( &[(&)] ) is export(:set, :ALL) {
+sub infix:<(\<&)>( &p1, &p2 ) is equiv( &[**] ) is assoc<left> is export(:set, :ALL) {
     sequence-pick-left(&p1, &p2)
 }
 
-sub infix:<◁>( &p1, &p2 ) is equiv( &[(&)] ) is export(:n-ary, :ALL) {
+sub infix:<◁>( &p1, &p2 ) is equiv( &[**] ) is assoc<left> is export(:n-ary, :ALL) {
     sequence-pick-left(&p1, &p2)
 }
 
@@ -218,15 +219,15 @@ sub sequence-pick-right(&p1, &p2) is export(:DEFAULT) {
 }
 
 # Infix ▷
-sub infix:<\&\>>( &p1, &p2 ) is equiv( &[(&)] ) is export(:double, :ALL) {
+sub infix:<\&\>>( &p1, &p2 ) is equiv( &[**] ) is assoc<right> is export(:double, :ALL) {
     sequence-pick-right(&p1, &p2)
 }
 
-sub infix:<(&»)>( &p1, &p2 ) is equiv( &[(&)] ) is export(:set, :ALL) {
+sub infix:<(&»)>( &p1, &p2 ) is equiv( &[**] ) is assoc<right> is export(:set, :ALL) {
     sequence-pick-right(&p1, &p2)
 }
 
-sub infix:<▷>( &p1, &p2 ) is equiv( &[(&)] ) is export(:n-ary, :ALL) {
+sub infix:<▷>( &p1, &p2 ) is equiv( &[**] ) is assoc<right> is export(:n-ary, :ALL) {
     sequence-pick-right(&p1, &p2)
 }
 
