@@ -1,9 +1,11 @@
 use v6.d;
 
 class FunctionalParsers::Actions::EBNFParserCode {
+    has Str $.prefix is rw = 'p';
+
     has &.terminal = {"symbol($_)"};
 
-    has &.non-terminal = {"&p" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
+    has &.non-terminal = {"&{self.prefix}" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
 
     has &.option = {"option($_)"};
 
