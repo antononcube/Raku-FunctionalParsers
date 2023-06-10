@@ -44,4 +44,12 @@ is
         ((), 'two'),
         "one &> two";
 
+## 7
+my $ebnfCode7 = "<top> = 'a' | 'b' ;";
+
+my @tokens7 = $ebnfCode7.split(/ \s /, :skip-empty);
+
+ok parse-ebnf(@tokens7), 'Parsing routine works';
+
+
 done-testing;
