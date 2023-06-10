@@ -1,6 +1,7 @@
 use v6.d;
 
-use FunctionalParsers::Actions::EBNFParserGenerators;
+use FunctionalParsers::Actions::EBNFParserClass;
+use FunctionalParsers::Actions::EBNFParserCode;
 use FunctionalParsers::Actions::EBNFParserPairs;
 
 unit module FunctionParsers;
@@ -374,16 +375,36 @@ sub pEBNF(@x) {
 
 proto sub parse-ebnf($x,|) is export {*}
 
-multi sub parse-ebnf(@x, :$actions = Whatever) {
+multi sub parse-ebnf(@x,
+                     :$actions = Whatever,
+                     :$name is copy = Whatever) {
     given $actions {
         when Whatever {
             $ebnfActions = FunctionalParsers::Actions::EBNFParserPairs.new;
+            return pEBNF(@x);
         }
-        when $_ ∈ <generators geneator ebnf-generators> {
-            $ebnfActions = FunctionalParsers::Actions::EBNFParserGenerators.new;
+        when $_ ∈ <code parser-code> {
+            $ebnfActions = FunctionalParsers::Actions::EBNFParserCode.new;
+            return pEBNF(@x);
+        }
+        when $_ ∈ <class parser-class> {
+            $name = $name.isa(Whatever) ?? 'FP' !! $name;
+
+            die "The argument \$name is expected to be a string or Whatever."
+            unless $name ~~ Str;
+
+            $ebnfActions = FunctionalParsers::Actions::EBNFParserClass.new(:$name);
+
+            use MONKEY-SEE-NO-EVAL;
+            my $res = pEBNF(@x);
+            note $res;
+            $res = EVAL $res;
+            return $res;
+        }
+        default {
+            die 'Do not know how interpret the value of the argument $actions.';
         }
     }
-    pEBNF(@x)
 }
 
 #============================================================

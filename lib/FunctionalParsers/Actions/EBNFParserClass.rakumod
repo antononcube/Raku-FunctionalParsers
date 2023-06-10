@@ -1,9 +1,11 @@
 use v6.d;
 
-class FunctionalParsers::Actions::EBNFParserGenerators {
+class FunctionalParsers::Actions::EBNFParserClass {
+    has Str $.name = 'FP';
+
     has &.terminal = {"symbol($_)"};
 
-    has &.non-terminal = {"&p" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
+    has &.non-terminal = {"self.p" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
 
     has &.option = {"option($_)"};
 
@@ -21,7 +23,13 @@ class FunctionalParsers::Actions::EBNFParserGenerators {
 
     has &.expr = { self.alternatives.($_) };
 
-    has &.rule = { "my {self.non-terminal.($_[0])} = {$_[1]};" };
+    has &.rule = { "has {self.non-terminal.($_[0]).subst(/ ^ 'self.'/, '&.')} is rw = {$_[1]};" };
 
-    has &.grammar = {$_}
+    has &.grammar = {
+        my $code = "class {self.name} \{\n\t";
+        $code ~= $_.join("\n\t");
+        $code ~= "\n\tmethod parse(@x) \{ self.pTOP.(@x) \}";
+        $code ~= "\n}";
+        $code;
+    }
 }
