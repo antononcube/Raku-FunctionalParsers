@@ -3,7 +3,7 @@ use v6.d;
 use FunctionalParsers::Actions::Raku::EBNFParserClass;
 use FunctionalParsers::Actions::Raku::EBNFParserCode;
 use FunctionalParsers::Actions::Raku::EBNFParserPairs;
-use FunctionalParsers::Actions::Raku::EBNFParserRandom;
+#use FunctionalParsers::Actions::Raku::EBNFParserRandom;
 use FunctionalParsers::Actions::WL::EBNFParserCode;
 
 unit module FunctionParsers;
@@ -448,10 +448,10 @@ multi sub parse-ebnf(@x,
 #============================================================
 # Random sentences
 #============================================================
-proto random-sentences($ebnf, |) is export(:DEFAULT, :ALL) {*}
-
-multi sub random-sentences($ebnf, UInt $n = 1) {
-    $ebnfActions = FunctionalParsers::Actions::Raku::EBNFParserRandom.new;
-    my @tokens = $ebnf.split(/ \s /, :skip-empty);
-    return (^$n).map({ pEBNF(@tokens).head.tail });
-}
+#proto random-sentences($ebnf, |) is export(:DEFAULT, :ALL) {*}
+#
+#multi sub random-sentences($ebnf, UInt $n = 1) {
+#    $ebnfActions = FunctionalParsers::Actions::Raku::EBNFParserRandom.new;
+#    my @tokens = $ebnf.split(/ \s /, :skip-empty);
+#    return (^$n).map({ pEBNF(@tokens).head.tail });
+#}
