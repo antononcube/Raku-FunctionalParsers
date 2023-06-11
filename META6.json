@@ -15,7 +15,8 @@
     "FunctionalParsers::Actions::Raku::EBNFParserClass": "lib/FunctionalParsers/Actions/Raku/EBNFParserClass.rakumod",
     "FunctionalParsers::Actions::Raku::EBNFParserClassAttr": "lib/FunctionalParsers/Actions/Raku/EBNFParserClassAttr.rakumod",
     "FunctionalParsers::Actions::Raku::EBNFParserCode": "lib/FunctionalParsers/Actions/Raku/EBNFParserCode.rakumod",
-    "FunctionalParsers::Actions::Raku::EBNFParserPairs": "lib/FunctionalParsers/Actions/Raku/EBNFParserPairs.rakumod"
+    "FunctionalParsers::Actions::Raku::EBNFParserPairs": "lib/FunctionalParsers/Actions/Raku/EBNFParserPairs.rakumod",
+    "FunctionalParsers::Actions::WL::EBNFParserCode": "lib/FunctionalParsers/Actions/WL/EBNFParserCode.rakumod"
   },
   "resources": [],
   "license": "Artistic-2.0",
