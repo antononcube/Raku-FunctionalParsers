@@ -26,31 +26,31 @@ is-deeply
         sequence(&p1, &pM)(@words),
         "seq";
 
-## 3
+## 2
 is-deeply
         alt(&p1, &p2)(@words),
         alternatives(&p1, &p2)(@words),
         "alt";
 
-## 4
+## 3
 is-deeply
         seq(alt(&p1, &p2), &pM)(@words),
         sequence(alternatives(&p1, &p2), &pM)(@words),
         "seq(alst)";
 
-## 5
+## 4
 is-deeply
         seql(&p1, &p2)(<one two>).head,
         ((), 'one'),
         "seql one two";
 
-## 6
+## 5
 is-deeply
         seqr(&p1, &p2)(<one two>).head,
         ((), 'two'),
         "seqr one two";
 
-## 7
+## 6
 is-deeply
         sp(seq(&p3,&pM))([" ",  " ", "three", "million"]),
         (((),('three', 'million')),),
