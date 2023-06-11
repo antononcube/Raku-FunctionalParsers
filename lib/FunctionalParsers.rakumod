@@ -430,7 +430,7 @@ multi sub parse-ebnf(@x,
 
             # React to $to-lang if needed
             if $to-lang ne 'Raku' {
-                warn "The value of $to-lang is expected to be 'Raku' when \$actions is $actions.";
+                warn "The value of $to-lang is expected to be 'Raku' when \$actions is '$actions'.";
             }
 
             # Process name
