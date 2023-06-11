@@ -3,6 +3,8 @@ use v6.d;
 use FunctionalParsers::Actions::Raku::EBNFParserClass;
 use FunctionalParsers::Actions::Raku::EBNFParserCode;
 use FunctionalParsers::Actions::Raku::EBNFParserPairs;
+use FunctionalParsers::Actions::Raku::EBNFParserRandom;
+use FunctionalParsers::Actions::WL::EBNFParserCode;
 
 unit module FunctionParsers;
 
@@ -384,12 +386,18 @@ multi sub parse-ebnf(@x,
                      :$actions = Whatever,
                      :$name is copy = Whatever,
                      :$parser-prefix is copy = Whatever,
+                     :to(:$to-lang) is copy = Whatever,
                      Bool :$eval = True) {
 
     # Process parser-prefix
     if $parser-prefix.isa(Whatever) { $parser-prefix = 'p'; }
-    die 'he argument $parser-prefix is expected to be a string or Whatever.'
+    die 'The argument $parser-prefix is expected to be a string or Whatever.'
     unless $parser-prefix ~~ Str;
+
+    # Process target
+    if $to-lang.isa(Whatever) { $to-lang = 'Raku'; }
+    die 'The argument $to-lang is expected to be a Whatever or one of <Raku WL>.'
+    unless $to-lang ~~ Str && $to-lang ∈ <Raku WL>;
 
     given $actions {
         when Whatever {
@@ -398,11 +406,16 @@ multi sub parse-ebnf(@x,
         }
 
         when $_ ∈ <code parser-code> {
-            $ebnfActions = FunctionalParsers::Actions::Raku::EBNFParserCode.new;
+            $ebnfActions = ::("FunctionalParsers::Actions::{$to-lang}::EBNFParserCode").new;
             return pEBNF(@x);
         }
 
         when $_ ∈ <class parser-class> {
+
+            # React to $to-lang if needed
+            if $to-lang ne 'Raku' {
+                warn "The value of $to-lang is expected to be 'Raku' when \$actions is $actions.";
+            }
 
             # Process name
             if $name.isa(Whatever) { $name = 'FP'; }
@@ -435,3 +448,10 @@ multi sub parse-ebnf(@x,
 #============================================================
 # Random sentences
 #============================================================
+proto random-sentences($ebnf, |) is export(:DEFAULT, :ALL) {*}
+
+multi sub random-sentences($ebnf, UInt $n = 1) {
+    $ebnfActions = FunctionalParsers::Actions::Raku::EBNFParserRandom.new;
+    my @tokens = $ebnf.split(/ \s /, :skip-empty);
+    return (^$n).map({ pEBNF(@tokens).head.tail });
+}
