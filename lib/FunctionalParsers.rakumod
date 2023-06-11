@@ -155,8 +155,8 @@ sub infix:<⨁>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:n-ar
 #============================================================
 
 ## Space
-## (Should we use 'space'?)
-sub sp(&p) is export(:DEFAULT, :ALL) {
+## (See the shortcuts below -- sp can be used instead.)
+sub drop-spaces(&p) is export(:DEFAULT, :ALL) {
     -> @x {
         my $k = 0;
         for @x { last if $_.head.chars && $_.head !~~ / \s+ /; $k++ };
@@ -311,6 +311,22 @@ sub greedy1(&p) is export(:DEFAULT, :ALL) {
 sub compulsion(&p) is export(:DEFAULT, :ALL) {
     take-first(option(&p))
 }
+
+#============================================================
+# Shortcuts
+#============================================================
+
+sub sp(&p) is export(:shortcuts, :ALL) { drop-spaces(&p) }
+
+proto seq(|) is export(:shortcuts, :ALL) {*}
+multi sub seq(&p) { sequence(&p) }
+multi sub seq(*@args where @args.elems > 1) { sequence(@args) }
+
+sub seql(&p1, &p2) is export(:shortcuts, :ALL) { sequence-pick-left(&p1, &p2) }
+
+sub seqr(&p1, &p2) is export(:shortcuts, :ALL) { sequence-pick-right(&p1, &p2) }
+
+sub alt(*@args) is export(:shortcuts, :ALL) { alternatives(@args) }
 
 #============================================================
 # Self application
