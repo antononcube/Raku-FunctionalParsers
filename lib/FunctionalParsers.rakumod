@@ -52,83 +52,45 @@ sub failure is export(:DEFAULT, :ALL) {
 # Combinators
 #============================================================
 
-sub compose-with-results(&p, @res) is export(:DEFAULT, :ALL) {
-    return do given @res {
-        when $_.elems == 0 { () }
-        when $_ ~~ Positional && $_.all ~~ Positional {
-            my @flatRes;
-            $_.map(-> @r {
-                if @r ~~ List && @r.elems == 2 {
-                    my @t = &p(@r[0]);
-                    @t = @t.grep({ $_.elems });
-                    if @t {
-                        @flatRes.append( @t.map({ ($_[0], (@r[1], $_[1])) }))
-                    }
-                }});
-            @flatRes.List
-        }
-        default {
-            # Is there something better to do here?
-            note "Unhandled case in compose-with-results: {@res.gist} : {&p.gist}";
-            ()
-        }
-    }
-}
-
 ## Sequence
-proto sub sequence(|) is export(:DEFAULT, :ALL) {*}
+proto sequence(|) is export {*}
 
-multi sub sequence(&p) { &p }
+multi sub sequence(&p) {&p}
 
-# Original
-multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
-    -> @x { reduce({ compose-with-results($^b, $^a) }, @args[0](@x), |@args.tail(*-1).List) }
-}
-
-# Is this easier to maintain or debug with?
-# Fails faster?
-#multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
-#    -> @x {
-#        my @res = @args[0](@x);
-#        for @args.tail(*-1) -> &p {
-#            last if !(@res ~~ Iterable && @res.elems);
-#            @res = compose-with-results(&p, @res);
-#        }
-#        (@res ~~ Iterable && @res.elems) ?? @res !! ();
-#    }
-#}
-
-# This might be useful re-writing.
-#`[
 multi sub sequence(&p1, &p2) {
     -> @x {
         my @res1 = &p1(@x);
-        @res1.map( -> @r {
-            my @res2 = &p2($_.head);
-            if @res2 {
-                @res2.map({ ($_[0], (@r[1], $_[1])) })
-            } else {
-                Empty
-            }
-        });
+        if !(@res1 ~~ Iterable && @res1.elems) {
+            ()
+        } else {
+            my @flatRes;
+            @res1.map( -> @r {
+                my @res2 = &p2(@r.head);
+                if @res2 {
+                    @flatRes.append( @res2.map({ ($_[0], (@r[1], $_[1]))  }) )
+                } else {
+                    Empty
+                }
+            });
+            @flatRes.List
+        }
     }
 }
 
-multi sub sequence(*@args where @args.elems > 1 && @args.all ~~ Callable )  {
-    -> @x { reduce( sequence($^a, $^b), @args) } # Not complete
+multi sub sequence(*@args where @args.elems > 2 && @args.all ~~ Callable )  {
+    reduce({sequence($^b, $^a)}, @args.tail, |@args.reverse.tail(*-1).List)
 }
-]
 
 # Infix ⨂
-sub infix:<«&»>( *@args ) is equiv( &infix:<&&> ) is assoc<list> is export(:double, :ALL) {
+sub infix:<«&»>( *@args ) is equiv( &infix:<&&> ) is assoc<right> is export(:double, :ALL) {
     sequence(|@args)
 }
 
-sub infix:<(&)>( *@args ) is equiv( &infix:<&&> ) is assoc<list> is export(:set) {
+sub infix:<(&)>( *@args ) is equiv( &infix:<&&> ) is assoc<right> is export(:set) {
     sequence(|@args)
 }
 
-sub infix:<⨂>( *@args ) is equiv( &infix:<&&> ) is assoc<list> is export(:n-ary) {
+sub infix:<⨂>( *@args ) is equiv( &infix:<&&> ) is assoc<right> is export(:n-ary) {
     sequence(|@args)
 }
 
@@ -316,17 +278,11 @@ sub compulsion(&p) is export(:DEFAULT, :ALL) {
 # Shortcuts
 #============================================================
 
-sub sp(&p) is export(:shortcuts, :ALL) { drop-spaces(&p) }
-
-proto seq(|) is export(:shortcuts, :ALL) {*}
-multi sub seq(&p) { sequence(&p) }
-multi sub seq(*@args where @args.elems > 1) { sequence(@args) }
-
-sub seql(&p1, &p2) is export(:shortcuts, :ALL) { sequence-pick-left(&p1, &p2) }
-
-sub seqr(&p1, &p2) is export(:shortcuts, :ALL) { sequence-pick-right(&p1, &p2) }
-
-sub alt(*@args) is export(:shortcuts, :ALL) { alternatives(@args) }
+constant &sp is export(:shortcuts, :ALL) = &drop-spaces;
+constant &seq is export(:shortcuts, :ALL) = &sequence;
+constant &seql is export(:shortcuts, :ALL) = &sequence-pick-left;
+constant &seqr is export(:shortcuts, :ALL) = &sequence-pick-right;
+constant &alt is export(:shortcuts, :ALL) = &alternatives;
 
 #============================================================
 # Self application
