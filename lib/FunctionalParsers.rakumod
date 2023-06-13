@@ -334,7 +334,7 @@ sub pGTerm(@x) {
 }
 
 sub pGExpr(@x) {
-    apply($ebnfActions.alternatives, list-of(&pGTerm, symbol('|')))(@x)
+    apply($ebnfActions.expr, list-of(&pGTerm, symbol('|')))(@x)
 }
 
 sub pGRule(@x) {
