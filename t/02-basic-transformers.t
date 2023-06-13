@@ -22,10 +22,10 @@ plan *;
 is &p1(['one',]).head.tail, 1, 'apply for "one"';
 
 ## 2
-is sp(&p1)([' ', ' ', 'one']).head.tail, 1, 'parse " one"';
+is drop-spaces(&p1)([' ', ' ', 'one']).head.tail, 1, 'parse " one"';
 
 ## 3
-is sp(&p1)(['', '', 'one']).head.tail, 1, 'parse " one"';
+is drop-spaces(&p1)(['', '', 'one']).head.tail, 1, 'parse " one"';
 
 ## 4
 is
