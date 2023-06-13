@@ -61,11 +61,11 @@ is-deeply many(&pt9)('two four three one'.words).head.tail, (2, 4, 3, 1);
 ## 10
 # Listable «&»
 my &pt10 = &p2 «&» &p4 «&» &p3 «&» &p1;
-is-deeply &pt10('two four three one'.words).head.tail, (((2, 4), 3), 1);
+is-deeply &pt10('two four three one'.words).head.tail, (2, (4, (3, 1)));
 
 ## 11
 # Listable «&»
 my &pt11 = sequence(&p2, &p4, &p3, &p1);
-is-deeply &pt11('two four three one'.words).head.tail, (((2, 4), 3), 1);
+is-deeply &pt11('two four three one'.words).head.tail, (2, (4, (3, 1)));
 
 done-testing;
