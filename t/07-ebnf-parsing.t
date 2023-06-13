@@ -42,7 +42,7 @@ is-deeply
 ## 7
 is-deeply
         parse-ebnf(@tokens1).head.tail.value.Hash,
-        {EBNFRule => ("<top>" => :EBNFAlternatives(((:EBNFTerminal("'a'"),), (:EBNFTerminal("'b'"),))))},
+        {:EBNFRule("<top>" => :EBNFAlternatives((:EBNFTerminal("'a'"), :EBNFTerminal("'b'"))))},
         'Expected pairs';
 
 ##===========================================================
@@ -63,7 +63,7 @@ is parse-ebnf(@tokens8).all ~~ List, True, 'Parsing produces a list of lists (b 
 ## 10
 is-deeply
         parse-ebnf(@tokens8).head.tail.value.Hash,
-        {:EBNFRule("<b>" => :EBNFAlternatives((:EBNFSequence((:EBNFTerminal("'b'"), :EBNFOption(:EBNFAlternatives(((:EBNFTerminal("'1'"),), (:EBNFTerminal("'2'"),)))))),)))},
+        {:EBNFRule("<b>" => :EBNFSequence((:EBNFTerminal("'b'"), :EBNFOption(:EBNFAlternatives((:EBNFTerminal("'1'"), :EBNFTerminal("'2'")))))))},
         'Expected pairs (b opt)';
 
 ##===========================================================
