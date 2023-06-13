@@ -9,6 +9,8 @@ class FunctionalParsers::Actions::Raku::EBNFParserPairs {
 
     has &.repetition = {Pair.new('EBNFRepetition', $_)};
 
+    has &.apply = {Pair.new('EBNFApply', ($_[1], $_[0]))};
+
     has &.sequence = {Pair.new('EBNFSequence', $_)};
 
     has &.alternatives = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFAlternatives', $_) !! $_.head};

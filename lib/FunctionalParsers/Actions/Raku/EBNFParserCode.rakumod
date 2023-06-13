@@ -11,6 +11,8 @@ class FunctionalParsers::Actions::Raku::EBNFParserCode {
 
     has &.repetition = {"many($_)"};
 
+    has &.apply = {"apply(&{$_[1]}, {$_[0]})"};
+
     has &.sequence = { $_ ~~ Positional && $_.elems > 1 ?? "sequence({$_.join(', ')})" !! $_ };
 
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "alternatives({$_.join(', ')})" !! $_ };

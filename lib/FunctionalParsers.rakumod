@@ -333,8 +333,21 @@ sub pGTerm(@x) {
     apply($ebnfActions.term, list-of(&pGNode, &seqSep))(@x)
 }
 
+# What is an apply function?
+# [X] Just a string
+# [ ] Raku style pure function
+# [ ] WL style pure function
+sub pGFunc(@x) {
+    #alternatives(satisfy({$_ ~~ Str}), curly-bracketed(many(satisfy({$_ ~~ Str}))))(@x)
+    satisfy({$_ ~~ Str})(@x)
+}
+
+sub pGApply(@x) {
+    apply($ebnfActions.apply, sequence(&pGTerm, sequence-pick-right(symbol('<@'), &pGFunc)))(@x)
+}
+
 sub pGExpr(@x) {
-    apply($ebnfActions.expr, list-of(&pGTerm, symbol('|')))(@x)
+    apply($ebnfActions.expr, list-of(alternatives(&pGTerm, &pGApply), symbol('|')))(@x)
 }
 
 sub pGRule(@x) {

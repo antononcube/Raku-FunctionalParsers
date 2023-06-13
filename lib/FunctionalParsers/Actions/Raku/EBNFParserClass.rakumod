@@ -1,4 +1,10 @@
 use v6.d;
+# This class can be implemented by inheriting
+#   FunctionalParsers::Actions::EBNFParserCode
+# or
+#   FunctionalParsers::Actions::EBNFParserClassAttr
+# But it seems simpler to just put all definitions here.
+# (Since they are concise.)
 
 class FunctionalParsers::Actions::Raku::EBNFParserClass {
     has Str $.name = 'FP';
@@ -11,6 +17,8 @@ class FunctionalParsers::Actions::Raku::EBNFParserClass {
     has &.option = {"option($_)"};
 
     has &.repetition = {"many($_)"};
+
+    has &.apply = {"apply(&{$_[1]}, {$_[0]})"};
 
     has &.sequence = { $_ ~~ Positional && $_.elems > 1 ?? "sequence({$_.join(', ')})" !! $_ };
 
