@@ -11,7 +11,7 @@ class FunctionalParsers::Actions::Raku::EBNFParserPairs {
 
     has &.apply = {Pair.new('EBNFApply', ($_[1], $_[0]))};
 
-    has &.sequence = {Pair.new('EBNFSequence', $_)};
+    has &.sequence = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFSequence', $_) !! $_.head};
 
     has &.alternatives = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFAlternatives', $_) !! $_.head};
 
@@ -19,7 +19,7 @@ class FunctionalParsers::Actions::Raku::EBNFParserPairs {
 
     has &.node = {$_};
 
-    has &.term = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFSequence', $_) !! $_.head};
+    has &.term = { self.sequence.($_) };
 
     has &.expr = { self.alternatives.($_) };
 
