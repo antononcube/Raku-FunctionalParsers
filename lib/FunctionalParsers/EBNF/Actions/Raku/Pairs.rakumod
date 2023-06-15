@@ -1,6 +1,6 @@
 use v6.d;
 
-class FunctionalParsers::Actions::Raku::EBNFParserPairs {
+class FunctionalParsers::EBNF::Actions::Raku::Pairs {
     has &.terminal = {Pair.new('EBNFTerminal', $_)};
 
     has &.non-terminal = {Pair.new('EBNFNonTerminal', $_)};

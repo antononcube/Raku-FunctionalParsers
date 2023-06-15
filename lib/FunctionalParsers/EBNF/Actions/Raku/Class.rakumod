@@ -1,17 +1,18 @@
 use v6.d;
-
 # This class can be implemented by inheriting
-#   FunctionalParsers::Actions::EBNFParserCode
+#   FunctionalParsers::EBNF::Actions::Code
+# or
+#   FunctionalParsers::EBNF::Actions::ClassAttr
 # But it seems simpler to just put all definitions here.
 # (Since they are concise.)
 
-class FunctionalParsers::Actions::Raku::EBNFParserClassAttr {
+class FunctionalParsers::EBNF::Actions::Raku::Class {
     has Str $.name = 'FP';
-    has Str $.prefix is rw = 'p';
+    has Str $.prefix = 'p';
 
     has &.terminal = {"symbol($_)"};
 
-    has &.non-terminal = {"self.{self.prefix}" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
+    has &.non-terminal = {'{' ~ "self.{self.prefix}" ~ $_.uc.subst(/\s/,'').substr(1,*-1) ~ '($_)}'};
 
     has &.option = {"option($_)"};
 
@@ -31,12 +32,15 @@ class FunctionalParsers::Actions::Raku::EBNFParserClassAttr {
 
     has &.expr = { self.alternatives.($_) };
 
-    has &.rule = { "has {self.non-terminal.($_[0]).subst(/ ^ 'self.'/, '&.')} is rw = {$_[1]};" };
+    has &.rule = {
+        my $mname = self.non-terminal.($_[0]).subst(/ ^ '{self.' /, '').subst(/ '($_)}' $/, '');
+        "method {$mname}(@x) \{ {$_[1]}(@x) \}"
+    };
 
     has &.grammar = {
         my $code = "class {self.name} \{\n\t";
-        $code ~= $_.join("\n\t");
-        $code ~= "\n\tmethod parse(@x) \{ self.pTOP.(@x) \}";
+        $code ~= $_.List.join("\n\t");
+        $code ~= "\n\thas \&.parser is rw = ->@x \{ self.pTOP(@x) \};";
         $code ~= "\n}";
         $code;
     }

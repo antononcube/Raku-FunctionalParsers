@@ -1,6 +1,6 @@
 use v6.d;
 
-class FunctionalParsers::Actions::WL::EBNFParserCode {
+class FunctionalParsers::EBNF::Actions::WL::Code {
     has Str $.prefix is rw = 'p';
 
     has &.terminal = {"ParseSymbol[{$_.subst('\'','"'):g}]"};
