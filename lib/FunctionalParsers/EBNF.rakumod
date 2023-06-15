@@ -6,6 +6,7 @@ use FunctionalParsers::EBNF::Actions::Raku::Code;
 use FunctionalParsers::EBNF::Actions::Raku::Pairs;
 #use FunctionalParsers::EBNF::Actions::Raku::EBNFParserRandom;
 use FunctionalParsers::EBNF::Actions::WL::Code;
+use FunctionalParsers::EBNF::Parser::FromCharacters;
 use FunctionalParsers::EBNF::Parser::FromTokens;
 
 unit module FunctionParsers::EBNF;
@@ -20,7 +21,9 @@ multi sub parse-ebnf(@x,
                      :$name is copy = Whatever,
                      :$parser-prefix is copy = Whatever,
                      :to(:$to-lang) is copy = Whatever,
-                     Bool :$eval = True) {
+                     Bool :$eval = True,
+                     Bool :$tokenized = True
+                     ) {
 
     # Process parser-prefix
     if $parser-prefix.isa(Whatever) { $parser-prefix = 'p'; }
@@ -32,15 +35,26 @@ multi sub parse-ebnf(@x,
     die 'The argument $to-lang is expected to be a Whatever or one of <Raku WL>.'
     unless $to-lang ~~ Str && $to-lang ∈ <Raku WL>;
 
+    # Process tokenized
+    my &pEBNF = $tokenized ?? &FunctionalParsers::EBNF::Parser::FromTokens::pEBNF !! &FunctionalParsers::EBNF::Parser::FromCharacters::pEBNF;
+
     given $actions {
         when Whatever {
-            $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Pairs.new;
-            return FunctionalParsers::EBNF::Parser::FromTokens::pEBNF(@x).List;
+            if $tokenized {
+                $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Pairs.new;
+            } else {
+                $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Pairs.new;
+            }
+            return &pEBNF.(@x).List;
         }
 
         when $_ ∈ <code parser-code> {
-            $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = ::("FunctionalParsers::EBNF::Actions::{$to-lang}::Code").new;
-            return pEBNF(@x);
+            if $tokenized {
+                $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = ::("FunctionalParsers::EBNF::Actions::{ $to-lang }::Code").new;
+            } else {
+                $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = ::("FunctionalParsers::EBNF::Actions::{ $to-lang }::Code").new;
+            }
+            return &pEBNF.(@x);
         }
 
         when $_ ∈ <class parser-class> {
@@ -56,10 +70,15 @@ multi sub parse-ebnf(@x,
             unless $name ~~ Str;
 
             # Make parser generator
-            $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Class.new(:$name, prefix => $parser-prefix);
-
+            if $tokenized {
+                $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Class
+                .new(:$name, prefix => $parser-prefix);
+            } else {
+                $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Class
+                .new(:$name, prefix => $parser-prefix);
+            }
             # Generate code of parser class
-            my $res = pEBNF(@x).List;
+            my $res = &pEBNF.(@x).List;
 
             # Evaluate the class
             if $eval {
