@@ -14,7 +14,11 @@ unit module FunctionParsers::EBNF;
 #============================================================
 # Interpretation
 #============================================================
-proto sub parse-ebnf($x,|) is export(:MANDATORY, :ALL) {*}
+proto sub parse-ebnf($x,|) is export {*}
+
+multi sub parse-ebnf(Str $x, *%args) {
+    return parse-ebnf($x.comb, :!tokenized, |%args.grep({ $_.key ne 'tokenized' }));
+}
 
 multi sub parse-ebnf(@x,
                      :$actions = Whatever,
