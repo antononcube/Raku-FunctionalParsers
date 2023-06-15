@@ -47,7 +47,7 @@ sub failure is export(:MANDATORY, :ALL) {
 #============================================================
 
 ## Sequence
-proto sequence(|) is export {*}
+proto sequence(|) is export(:MANDATORY, :ALL) {*}
 
 multi sub sequence(&p) {&p}
 
