@@ -19,29 +19,29 @@ my $ebnfCode1 = "
 my @tokens1 = $ebnfCode1.split(/ \s /, :skip-empty);
 
 ## 1
-isa-ok parse-ebnf(@tokens1), List, 'Parsing produces a list';
+isa-ok parse-ebnf(@tokens1, :tokenized), List, 'Parsing produces a list';
 
 ## 2
-is parse-ebnf(@tokens1).all ~~ List, True, 'Parsing produces a list of lists';
+is parse-ebnf(@tokens1, :tokenized).all ~~ List, True, 'Parsing produces a list of lists';
 
 ## 3
-is parse-ebnf(@tokens1).head.head, (), 'Empty non-parsed';
+is parse-ebnf(@tokens1, :tokenized).head.head, (), 'Empty non-parsed';
 
 ## 4
-isa-ok parse-ebnf(@tokens1).head.tail, Pair;
+isa-ok parse-ebnf(@tokens1, :tokenized).head.tail, Pair;
 
 ## 5
-is parse-ebnf(@tokens1).head.tail.key, "EBNF", 'Key of the result is "EBNF"';
+is parse-ebnf(@tokens1, :tokenized).head.tail.key, "EBNF", 'Key of the result is "EBNF"';
 
 ## 6
 is-deeply
-        parse-ebnf(@tokens1).head.tail.value>>.key,
+        parse-ebnf(@tokens1, :tokenized).head.tail.value>>.key,
         ("EBNFRule",),
         'Value of the result is list of pairs with keys "EBNFRule"';
 
 ## 7
 is-deeply
-        parse-ebnf(@tokens1).head.tail.value.Hash,
+        parse-ebnf(@tokens1, :tokenized).head.tail.value.Hash,
         {:EBNFRule("<top>" => :EBNFAlternatives((:EBNFTerminal("'a'"), :EBNFTerminal("'b'"))))},
         'Expected pairs';
 
@@ -55,14 +55,14 @@ END
 my @tokens8 = $ebnfCode8.split(/ \s /, :skip-empty);
 
 ## 8
-isa-ok parse-ebnf(@tokens8), List, 'Parsing produces a list (b opt)';
+isa-ok parse-ebnf(@tokens8, :tokenized), List, 'Parsing produces a list (b opt)';
 
 ## 9
-is parse-ebnf(@tokens8).all ~~ List, True, 'Parsing produces a list of lists (b opt)';
+is parse-ebnf(@tokens8, :tokenized).all ~~ List, True, 'Parsing produces a list of lists (b opt)';
 
 ## 10
 is-deeply
-        parse-ebnf(@tokens8).head.tail.value.Hash,
+        parse-ebnf(@tokens8, :tokenized).head.tail.value.Hash,
         {:EBNFRule("<b>" => :EBNFSequence((:EBNFTerminal("'b'"), :EBNFOption(:EBNFAlternatives((:EBNFTerminal("'1'"), :EBNFTerminal("'2'")))))))},
         'Expected pairs (b opt)';
 
@@ -78,20 +78,20 @@ END
 my @tokens11 = $ebnfCode11.split(/ \s /, :skip-empty);
 
 ## 11
-isa-ok parse-ebnf(@tokens11), List, 'Parsing produces a list (number)';
+isa-ok parse-ebnf(@tokens11, :tokenized), List, 'Parsing produces a list (number)';
 
 ## 12
-is parse-ebnf(@tokens11).all ~~ List, True, 'Parsing produces a list of lists (number)';
+is parse-ebnf(@tokens11, :tokenized).all ~~ List, True, 'Parsing produces a list of lists (number)';
 
 ## 13
 is-deeply
-        parse-ebnf(@tokens11).head.tail.value>>.key,
+        parse-ebnf(@tokens11, :tokenized).head.tail.value>>.key,
         <EBNFRule EBNFRule EBNFRule>,
         'Value of the result is list of pairs with keys "EBNFRule" (number)';
 
 ## 14
 is-deeply
-        parse-ebnf(@tokens11).head.tail.value>>.value>>.key,
+        parse-ebnf(@tokens11, :tokenized).head.tail.value>>.value>>.key,
         ("<digit>", "<number>", "<top>"),
         'Expected rule names (number)';
 
