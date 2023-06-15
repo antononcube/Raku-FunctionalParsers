@@ -3,7 +3,7 @@ use v6.d;
 use lib '.';
 use lib './lib';
 
-use FunctionalParsers;
+use FunctionalParsers::EBNF;
 use Test;
 
 

@@ -4,6 +4,7 @@ use lib '.';
 use lib './lib';
 
 use FunctionalParsers;
+use FunctionalParsers::EBNF;
 use Test;
 
 # Parsers
