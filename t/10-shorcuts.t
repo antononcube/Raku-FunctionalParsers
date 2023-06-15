@@ -3,7 +3,7 @@ use v6.d;
 use lib '.';
 use lib './lib';
 
-use FunctionalParsers :shortcuts, :DEFAULT;
+use FunctionalParsers :shortcuts;
 use Test;
 
 # Parsers
