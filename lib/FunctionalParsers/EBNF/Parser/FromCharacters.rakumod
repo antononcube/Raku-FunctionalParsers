@@ -71,15 +71,17 @@ sub pGTerm(@x) {
 
 # What is an apply function?
 # [X] Just a string
+# [X] UNIX style code
 # [ ] Raku style pure function
 # [ ] WL style pure function
 sub pGFunc(@x) {
-    #alternatives(satisfy({$_ ~~ Str}), curly-bracketed(many(satisfy({$_ ~~ Str}))))(@x)
-    satisfy({$_ ~~ Str})(@x)
+    alternatives(
+            apply({$_.flat.join}, many1(satisfy({$_ ~~ / ^ <alnum>+ $ /}))),
+            apply({$_.flat.join.substr(1)}, sequence(alternatives(token('&{'), token('${')), many1(satisfy({$_ ~~ Str})), token('}'))))(@x)
 }
 
 sub pGApply(@x) {
-    apply($ebnfActions.apply, sequence(sp(&pGTerm), sequence-pick-right(sp(token('<@')), &pGFunc)))(@x)
+    apply($ebnfActions.apply, sequence(sp(&pGTerm), sequence-pick-right(sp(token('<@')), sp(&pGFunc))))(@x)
 }
 
 sub pGExpr(@x) {
