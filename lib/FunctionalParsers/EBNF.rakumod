@@ -4,7 +4,7 @@ use FunctionalParsers;
 use FunctionalParsers::EBNF::Actions::Raku::Class;
 use FunctionalParsers::EBNF::Actions::Raku::Code;
 use FunctionalParsers::EBNF::Actions::Raku::Pairs;
-#use FunctionalParsers::EBNF::Actions::Raku::EBNFParserRandom;
+use FunctionalParsers::EBNF::Actions::Raku::Random;
 use FunctionalParsers::EBNF::Actions::WL::Code;
 use FunctionalParsers::EBNF::Parser::FromCharacters;
 use FunctionalParsers::EBNF::Parser::FromTokens;
@@ -106,10 +106,25 @@ multi sub parse-ebnf(@x,
 #============================================================
 # Random sentences
 #============================================================
-#proto random-sentences($ebnf, |) is export(:MANDATORY, :ALL) {*}
-#
-#multi sub random-sentences($ebnf, UInt $n = 1) {
-#    $ebnfActions = FunctionalParsers::EBNF::Actions::Raku::EBNFParserRandom.new;
-#    my @tokens = $ebnf.split(/ \s /, :skip-empty);
-#    return (^$n).map({ pEBNF(@tokens).head.tail });
-#}
+proto random-sentences($ebnf, |) is export {*}
+
+multi sub random-sentences($ebnf, UInt $n = 1, Bool :$eval = True) {
+    $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Random.new;
+    my &pEBNF = &FunctionalParsers::EBNF::Parser::FromCharacters::pEBNF;
+
+    # Generate code of parser class
+    my $res = &pEBNF.($ebnf.comb).List;
+
+    if $eval {
+        # Evaluate the class
+        if $eval {
+            use MONKEY-SEE-NO-EVAL;
+            $res = EVAL $res.head.tail;
+        }
+
+        return (^$n).map({ $res.new.parser.('12'.comb) });
+
+    } else {
+        return $res.head.tail;
+    }
+}
