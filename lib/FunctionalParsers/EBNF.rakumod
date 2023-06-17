@@ -17,13 +17,14 @@ unit module FunctionParsers::EBNF;
 proto sub parse-ebnf($x,|) is export {*}
 
 multi sub parse-ebnf(Str $x, *%args) {
-    return parse-ebnf($x.comb, :!tokenized, |%args.grep({ $_.key ne 'tokenized' }));
+    my %args2 = %args.grep({ $_.key ne 'tokenized' });
+    return parse-ebnf($x.comb.Array, :!tokenized, |%args2);
 }
 
 multi sub parse-ebnf(@x,
                      :$actions = Whatever,
-                     :$name is copy = Whatever,
-                     :$parser-prefix is copy = Whatever,
+                     :name(:$parser-name) is copy = Whatever,
+                     :prefix(:$parser-prefix) is copy = Whatever,
                      :to(:$to-lang) is copy = Whatever,
                      Bool :$eval = True,
                      Bool :$tokenized = True
@@ -69,18 +70,19 @@ multi sub parse-ebnf(@x,
             }
 
             # Process name
-            if $name.isa(Whatever) { $name = 'FP'; }
-            die "The argument \$name is expected to be a string or Whatever."
-            unless $name ~~ Str;
+            if $parser-name.isa(Whatever) { $parser-name = 'FP'; }
+            die "The argument \$parser-name is expected to be a string or Whatever."
+            unless $parser-name ~~ Str;
 
             # Make parser generator
             if $tokenized {
-                $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Class
-                .new(:$name, prefix => $parser-prefix);
+                $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions =
+                        FunctionalParsers::EBNF::Actions::Raku::Class.new(name => $parser-name, prefix => $parser-prefix);
             } else {
-                $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Class
-                .new(:$name, prefix => $parser-prefix);
+                $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions =
+                        FunctionalParsers::EBNF::Actions::Raku::Class.new(name => $parser-name, prefix => $parser-prefix);
             }
+
             # Generate code of parser class
             my $res = &pEBNF.(@x).List;
 
