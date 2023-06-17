@@ -236,12 +236,12 @@ sub list-of(&p, &sep) is export(:MANDATORY, :ALL) {
 
 # Chain left
 sub chain-left(&p, &sep) is export(:MANDATORY, :ALL) {
-    apply( { reduce( { $^b[0]($^a, $^b[1]) }, $_.head, |$_[1]) }, sequence(&p, just(many(sequence(&sep, &p)))))
+    apply( { reduce( { $^b[0]($^a, $^b[1]) }, $_.head, |$_[1]) }, sequence(&p, many1(sequence(&sep, &p))))
 }
 
 # Chain right
 sub chain-right(&p, &sep) is export(:MANDATORY, :ALL) {
-    apply( { reduce( { $^b[1]($^b[0], $^a) }, $_[1], |$_[0].reverse) }, just(sequence(many(sequence(&p, &sep)), &p)))
+    apply( { reduce( { $^b[1]($^b[0], $^a) }, $_[1], |$_[0].reverse) }, sequence(many1(sequence(&p, &sep)), &p))
 }
 
 #============================================================
