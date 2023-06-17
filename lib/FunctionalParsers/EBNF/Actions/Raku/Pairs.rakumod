@@ -13,13 +13,17 @@ class FunctionalParsers::EBNF::Actions::Raku::Pairs {
 
     has &.sequence = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFSequence', $_) !! $_.head};
 
+    has &.sequence-pick-left = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFSequencePickLeft', $_) !! $_.head};
+
+    has &.sequence-pick-right = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFSequencePickRight', $_) !! $_.head};
+
     has &.alternatives = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFAlternatives', $_) !! $_.head};
 
     has &.parens = {$_};
 
     has &.node = {$_};
 
-    has &.term = { self.sequence.($_) };
+    has &.term = { self.alternatives.($_) };
 
     has &.expr = { self.alternatives.($_) };
 

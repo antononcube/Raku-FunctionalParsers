@@ -21,13 +21,21 @@ class FunctionalParsers::EBNF::Actions::Raku::ClassAttr {
 
     has &.sequence = { $_ ~~ Positional && $_.elems > 1 ?? "sequence({$_.join(', ')})" !! $_ };
 
+    has &.sequence-pick-left = {
+        $_ ~~ Str ?? $_ !! "sequence-pick-left({self.sequence-pick-left.($_[0])}, {$_[1]})"
+    };
+
+    has &.sequence-pick-right = {
+        $_ ~~ Str ?? $_ !! "sequence-pick-right({$_[0]}, {self.sequence-pick-right.($_[1])})"
+    };
+
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "alternatives({$_.join(', ')})" !! $_ };
 
     has &.parens = {$_};
 
     has &.node = {$_};
 
-    has &.term = { self.sequence.($_) };
+    has &.term = { self.alternatives.($_) };
 
     has &.expr = { self.alternatives.($_) };
 
