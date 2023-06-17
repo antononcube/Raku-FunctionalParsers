@@ -58,4 +58,8 @@ ok parse-ebnf(@tokens7, :!tokenized), 'Parsing routine works with :!tokenized';
 ## 9
 ok parse-ebnf($ebnfCode7, :!tokenized), 'Parsing routine works with a string';
 
+## 10
+ok parse-ebnf($ebnfCode7, actions => 'code'),
+        'Parsing routine works with a string and actions => "code"';
+
 done-testing;
