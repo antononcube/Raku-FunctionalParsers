@@ -76,7 +76,7 @@ sub pGTerm(@x) {
 # [ ] WL style pure function
 sub pGFunc(@x) {
     alternatives(
-            apply({$_.flat.join}, many1(satisfy({$_ ~~ / ^ <alnum>+ $ /}))),
+            apply({$_.flat.join}, many1(satisfy({$_ ~~ / <alnum> | <:Pd> /}))),
             apply({$_.flat.join.substr(1)}, sequence(alternatives(token('&{'), token('${')), many1(satisfy({$_ ~~ Str})), token('}'))))(@x)
 }
 
