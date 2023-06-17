@@ -50,8 +50,28 @@ sub pGNode(@x) { alternatives(
 my &seqSepForm = {Pair.new($^a,$^b)};
 my &seqSep = alternatives(symbol(','), symbol('<&'), symbol('&>'));
 
+sub pGTermSeq(@x) {
+    apply($ebnfActions.sequence, list-of(&pGNode, symbol(',')))(@x)
+}
+
+# Flatting is actually not desired
+#my &seqLeftSepForm = { $^a ~~ Pair ?? ($^a, $^b) !! [|$^a, $^b].List };
+my &seqLeftSepForm = { ($^a, $^b) };
+my &seqLeftSep = apply({&seqLeftSepForm}, symbol('<&'));
+sub pGTermSeqL(@x) {
+    apply($ebnfActions.sequence-pick-left, chain-left(&pGNode, &seqLeftSep))(@x)
+}
+
+# Flatting is actually not desired
+#my &seqRightSepForm = { $^a ~~ Pair ?? ($^a, $^b) !! [|$^a, $^b].List };
+my &seqRightSepForm = { ($^a, $^b) };
+my &seqRightSep = apply({&seqRightSepForm}, symbol('&>'));
+sub pGTermSeqR(@x) {
+    apply($ebnfActions.sequence-pick-right, chain-right(&pGNode, &seqRightSep))(@x)
+}
+
 sub pGTerm(@x) {
-    apply($ebnfActions.term, list-of(&pGNode, &seqSep))(@x)
+    apply($ebnfActions.term, alternatives(&pGTermSeq, &pGTermSeqL, &pGTermSeqR))(@x)
 }
 
 # What is an apply function?
