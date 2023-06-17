@@ -108,8 +108,19 @@ multi sub parse-ebnf(@x,
 #============================================================
 proto random-sentences($ebnf, |) is export {*}
 
-multi sub random-sentences($ebnf, UInt $n = 1, Bool :$eval = True) {
-    $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Random.new;
+multi sub random-sentences($ebnf,
+                           UInt $n = 1,
+                           UInt :$max-repetitions = 4,
+                           UInt :$min-repetitions = 0,
+                           Str :$sep = ' ',
+                           Bool :$eval = True,
+                           ) {
+    $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions =
+            FunctionalParsers::EBNF::Actions::Raku::Random.new(
+                    :$max-repetitions,
+                    :$min-repetitions
+                    );
+
     my &pEBNF = &FunctionalParsers::EBNF::Parser::FromCharacters::pEBNF;
 
     # Generate code of parser class
@@ -122,7 +133,7 @@ multi sub random-sentences($ebnf, UInt $n = 1, Bool :$eval = True) {
             $res = EVAL $res.head.tail;
         }
 
-        return (^$n).map({ $res.new.parser.('12'.comb) });
+        return (^$n).map({ $res.new.parser.().join($sep) });
 
     } else {
         return $res.head.tail;
