@@ -3,6 +3,8 @@ use v6.d;
 class FunctionalParsers::EBNF::Actions::Raku::Random {
     has Str $.name = 'Random';
     has Str $.prefix = 'p';
+    has UInt $.max-repetitions = 4;
+    has UInt $.min-repetitions = 0;
 
     has &.terminal = {"$_"};
 
@@ -10,7 +12,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random {
 
     has &.option = { "(rand > 0.5 ?? $_ !! Empty)" };
 
-    has &.repetition = {"$_ xx (4.rand.floor)"};
+    has &.repetition = {"$_ xx (({self.min-repetitions}..{self.max-repetitions}).pick)"};
 
     #has &.apply = {"apply(&{$_[1]}, {$_[0]})"};
     has &.apply = {$_[0]};
@@ -39,7 +41,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random {
     has &.grammar = {
         my $code = "class {self.name} \{\n\t";
         $code ~= $_.List.join("\n\t");
-        $code ~= "\n\thas \&.parser is rw = -> @x \{ self.pTOP \};";
+        $code ~= "\n\thas \&.parser is rw = \{ self.pTOP \};";
         $code ~= "\n}";
         $code;
     }
