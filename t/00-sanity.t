@@ -52,5 +52,10 @@ my @tokens7 = $ebnfCode7.split(/ \s /, :skip-empty);
 
 ok parse-ebnf(@tokens7), 'Parsing routine works';
 
+## 8
+ok parse-ebnf(@tokens7, :!tokenized), 'Parsing routine works with :!tokenized';
+
+## 9
+ok parse-ebnf($ebnfCode7, :!tokenized), 'Parsing routine works with a string';
 
 done-testing;

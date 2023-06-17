@@ -113,4 +113,81 @@ is-deeply
         parse-ebnf(@tokens13, :!tokenized),
         'Same results for string and tokens (number)';
 
+##===========================================================
+## 18 - 23
+##===========================================================
+my $ebnfCode18 = q:to/END/;
+<top> = 'a' <& 'b' <& 'c' <& 'd' | <right> ;
+<right> = 'e' &> 'f' &> 'g' &> 'h' ;
+END
+
+my @tokens18 = $ebnfCode18.comb;
+
+## 18
+isa-ok parse-ebnf(@tokens18, :!tokenized), List, 'Parsing produces a list (<& &>)';
+
+## 19
+is parse-ebnf(@tokens18, :!tokenized).all ~~ List, True, 'Parsing produces a list of lists (<& &>)';
+
+## 20
+is-deeply
+        parse-ebnf(@tokens18, :!tokenized).head.tail.value>>.key,
+        <EBNFRule EBNFRule>,
+        'Value of the result is list of pairs with keys "EBNFRule" (<& &>)';
+
+## 21
+is-deeply
+        parse-ebnf(@tokens18, :!tokenized).head.tail.value>>.value>>.key,
+        ("<top>", "<right>"),
+        'Expected rule names (<& &>)';
+
+## 22
+is-deeply
+        [parse-ebnf(@tokens18, :!tokenized).head.tail.value.head,],
+        [:EBNFRule("<top>" => :EBNFAlternatives((:EBNFSequencePickLeft(($($(:EBNFTerminal("'a'"), :EBNFTerminal("'b'")), :EBNFTerminal("'c'")), :EBNFTerminal("'d'"))), :EBNFNonTerminal("<right>")))),],
+        'Expected rule structure, <top> (<& &>)';
+
+## 23
+is-deeply
+        [parse-ebnf(@tokens18, :!tokenized).head.tail.value[1],],
+        [:EBNFRule("<right>" => :EBNFSequencePickRight((:EBNFTerminal("'e'"), $(:EBNFTerminal("'f'"), $(:EBNFTerminal("'g'"), :EBNFTerminal("'h'")))))),],
+        'Expected rule structure, <right> (<& &>)';
+
+##===========================================================
+## 24 - 26
+##===========================================================
+## Equivalences
+##-----------------------------------------------------------
+
+## 24
+is-deeply
+        parse-ebnf(@tokens18, :!tokenized),
+        parse-ebnf($ebnfCode18.subst(/\s/, '')),
+        'Equivalence: tokens vs string (<& &>)';
+
+## 25
+is-deeply
+        parse-ebnf($ebnfCode18),
+        parse-ebnf($ebnfCode18.subst(/\s/, '')),
+        'Equivalence: string vs string without a whitespace (<& &>)';
+
+## 26
+is-deeply
+        parse-ebnf($ebnfCode18).head.tail,
+        parse-ebnf($ebnfCode18.subst(/\s/, ''):g).head.tail,
+        'Equivalence: string vs string without whitespaces (<& &>)';
+
+## 27
+is-deeply
+        parse-ebnf($ebnfCode13).head.tail,
+        parse-ebnf($ebnfCode13.subst(/\s/, ''):g).head.tail,
+        'Equivalence: string vs string without whitespaces (digit)';
+
+## 28
+is-deeply
+        parse-ebnf($ebnfCode13).head.tail,
+        parse-ebnf($ebnfCode13.subst(/\s/, "\n"):g).head.tail,
+        'Equivalence: string vs string with additional whitespaces (digit)';
+
+
 done-testing;

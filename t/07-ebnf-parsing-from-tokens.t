@@ -95,4 +95,44 @@ is-deeply
         ("<digit>", "<number>", "<top>"),
         'Expected rule names (number)';
 
+##===========================================================
+## 15 - 16
+##===========================================================
+my $ebnfCode15 = q:to/END/;
+<top> = 'a' <& 'b' <& 'c' <& 'd' | <right> ;
+<right> = 'e' &> 'f' &> 'g' &> 'h' ;
+END
+
+my @tokens15 = $ebnfCode15.split(/ \s /, :skip-empty);
+
+## 15
+isa-ok parse-ebnf(@tokens15, :tokenized), List, 'Parsing produces a list (<& &>)';
+
+## 16
+is parse-ebnf(@tokens15, :tokenized).all ~~ List, True, 'Parsing produces a list of lists (<& &>)';
+
+## 17
+is-deeply
+        parse-ebnf(@tokens15, :tokenized).head.tail.value>>.key,
+        <EBNFRule EBNFRule>,
+        'Value of the result is list of pairs with keys "EBNFRule" (<& &>)';
+
+## 18
+is-deeply
+        parse-ebnf(@tokens15, :tokenized).head.tail.value>>.value>>.key,
+        ("<top>", "<right>"),
+        'Expected rule names (<& &>)';
+
+## 19
+is-deeply
+        [parse-ebnf(@tokens15, :tokenized).head.tail.value.head,],
+        [:EBNFRule("<top>" => :EBNFAlternatives((:EBNFSequencePickLeft(($($(:EBNFTerminal("'a'"), :EBNFTerminal("'b'")), :EBNFTerminal("'c'")), :EBNFTerminal("'d'"))), :EBNFNonTerminal("<right>")))),],
+        'Expected rule structure, <top> (<& &>)';
+
+## 20
+is-deeply
+        [parse-ebnf(@tokens15, :tokenized).head.tail.value[1],],
+        [:EBNFRule("<right>" => :EBNFSequencePickRight((:EBNFTerminal("'e'"), $(:EBNFTerminal("'f'"), $(:EBNFTerminal("'g'"), :EBNFTerminal("'h'")))))),],
+        'Expected rule structure, <right> (<& &>)';
+
 done-testing;
