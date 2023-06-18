@@ -19,10 +19,10 @@ my $ebnfCode1 = q:to/END/;
 END
 
 ## 1
-ok { parse-ebnf($ebnfCode1, actions => 'class', name => Whatever):eval };
+ok { parse-ebnf($ebnfCode1, <EVAL>, target => 'Raku::Class', name => Whatever) };
 
 ## 2
-my $pObj2 = parse-ebnf($ebnfCode1, actions => 'class'):eval;
+my $pObj2 = parse-ebnf($ebnfCode1, <EVAL>, target => 'Raku::Class');
 
 my $p2 = $pObj2.new;
 ok $p2.parser.('3432'.comb);
@@ -41,7 +41,7 @@ my $ebnfCode5 = q:to/END/;
 <right> = 'e' &> 'f' &> 'g' &> 'h' ;
 END
 
-my $pObj5 = parse-ebnf($ebnfCode5, actions => 'class', name => 'MyFP3'):eval;
+my $pObj5 = parse-ebnf($ebnfCode5, <EVAL>, target => 'Raku::Class', name => 'MyFP3');
 my $p5 = $pObj5.new;
 
 ## 5

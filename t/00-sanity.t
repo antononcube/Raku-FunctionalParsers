@@ -53,13 +53,13 @@ my @tokens7 = $ebnfCode7.split(/ \s /, :skip-empty);
 ok parse-ebnf(@tokens7), 'Parsing routine works';
 
 ## 8
-ok parse-ebnf(@tokens7, :!tokenized), 'Parsing routine works with :!tokenized';
+ok parse-ebnf(@tokens7), 'Parsing routine works with :!tokenized';
 
 ## 9
-ok parse-ebnf($ebnfCode7, :!tokenized), 'Parsing routine works with a string';
+ok parse-ebnf($ebnfCode7), 'Parsing routine works with a string';
 
 ## 10
-ok parse-ebnf($ebnfCode7, actions => 'code'),
-        'Parsing routine works with a string and actions => "code"';
+ok parse-ebnf($ebnfCode7, target => 'Raku::Code'),
+        'Parsing routine works with a string and target => "Raku::Code"';
 
 done-testing;
