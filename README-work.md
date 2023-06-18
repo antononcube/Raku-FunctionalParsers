@@ -2,17 +2,25 @@
 
 Raku package with a system of functional parsers.
 
------
+------
 
 ## Installation
 
-*TBD...*
+From [Zef ecosystem](https://raku.land):
 
------
+```
+zef install FunctionalParsers;
+```
+
+From GitHub:
+
+```
+zef install https://github.com/antononcube/Raku-FunctionalParsers.git
+```
+
+------
 
 ## Examples
-
-### Basic
 
 Make a parser for a family of (two) simple sentences:
 
@@ -34,7 +42,7 @@ These sentences are not be parsed:
 ("numeric integration", "symbolic summation")>>.words.map({ $_ => &p1($_)});
 ```
 
------
+------
 
 ## Infix operators
 
@@ -81,7 +89,61 @@ my &p = (&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (&) &pTh;
 **Remark:** The arguments of the apply operator `⨀` are "reversed" when compared to the arguments of the operators `(^)` and `«0`. 
 For `⨀` the function to be applied is the first argument. 
 
------
+------
+
+## Parser generation
+
+Here is an [Extended Backus-Naur Form (EBNF)](https://en.wikipedia.org/wiki/Extended_Backus–Naur_form) grammar:
+
+```perl6
+my $ebnfCode = q:to/END/;
+<digit> = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
+<number> = <digit> , { <digit> } ;
+<top> = <number> ;
+END
+```
+
+Here generation is the corresponding functional parsers code:
+
+```perl6
+use FunctionalParsers::EBNF;
+.say for parse-ebnf($ebnfCode, target => 'Raku::Code').head.tail;
+```
+
+For more detailed examples see ["Parser-code-generation.md"](./doc/Parser-code-generation.md).
+
+------
+
+## Random sentence generation
+
+Here is an EBNF grammar:
+
+```perl6
+my $ebnfCode = q:to/END/;
+<top> = <who> , <verb> , <lang> ;
+<who> = 'I' | 'We' ;
+<verb> = 'love' | 'hate' | { '♥️' } | '🤮';
+<lang> = 'Julia' | 'Perl' | 'Python' | 'R' | 'WL' ; 
+END
+```
+
+Here is generation of random sentences with the grammar above:
+
+```perl6
+.say for random-sentence($ebnfCode, 12);
+```
+
+------
+
+## CLI
+
+The package provides a Command Line Interface (CLI) script for parsing EBNF. Here is its usage message:
+
+```shell
+fp-parse-ebnf --help
+```
+
+------
 
 ## References
 
