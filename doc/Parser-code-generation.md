@@ -6,6 +6,10 @@ This document has examples of parser code generation for different programming l
 
 ## Raku class code
 
+### FunctionalParsers
+
+In this section we generate Raku parser code that uses the functions of this package, "FunctionalParsers". 
+
 ```perl6
 use FunctionalParsers;
 use FunctionalParsers::EBNF;
@@ -46,10 +50,10 @@ $class.new.parser.('3234'.comb);
 # ((() 3234) ((4) 323) ((3 4) 32) ((2 3 4) 3))
 ```
 
-Here we generate the parser class code but evaluate into a "as-is" Markdown cells:
+Here we generate the parser class code again, but here we place it into an "as-is" Markdown cell:
 
 ```perl6, result=asis, output-prompt=NONE, output-lang=perl6
-parse-ebnf($ebnfCode, <CODE>, target => 'Raku::Class').head.tail
+parse-ebnf($ebnfCode, <CODE>, target => 'Raku::Class').head.tail;
 ```
 ```perl6
 class FP {
@@ -60,13 +64,88 @@ class FP {
 }
 ```
 
-Here we evaluate with the grammar above:
+### Grammar
+
+In this sub-section we generate code for Raku's built-in grammars.
+
+Here we generate grammar class and place it into an "as-is" Markdown cell:
+
+```perl6, result=asis, output-prompt=NONE, output-lang=perl6
+parse-ebnf($ebnfCode, <CODE>, target => 'Raku::Grammar', parser-name => 'MyFP').head.tail;
+```
+```perl6
+grammar MyFP {
+	rule pDIGIT { '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' }
+	rule pNUMBER { <pDIGIT> <pDIGIT>* }
+	rule TOP { <pNUMBER> }
+}
+```
+
+Here we generate the grammar code and evaluate it:
 
 ```perl6
-FP.pTOP('323'.comb);
+my $gr = parse-ebnf($ebnfCode, <EVAL>, target => 'Raku::Grammar', parser-name => 'MyGr');
 ```
 ```
-#ERROR: Undeclared name:
-#ERROR:     FP used at line 2
-# Nil
+# (MyGr)
+```
+
+Here we parse with the grammar:
+
+```perl6
+$gr.parse('944'.comb);
+```
+```
+# ｢9 4 4｣
+#  pNUMBER => ｢9 4 4｣
+#   pDIGIT => ｢9 ｣
+#   pDIGIT => ｢4 ｣
+#   pDIGIT => ｢4｣
+```
+
+-----
+
+## Wolfram Language code
+
+In this section we generate Wolfram Language (WL) parsers code.
+(WL is also known as "Mathematica".)
+
+### FunctionalParsers
+
+In this sub-section generate code for the WL paclet 
+["AntonAntonov/FunctionalParsers"](https://resources.wolframcloud.com/PacletRepository/resources/AntonAntonov/FunctionalParsers/)
+(which corresponds to this Raku package "FunctionalParsers".) 
+
+Here we transform the EBNF code above to have WL function:
+
+```perl6
+my $ebnfCodeWL = $ebnfCode.subst('$_.flat.join', 'StringJoin@*Flatten');
+```
+```
+# <digit> = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
+# <number> = <digit> , { <digit> } <@ &{ StringJoin@*Flatten } ;
+# <top> = <number> ;
+```
+
+Here we generate WL code:
+
+```perl6, result=asis, output-prompt=NONE, output-lang=perl6
+parse-ebnf($ebnfCodeWL, <CODE>, target => 'WL::Code').head.tail.subst(/';' \s* /,";\n"):g;
+```
+```perl6
+pDIGIT = ParseAlternativeComposition[ParseSymbol["0"], ParseSymbol["1"], ParseSymbol["2"], ParseSymbol["3"], ParseSymbol["4"], ParseSymbol["5"], ParseSymbol["6"], ParseSymbol["7"], ParseSymbol["8"], ParseSymbol["9"]];
+pNUMBER = ParseApply[ StringJoin@*Flatten , ParseSequentialComposition[pDIGIT, ParseMany[pDIGIT]]];
+pTOP = pNUMBER;
+```
+
+### GrammarRules
+
+In this sub-section we generate code for WL's built-in 
+[`GrammarRules`](https://reference.wolfram.com/language/ref/GrammarRules.html).
+
+```perl6
+parse-ebnf($ebnfCodeWL, <CODE>, target => 'WL::Grammar').head.tail;
+```
+```
+# GrammarRules[{"pTOP" -> "pNUMBER"}, {"pDIGIT" -> "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9","pNUMBER" -> FixedOrder["pDIGIT", "pDIGIT"..] :>  StringJoin@*Flatten }]
 ```
