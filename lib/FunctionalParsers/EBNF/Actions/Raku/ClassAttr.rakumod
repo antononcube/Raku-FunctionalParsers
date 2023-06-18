@@ -9,10 +9,11 @@ class FunctionalParsers::EBNF::Actions::Raku::ClassAttr {
     has Str $.name = 'FP';
     has Str $.prefix is rw = 'p';
     has Str $.start is rw = 'top';
+    has &.modifier = {$_.uc};
 
     has &.terminal = {"symbol($_)"};
 
-    has &.non-terminal = {"self.{self.prefix}" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
+    has &.non-terminal = {"self.{self.prefix}" ~ self.modifier.($_.subst(/\s/,'').substr(1,*-1))};
 
     has &.option = {"option($_)"};
 

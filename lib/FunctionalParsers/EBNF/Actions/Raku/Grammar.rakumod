@@ -10,10 +10,12 @@ class FunctionalParsers::EBNF::Actions::Raku::Grammar {
     has Str $.name = 'FP';
     has Str $.prefix = 'p';
     has Str $.start is rw = 'top';
+    has Str $.type is rw = 'grammar';
+    has &.modifier = {$_.tc};
 
     has &.terminal = {"$_"};
 
-    has &.non-terminal = { "$_"};
+    has &.non-terminal = { "<{self.prefix}{self.modifier.($_.substr(1))}"};
 
     has &.option = {"$_?"};
 
@@ -47,7 +49,11 @@ class FunctionalParsers::EBNF::Actions::Raku::Grammar {
     };
 
     has &.grammar = {
-        my $code = "grammar {self.name} \{\n\t";
+
+        die "The attribute type is expected to be 'grammar' or 'role'."
+        unless self.type ∈ <grammar role>;
+
+        my $code = "{self.type} {self.name} \{\n\t";
         $code ~= $_.List.join("\n\t");
         $code ~= "\n}";
         $code;

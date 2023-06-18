@@ -2,10 +2,11 @@ use v6.d;
 
 class FunctionalParsers::EBNF::Actions::WL::Code {
     has Str $.prefix is rw = 'p';
+    has &.modifier = {$_.uc};
 
     has &.terminal = {"ParseSymbol[{$_.subst('\'','"'):g}]"};
 
-    has &.non-terminal = {"{self.prefix}" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
+    has &.non-terminal = {"{self.prefix}" ~ self.modifier.($_.subst(/\s/,'').substr(1,*-1))};
 
     has &.option = {"ParseOption[$_]"};
 
