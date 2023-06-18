@@ -3,9 +3,11 @@ use v6.d;
 use FunctionalParsers;
 use FunctionalParsers::EBNF::Actions::Raku::Class;
 use FunctionalParsers::EBNF::Actions::Raku::Code;
+use FunctionalParsers::EBNF::Actions::Raku::Grammar;
 use FunctionalParsers::EBNF::Actions::Raku::Pairs;
 use FunctionalParsers::EBNF::Actions::Raku::Random;
 use FunctionalParsers::EBNF::Actions::WL::Code;
+use FunctionalParsers::EBNF::Actions::WL::Grammar;
 use FunctionalParsers::EBNF::Parser::FromCharacters;
 use FunctionalParsers::EBNF::Parser::FromTokens;
 
@@ -14,91 +16,112 @@ unit module FunctionParsers::EBNF;
 #============================================================
 # Interpretation
 #============================================================
-proto sub parse-ebnf($x,|) is export {*}
+proto sub parse-ebnf(|) is export {*}
 
-multi sub parse-ebnf(Str $x, *%args) {
-    my %args2 = %args.grep({ $_.key ne 'tokenized' });
-    return parse-ebnf($x.comb.Array, :!tokenized, |%args2);
+multi sub parse-ebnf(Str $x, $properties = Whatever, *%args) {
+    my %args2 = %args.grep({ $_.key ne 'tokenized'});
+    return parse-ebnf($x.trim.comb.Array, $properties, |%args2);
 }
 
 multi sub parse-ebnf(@x,
-                     :$actions = Whatever,
+                     $properties is copy = Whatever,
+                     :$target is copy = 'Raku::Class',
                      :name(:$parser-name) is copy = Whatever,
-                     :prefix(:$parser-prefix) is copy = Whatever,
-                     :to(:$to-lang) is copy = Whatever,
-                     Bool :$eval = True,
-                     Bool :$tokenized = True
+                     :prefix(:$rule-name-prefix) is copy = Whatever,
+                     :modifier(:&rule-name-modifier) is copy = WhateverCode,
+                     Bool :$tokenized = False,
                      ) {
 
     # Process parser-prefix
-    if $parser-prefix.isa(Whatever) { $parser-prefix = 'p'; }
-    die 'The argument $parser-prefix is expected to be a string or Whatever.'
-    unless $parser-prefix ~~ Str;
+    if $rule-name-prefix.isa(Whatever) { $rule-name-prefix = 'p'; }
+    die 'The argument $rule-name-prefix is expected to be a string or Whatever.'
+    unless $rule-name-prefix ~~ Str;
 
     # Process target
-    if $to-lang.isa(Whatever) { $to-lang = 'Raku'; }
-    die 'The argument $to-lang is expected to be a Whatever or one of <Raku WL>.'
-    unless $to-lang ~~ Str && $to-lang ∈ <Raku WL>;
+    my @expectedTargets = 'Raku::' X~ <Class ClassAttr Code Grammar Pairs>;
+    @expectedTargets.append('WL::' X~ <Code Grammar>);
 
-    # Process tokenized
-    my &pEBNF = $tokenized ?? &FunctionalParsers::EBNF::Parser::FromTokens::pEBNF !! &FunctionalParsers::EBNF::Parser::FromCharacters::pEBNF;
+    $target = do given $target {
+        when Whatever { 'Raku::Class'; }
+        when 'Raku' { 'Raku::Class'; }
+        when 'WL' { 'WL::Code'; }
+        default { $target }
+    }
 
-    given $actions {
-        when Whatever {
-            if $tokenized {
-                $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Pairs.new;
-            } else {
-                $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Pairs.new;
-            }
-            return &pEBNF.(@x).List;
-        }
+    die "The argument $target is expected to be a Whatever or one of { @expectedTargets.map({ "'$_'" }).join(', ') }."
+    unless $target ~~ Str && $target ∈ @expectedTargets;
 
-        when $_ ∈ <code parser-code> {
-            if $tokenized {
-                $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = ::("FunctionalParsers::EBNF::Actions::{ $to-lang }::Code").new;
-            } else {
-                $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = ::("FunctionalParsers::EBNF::Actions::{ $to-lang }::Code").new;
-            }
-            return &pEBNF.(@x);
-        }
+    # Process name
+    if $parser-name.isa(Whatever) { $parser-name = 'FP'; }
+    die "The argument \$parser-name is expected to be a string or Whatever."
+    unless $parser-name ~~ Str;
 
-        when $_ ∈ <class parser-class> {
+    # Process modifier
+    if &rule-name-modifier.isa(WhateverCode) { &rule-name-modifier = { $_.uc }; }
+    die "The argument &rule-name-modifier is expected to be a callable or WhateverCode."
+    unless &rule-name-modifier ~~ Callable;
 
-            # React to $to-lang if needed
-            if $to-lang ne 'Raku' {
-                warn "The value of $to-lang is expected to be 'Raku' when \$actions is '$actions'.";
-            }
+    # Process property
+    my @expectedProperties = <CODE EVAL>;
+    my $properties-orig = $properties;
+    if $properties.isa(Whatever) { $properties = 'CODE'; }
+    if $properties ~~ Str && $properties.lc eq 'all' { $properties = @expectedProperties; }
+    if $properties ~~ Str { $properties = [$properties,]; }
 
-            # Process name
-            if $parser-name.isa(Whatever) { $parser-name = 'FP'; }
-            die "The argument \$parser-name is expected to be a string or Whatever."
-            unless $parser-name ~~ Str;
+    die "The second argument is expected to be Whatever, one of { @expectedProperties.map({ "'$_'" }).join(', ') }, or a list of them."
+    unless $properties ~~ Positional && ($properties (&) @expectedProperties).elems > 0;
 
-            # Make parser generator
-            if $tokenized {
-                $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions =
-                        FunctionalParsers::EBNF::Actions::Raku::Class.new(name => $parser-name, prefix => $parser-prefix);
-            } else {
-                $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions =
-                        FunctionalParsers::EBNF::Actions::Raku::Class.new(name => $parser-name, prefix => $parser-prefix);
-            }
+    note "Unknown properties { $properties (-) @expectedProperties }."
+    if ($properties (-) @expectedProperties).elems > 0;
 
-            # Generate code of parser class
-            my $res = &pEBNF.(@x).List;
+    # The context (or actions) is determined by lang and property.
+    # Note that property can be a list.
+    my $actions = Whatever;
 
-            # Evaluate the class
-            if $eval {
-                use MONKEY-SEE-NO-EVAL;
-                $res = EVAL $res.head.tail;
-            }
+    if $target ~~ Str {
 
-            # Result
-            return $res;
-        }
+        # Make parser generator
+        $actions = ::("FunctionalParsers::EBNF::Actions::{ $target }").new(
+                name => $parser-name,
+                prefix => $rule-name-prefix,
+                modifier => &rule-name-modifier
+                );
 
-        default {
-            die 'Do not know how interpret the value of the argument $actions.';
-        }
+        die "Cannot create an object of the target class" unless $actions;
+
+    } else {
+        $actions = $target
+    }
+
+    my &pEBNF;
+    if $tokenized {
+        $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = $actions;
+        &pEBNF = &FunctionalParsers::EBNF::Parser::FromTokens::pEBNF;
+    } else {
+        $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = $actions;
+        &pEBNF = &FunctionalParsers::EBNF::Parser::FromCharacters::pEBNF;
+    }
+
+    # Result struct
+    my %res;
+
+    %res<CODE> = &pEBNF.(@x).List;
+
+    if 'EVAL' ∈ $properties && (%res<CODE>:exists) && $target ∈ <Raku::Class Raku::Grammar> {
+        # Evaluate the class / grammar code
+        use MONKEY-SEE-NO-EVAL;
+        %res<EVAL> = EVAL %res<CODE>.head.tail;
+    }
+
+    if !%res {
+        die 'Do not know how to interpret with the given arguments.';
+    }
+
+    # Result
+    if $properties-orig ~~ Positional {
+        return %res.grep({ $_.key ∈ $properties }).Hash;
+    } else {
+        return %res{$properties.head}
     }
 }
 
