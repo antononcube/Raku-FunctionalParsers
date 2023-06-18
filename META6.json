@@ -1,7 +1,7 @@
 {
   "name": "FunctionalParsers",
   "description": "A system of functional parsers (combinators, transformers, generators.)",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
@@ -37,6 +37,6 @@
     "parser",
     "transformer"
   ],
-  "api": "0",
+  "api": "1",
   "source-url": "https://github.com/antononcube/Raku-FunctionalParsers.git"
 }
