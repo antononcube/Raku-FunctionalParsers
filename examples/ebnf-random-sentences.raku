@@ -41,10 +41,10 @@ say parse-ebnf($ebnfCode, <CODE>, target=>'Raku::Class').head.tail;
 
 say '=' x 120;
 
-say random-sentences($ebnfCode, 12, :!eval);
+say random-sentence($ebnfCode, 12, :!eval);
 
 say '-' x 120;
 
-.say for random-sentences($ebnfCode, 12, min-repetitions => 1, :eval);
+.say for random-sentence($ebnfCode, 12, min-repetitions => 1, :eval);
 
 
