@@ -8,6 +8,7 @@ use v6.d;
 class FunctionalParsers::EBNF::Actions::Raku::ClassAttr {
     has Str $.name = 'FP';
     has Str $.prefix is rw = 'p';
+    has Str $.start is rw = 'top';
 
     has &.terminal = {"symbol($_)"};
 
