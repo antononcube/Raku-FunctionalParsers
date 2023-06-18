@@ -1,6 +1,6 @@
 use v6.d;
 
-unit module FunctionParsers;
+unit module FunctionalParsers;
 
 #============================================================
 # Basic parsers

@@ -11,7 +11,7 @@ use FunctionalParsers::EBNF::Actions::WL::Grammar;
 use FunctionalParsers::EBNF::Parser::FromCharacters;
 use FunctionalParsers::EBNF::Parser::FromTokens;
 
-unit module FunctionParsers::EBNF;
+unit module FunctionalParsers::EBNF;
 
 #============================================================
 # Interpretation
