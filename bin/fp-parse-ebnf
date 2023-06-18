@@ -1,0 +1,40 @@
+#!/usr/bin/env perl6
+
+# Example to test with:
+#  fp-parse-ebnf <ebnf>
+
+use v6.d;
+
+use FunctionalParsers::EBNF;
+
+my %*SUB-MAIN-OPTS = :named-anywhere;
+
+
+#| Generates random sentences for a given grammar.
+multi MAIN(
+        $x,                                                           #= EBNF text.
+        :$target is copy = 'Raku::Class',                             #= Target.
+        Str :name(:$parser-name) is copy = 'MyParser',                #= Parser name.
+        Str :prefix(:$rule-name-prefix) is copy = 'p',                #= Rule names prefix.
+        Str :modifier(:$rule-name-modifier) is copy = 'WhateverCode', #= Rule names modifier.
+           ) {
+
+    my @knownModifiers = <{$_.tc} {$_.uc} {$_.lc} {$_}>;
+    my &rule-name-modifier;
+    if $rule-name-modifier eq 'WhateverCode' {
+        &rule-name-modifier = {$_.uc}
+    } elsif $rule-name-modifier.subts(/\s/,'') ∈ @knownModifiers {
+        use MONKEY-SEE-NO-EVAL;
+        &rule-name-modifier = EVAL $rule-name-modifier;
+    } else {
+        die "Only rule name modifier code is allowed to be WhateverCode or one of {@knownModifiers.map({ "'$_'"}).join(', ')}.";
+    }
+
+    my $res = parse-ebnf($x, <CODE>, :$target, :$parser-name, :$rule-name-prefix, :&rule-name-modifier);
+
+    if $res.head.head {
+        say $res;
+    } else {
+        say $res.head.tail;
+    }
+}
