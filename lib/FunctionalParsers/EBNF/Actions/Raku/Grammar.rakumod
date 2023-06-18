@@ -56,6 +56,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Grammar
         my $code = "{self.type} {self.name} \{\n\t";
         $code ~= $_.List.join("\n\t");
         $code ~= "\n}";
-        $code;
+
+        $code.subst(self.topRuleName, 'TOP');
     }
 }
