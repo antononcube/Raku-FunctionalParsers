@@ -31,13 +31,13 @@ note $ebnfCode;
 
 say '=' x 120;
 
-my $res = parse-ebnf($ebnfCode).head.tail;
+my $res = parse-ebnf($ebnfCode, target=>'Raku::Pairs').head.tail;
 
 say $res;
 
 say '=' x 120;
 
-say parse-ebnf($ebnfCode, actions => 'class', :!eval).head.tail;
+say parse-ebnf($ebnfCode, <CODE>, target=>'Raku::Class').head.tail;
 
 say '=' x 120;
 
@@ -45,6 +45,6 @@ say random-sentences($ebnfCode, 12, :!eval);
 
 say '-' x 120;
 
-.say for random-sentences($ebnfCode, 12, :eval);
+.say for random-sentences($ebnfCode, 12, min-repetitions => 1, :eval);
 
 
