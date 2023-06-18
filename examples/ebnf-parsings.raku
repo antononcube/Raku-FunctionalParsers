@@ -63,7 +63,7 @@ my $ebnfCode10 = q:to/END/;
 <top3> = 'e' &> 'f' &> 'g' &> 'h' ;
 END
 
-my $ebnfCode = $ebnfCode8;
+my $ebnfCode = $ebnfCode7;
 my @tokens = $ebnfCode.comb;
 
 note $ebnfCode;
@@ -71,7 +71,7 @@ note $ebnfCode;
 #========================================================================================================================
 say '=' x 120;
 
-my $res = parse-ebnf($ebnfCode, <CODE EVAL>, target => 'Raku::Class');
+my $res = parse-ebnf($ebnfCode, <CODE EVAL>, target => 'Raku::Grammar');
 
 .say for |$res;
 
@@ -107,3 +107,9 @@ my $p = $classCode.new;
 say 'Parsing...';
 say $p.parser.([|'127882339'.comb, |<and some>] );
 say $p.parser.('abcd'.comb);
+
+#========================================================================================================================
+say '=' x 120;
+my $ebnfCodeWL = $ebnfCode.subst('&{ $_.flat.join }');
+
+say parse-ebnf($ebnfCodeWL, <CODE>, target => 'WL::Grammar').head.tail;
