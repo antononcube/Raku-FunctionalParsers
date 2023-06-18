@@ -4,7 +4,7 @@ use v6.d;
 use lib '.';
 use lib './lib';
 
-use FunctionalParsers :ALL;
+use FunctionalParsers::EBNF;
 
 my $ebnfCode0 = "
 <top> = 'a' | 'b' ;
@@ -50,33 +50,34 @@ my $ebnfCode7 = q:to/END/;
 <top> = <number> ;
 END
 
-my @tokens = $ebnfCode7.split(/ \s /, :skip-empty);
+my $ebnfCode8 = q:to/END/;
+<top> = '1' , '2' <@ &{sqrt($_.join.Numeric)} ;
+END
 
-say @tokens.raku;
+my $ebnfCode9 = q:to/END/;
+<top> = '7' <@ sqrt | '8' <@ {$_**2} ;
+END
 
-#say $ebnfCode5.split(/ \s | <wb> /, :skip-empty);
+my $ebnfCode10 = q:to/END/;
+<top> = 'a' <& 'b' <& 'c' <& 'd' | <top3> ;
+<top3> = 'e' &> 'f' &> 'g' &> 'h' ;
+END
+
+my $ebnfCode = $ebnfCode8;
+my @tokens = $ebnfCode.comb;
+
+note $ebnfCode;
 
 say '=' x 120;
 
-say parse-ebnf(@tokens);
+my $res = parse-ebnf($ebnfCode, <CODE EVAL>, target => 'Raku::Class');
+
+.say for |$res;
+
+say $res<EVAL>.^method_table;
 
 say '=' x 120;
 
-my @parserCode = parse-ebnf(@tokens, actions => 'generators').head.tail;
+$res = parse-ebnf($ebnfCode, <CODE>, target => 'Raku::Code');
 
-note @parserCode.join("\n");
-
-use MONKEY-SEE-NO-EVAL;
-
-my &pTOP;
-EVAL @parserCode.subst("my &pTOP", "&pTOP");
-
-say '1'.words.List.raku;
-
-#my &pDIGIT = alternatives(symbol('0'), symbol('1'), symbol('2'), symbol('3'), symbol('4'), symbol('5'), symbol('6'), symbol('7'), symbol('8'), symbol('9'));
-#my &pNUMBER = apply({$_.join}, greedy(&pDIGIT));
-#my &pTOP = &pNUMBER;
-
-say &pTOP('14324'.comb.List);
-
-
+say $res.raku;
