@@ -6,12 +6,12 @@ use v6.d;
 # But it seems simpler to just put all definitions here.
 # (Since they are concise.)
 
-class FunctionalParsers::EBNF::Actions::Raku::Grammar {
-    has Str $.name = 'FP';
-    has Str $.prefix = 'p';
-    has Str $.start is rw = 'top';
+use FunctionalParsers::EBNF::Actions::Common;
+
+class FunctionalParsers::EBNF::Actions::Raku::Grammar
+        is FunctionalParsers::EBNF::Actions::Common {
+
     has Str $.type is rw = 'grammar';
-    has &.modifier = {$_.tc};
 
     has &.terminal = {"$_"};
 

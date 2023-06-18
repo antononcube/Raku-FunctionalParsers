@@ -6,11 +6,10 @@ use v6.d;
 # But it seems simpler to just put all definitions here.
 # (Since they are concise.)
 
-class FunctionalParsers::EBNF::Actions::Raku::Class {
-    has Str $.name = 'FP';
-    has Str $.prefix = 'p';
-    has Str $.start = 'top';
-    has &.modifier = {$_.uc};
+use FunctionalParsers::EBNF::Actions::Common;
+
+class FunctionalParsers::EBNF::Actions::Raku::Class
+        is FunctionalParsers::EBNF::Actions::Common {
 
     has &.terminal = {"symbol($_)"};
 
@@ -50,7 +49,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Class {
     has &.grammar = {
         my $code = "class {self.name} \{\n\t";
         $code ~= $_.List.join("\n\t");
-        $code ~= "\n\thas \&.parser is rw = -> @x \{ self.pTOP(@x) \};";
+        $code ~= "\n\thas \&.parser is rw = -> @x \{ self.{ self.topRuleName}(@x) \};";
         $code ~= "\n}";
         $code;
     }
