@@ -1,9 +1,9 @@
 use v6.d;
 
-class FunctionalParsers::EBNF::Actions::WL::Code {
-    has Str $.prefix is rw = 'p';
-    has &.modifier = {$_.uc};
+use FunctionalParsers::EBNF::Actions::Common;
 
+class FunctionalParsers::EBNF::Actions::WL::Code
+        does FunctionalParsers::EBNF::Actions::Common {
     has &.terminal = {"ParseSymbol[{$_.subst('\'','"'):g}]"};
 
     has &.non-terminal = {"{self.prefix}" ~ self.modifier.($_.subst(/\s/,'').substr(1,*-1))};
@@ -12,7 +12,7 @@ class FunctionalParsers::EBNF::Actions::WL::Code {
 
     has &.repetition = {"ParseMany[$_]"};
 
-    has &.apply = {"ParseApply[{$_[1]}, {$_[0]}]"};
+    has &.apply = {"ParseApply[{$_[1].subst(/^ '{'/, '').subst(/'}' $/, '')}, {$_[0]}]"};
 
     has &.sequence = { $_ ~~ Positional && $_.elems > 1 ?? "ParseSequentialComposition[{$_.join(', ')}]" !! $_ };
 
