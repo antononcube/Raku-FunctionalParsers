@@ -68,6 +68,7 @@ my @tokens = $ebnfCode.comb;
 
 note $ebnfCode;
 
+#========================================================================================================================
 say '=' x 120;
 
 my $res = parse-ebnf($ebnfCode, <CODE EVAL>, target => 'Raku::Class');
@@ -76,8 +77,33 @@ my $res = parse-ebnf($ebnfCode, <CODE EVAL>, target => 'Raku::Class');
 
 say $res<EVAL>.^method_table;
 
+#========================================================================================================================
 say '=' x 120;
 
 $res = parse-ebnf($ebnfCode, <CODE>, target => 'Raku::Code');
 
 say $res.raku;
+
+#========================================================================================================================
+say '=' x 120;
+
+note parse-ebnf(@tokens, <CODE>, target => 'Raku::Class', name => 'MFP', prefix => 'p').head.tail;
+
+my $classCode = parse-ebnf(@tokens, <EVAL>, target => 'Raku::Class', name => 'MFP', prefix => 'p');
+
+say '-' x 120;
+say '$classCode.raku              : ', $classCode.raku;
+say '$classCode.WHAT              : ', $classCode.WHAT;
+say '$classCode.^name             : ', $classCode.^name;
+say '$classCode.new.^method_table : ', $classCode.new.^method_table;
+
+say '-' x 120;
+my $p = $classCode.new;
+
+
+#say $p.pTOP.([|'882339'.comb, |<and some>] );
+#say $p.pTOP([|'7882339'.comb, |<and some>] );
+
+say 'Parsing...';
+say $p.parser.([|'127882339'.comb, |<and some>] );
+say $p.parser.('abcd'.comb);
