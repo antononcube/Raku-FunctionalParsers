@@ -129,9 +129,9 @@ multi sub parse-ebnf(@x,
 #============================================================
 # Random sentences
 #============================================================
-proto random-sentences($ebnf, |) is export {*}
+proto random-sentence($ebnf, |) is export {*}
 
-multi sub random-sentences($ebnf,
+multi sub random-sentence($ebnf,
                            UInt $n = 1,
                            UInt :$max-repetitions = 4,
                            UInt :$min-repetitions = 0,
