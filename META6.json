@@ -15,6 +15,7 @@
     "FunctionalParsers::EBNF::Actions::Raku::Class": "lib/FunctionalParsers/EBNF/Actions/Raku/Class.rakumod",
     "FunctionalParsers::EBNF::Actions::Raku::ClassAttr": "lib/FunctionalParsers/EBNF/Actions/Raku/ClassAttr.rakumod",
     "FunctionalParsers::EBNF::Actions::Raku::Code": "lib/FunctionalParsers/EBNF/Actions/Raku/Code.rakumod",
+    "FunctionalParsers::EBNF::Actions::Raku::Grammar": "lib/FunctionalParsers/EBNF/Actions/Raku/Grammar.rakumod",
     "FunctionalParsers::EBNF::Actions::Raku::Pairs": "lib/FunctionalParsers/EBNF/Actions/Raku/Pairs.rakumod",
     "FunctionalParsers::EBNF::Actions::Raku::Random": "lib/FunctionalParsers/EBNF/Actions/Raku/Random.rakumod",
     "FunctionalParsers::EBNF::Actions::WL::Code": "lib/FunctionalParsers/EBNF/Actions/WL/Code.rakumod",
