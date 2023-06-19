@@ -338,26 +338,30 @@ it seems more convenient to have all class method- and attribute definitions on 
 ```mermaid
 graph TD
     FPs[[EBNF<br/>Functional Parsers]]
-    RakuAST[RakuAST]
-    RakuClass[RakuClass]
-    RakuCode[RakuCode]
-    RakuGrammar[RakuGrammar]
-    WLCode[WLCode]
-    WLGrammar[WLGrammar]
-    Input[/EBNF code/]
+    RakuAST[Raku::AST]
+    RakuClass[Raku::Class]
+    RakuCode[Raku::Code]
+    RakuGrammar[Raku::Grammar]
+    WLCode[WL::Code]
+    WLGrammar[WL::Grammar]
+    JavaCode[Java::Code]
+    JavaANTLR[Java::ANTLR]
+    Input[/- EBNF code<br/>- Properties/]
     PickTarget[Assign context]
     Parse[Parse]
     QEVAL{Evaluate?}
+    EVAL[[EVAL]] 
     Code>Code]
     Context[Context object]
     Result{{Result}}
     Input --> PickTarget
-    PickTarget -..- Raku
     PickTarget -.- WL
+    PickTarget -.- Java
+    PickTarget -..- Raku
     PickTarget -.-> Context
     PickTarget --> Parse
     Parse -.- FPs
-    Context -.- FPs
+    Context -.-> FPs
     Parse --> QEVAL
     Parse -.-> Code
     QEVAL --> |yes|EVAL
@@ -373,6 +377,10 @@ graph TD
     subgraph WL
         WLCode
         WLGrammar
+    end
+    subgraph Java
+        JavaCode
+        JavaANTLR
     end
 ```
 
