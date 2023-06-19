@@ -31,7 +31,7 @@ note $ebnfCode;
 
 say '=' x 120;
 
-my $res = parse-ebnf($ebnfCode, target=>'Raku::Pairs').head.tail;
+my $res = parse-ebnf($ebnfCode, target=>'Raku::AST').head.tail;
 
 say $res;
 

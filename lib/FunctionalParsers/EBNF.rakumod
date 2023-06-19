@@ -4,7 +4,7 @@ use FunctionalParsers;
 use FunctionalParsers::EBNF::Actions::Raku::Class;
 use FunctionalParsers::EBNF::Actions::Raku::Code;
 use FunctionalParsers::EBNF::Actions::Raku::Grammar;
-use FunctionalParsers::EBNF::Actions::Raku::Pairs;
+use FunctionalParsers::EBNF::Actions::Raku::AST;
 use FunctionalParsers::EBNF::Actions::Raku::Random;
 use FunctionalParsers::EBNF::Actions::WL::Code;
 use FunctionalParsers::EBNF::Actions::WL::Grammar;
@@ -38,7 +38,7 @@ multi sub parse-ebnf(@x,
     unless $rule-name-prefix ~~ Str;
 
     # Process target
-    my @expectedTargets = 'Raku::' X~ <Class ClassAttr Code Grammar Pairs>;
+    my @expectedTargets = 'Raku::' X~ <AST Class ClassAttr Code Grammar>;
     @expectedTargets.append('WL::' X~ <Code Grammar>);
 
     $target = do given $target {

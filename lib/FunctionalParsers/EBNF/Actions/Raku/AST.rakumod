@@ -2,7 +2,7 @@ use v6.d;
 
 use FunctionalParsers::EBNF::Actions::Common;
 
-class FunctionalParsers::EBNF::Actions::Raku::Pairs
+class FunctionalParsers::EBNF::Actions::Raku::AST
         does FunctionalParsers::EBNF::Actions::Common {
 
     has &.terminal = {Pair.new('EBNFTerminal', $_)};

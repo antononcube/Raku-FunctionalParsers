@@ -1,7 +1,7 @@
 use v6.d;
 
 use FunctionalParsers;
-use FunctionalParsers::EBNF::Actions::Raku::Pairs;
+use FunctionalParsers::EBNF::Actions::Raku::AST;
 
 unit module FunctionalParsers::EBNF::Parser::FromTokens;
 
@@ -9,7 +9,7 @@ unit module FunctionalParsers::EBNF::Parser::FromTokens;
 # Self application
 #============================================================
 
-our $ebnfActions = FunctionalParsers::EBNF::Actions::Raku::Pairs.new;
+our $ebnfActions = FunctionalParsers::EBNF::Actions::Raku::AST.new;
 
 sub is-quoted($x) { $x.match(/ ^ [ \' .*? \' |  \" .*? \" ] $ /).Bool };
 
