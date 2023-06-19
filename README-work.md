@@ -22,7 +22,7 @@ The reasons for including the EBNF functionalities are:
 #### Anton Antonov
 
 - FPs packages implementations in Lua, Mathematica, and R. 
-  See [these blog posts](https://mathematicaforprediction.wordpress.com/?s=functional+parsers).
+  See [these blog posts](https://mathematicaforprediction.wordpress.com/?s=functional+parsers) and [AAp1, AAp2].
 
 **Remark:** In this document Mathematica and Wolfram Language (WL) are used as synonyms.
 
@@ -253,14 +253,14 @@ fp-parse-ebnf --help
 
 ### Infix operators
 
-The infix operators have to be reviewed and probably better sets of symbols to be chosen.
-The challenges is to select operators that "respected" by the typical Raku IDEs. 
+The infix operators have to be reviewed and probably better sets of symbols would be chosen.
+The challenge is to select operators that are "respected" by the typical Raku IDEs. 
 (I only experimented with Emacs and Comma IDE.)
 
 ### EBNF parser
 
-All EBNF parser functions in `FunctionalParsers::EBNF` have apply-transformers that use the attributes of dedicated
-object:
+All EBNF parser functions in `FunctionalParsers::EBNF` have apply-transformers that use the attributes of
+a dedicated object:
 
 ```
 unit module FunctionalParsers::EBNF;
@@ -273,10 +273,9 @@ By assigning instances of different classes to `$ebnfActions` we get different p
 
 ### Not having abstract class
 
-From the Raku classes can be easily seen to inherit from a common abstract class.
-But since the EBNF parsing methods (or attributes that callables) are approximately
-a dozen one-liners, it seems more convenient to have all class method and attribute 
-definitions on "one screen."
+Looking at the Raku EBNF interpreter classes it can be easily seen that each can inherit from a common abstract class. 
+But since the EBNF parsing methods (or attributes that callables) are approximately a dozen one-liners, 
+it seems more convenient to have all class method- and attribute definitions on “one screen.”
 
 ### Flowchart
 
