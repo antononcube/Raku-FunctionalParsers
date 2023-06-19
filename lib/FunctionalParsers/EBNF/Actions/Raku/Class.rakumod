@@ -49,7 +49,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Class
     has &.grammar = {
         my $code = "class {self.name} \{\n\t";
         $code ~= $_.List.join("\n\t");
-        $code ~= "\n\thas \&.parser is rw = -> @x \{ self.{ self.topRuleName}(@x) \};";
+        $code ~= "\n\thas \&.parser is rw = -> @x \{ self.{ self.top-rule-name}(@x) \};";
         $code ~= "\n}";
         $code;
     }

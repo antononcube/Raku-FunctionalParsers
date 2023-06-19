@@ -4,6 +4,9 @@ use FunctionalParsers::EBNF::Actions::Common;
 
 class FunctionalParsers::EBNF::Actions::WL::Code
         does FunctionalParsers::EBNF::Actions::Common {
+
+    method setup-code { 'PacletInstall["AntonAntonov/FunctionalParsers"]; Needs["AntonAntonov`FunctionalParsers`"];' }
+
     has &.terminal = {"ParseSymbol[{$_.subst('\'','"'):g}]"};
 
     has &.non-terminal = {"{self.prefix}" ~ self.modifier.($_.subst(/\s/,'').substr(1,*-1))};

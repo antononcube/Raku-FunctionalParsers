@@ -45,7 +45,7 @@ class FunctionalParsers::EBNF::Actions::Raku::ClassAttr
     has &.grammar = {
         my $code = "class {self.name} \{\n\t";
         $code ~= $_.join("\n\t");
-        $code ~= "\n\tmethod parse(@x) \{ self.{self.topRuleName}.(@x) \}";
+        $code ~= "\n\tmethod parse(@x) \{ self.{self.top-rule-name}.(@x) \}";
         $code ~= "\n}";
         $code;
     }
