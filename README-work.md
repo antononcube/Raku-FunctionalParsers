@@ -289,15 +289,15 @@ graph TD
     RakuGrammar[RakuGrammar]
     WLCode[WLCode]
     WLGrammar[WLGrammar]
-    EBNFcode[/EBNF code/]
+    Input[/EBNF code/]
     PickTarget[Assign context]
     Parse[Parse]
-    QEVAL{Evaluate ?}
+    QEVAL{Evaluate?}
     Code>Code]
     Context[Context object]
     Result{{Result}}
-    EBNFcode --> PickTarget
-    PickTarget -.- Raku
+    Input --> PickTarget
+    PickTarget -..- Raku
     PickTarget -.- WL
     PickTarget -.-> Context
     PickTarget --> Parse
@@ -318,7 +318,7 @@ graph TD
     subgraph WL
         WLCode
         WLGrammar
-    end  
+    end
 ```
 
 ------
