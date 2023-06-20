@@ -1,6 +1,7 @@
 use v6.d;
 
 use FunctionalParsers;
+use FunctionalParsers::EBNF::Actions::EBNF::Standard;
 use FunctionalParsers::EBNF::Actions::Java::Code;
 use FunctionalParsers::EBNF::Actions::Raku::Class;
 use FunctionalParsers::EBNF::Actions::Raku::Code;
@@ -42,12 +43,14 @@ multi sub parse-ebnf(@x,
     my @expectedTargets = 'Raku::' X~ <AST Class ClassAttr Code Grammar>;
     @expectedTargets.append('WL::' X~ <Code Grammar>);
     @expectedTargets.append('Java::' X~ <Code>);
+    @expectedTargets.append('EBNF::' X~ <Standard>);
 
     $target = do given $target {
         when Whatever { 'Raku::Class'; }
         when 'Java' { 'Java::Code'; }
         when 'Raku' { 'Raku::Class'; }
         when 'WL' { 'WL::Code'; }
+        when 'EBNF' { 'EBNF::Standard'; }
         default { $target }
     }
 
