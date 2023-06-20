@@ -110,6 +110,18 @@ say $p.parser.('abcd'.comb);
 
 #========================================================================================================================
 say '=' x 120;
+say 'WL';
+say '-' x 120;
+
 my $ebnfCodeWL = $ebnfCode.subst('&{ $_.flat.join }');
 
 say parse-ebnf($ebnfCodeWL, <CODE>, target => 'WL::Grammar').head.tail;
+
+#========================================================================================================================
+say '=' x 120;
+say 'Java';
+say '-' x 120;
+
+my $ebnfCodeJava = $ebnfCode.subst('&{ $_.flat.join }');
+
+.say for parse-ebnf($ebnfCodeJava, <CODE>, target => 'Java::Code').head.tail;
