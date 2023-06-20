@@ -1,8 +1,10 @@
 use v6.d;
 
-class FunctionalParsers::EBNF::Actions::Raku::Random {
-    has Str $.name = 'Random';
-    has Str $.prefix = 'p';
+use FunctionalParsers::EBNF::Actions::Common;
+
+class FunctionalParsers::EBNF::Actions::Raku::Random
+        is FunctionalParsers::EBNF::Actions::Common {
+
     has UInt $.max-repetitions = 4;
     has UInt $.min-repetitions = 0;
 
@@ -41,7 +43,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random {
     has &.grammar = {
         my $code = "class {self.name} \{\n\t";
         $code ~= $_.List.join("\n\t");
-        $code ~= "\n\thas \&.parser is rw = \{ self.pTOP \};";
+        $code ~= "\n\thas \&.parser is rw = \{ self.{self.top-rule-name} \};";
         $code ~= "\n}";
         $code;
     }
