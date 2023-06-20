@@ -7,7 +7,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Code
 
     has &.terminal = {"symbol($_)"};
 
-    has &.non-terminal = {"&{self.prefix}" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
+    has &.non-terminal = {"&{self.prefix}" ~ $_.uc.subst(/\s/,'').subst(/^ [\' | \"] /, '').subst(/ [\' | \"] $ /, '')};
 
     has &.option = {"option($_)"};
 
