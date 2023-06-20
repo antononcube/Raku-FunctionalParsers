@@ -7,7 +7,7 @@ class FunctionalParsers::EBNF::Actions::EBNF::Standard
 
     has &.terminal = {$_};
 
-    has &.non-terminal = {'<' ~ $_.uc.subst(/\s/,'').subst(/^ [\' | \"] /, '').subst(/ [\' | \"] $ /, '') ~ '>'};
+    has &.non-terminal = {'<' ~ $_.uc.subst(/\s/,'').subst(/^ '<' /, '').subst(/ '>' $ /, '') ~ '>'};
 
     has &.option = {"[ $_ ]"};
 
@@ -33,5 +33,5 @@ class FunctionalParsers::EBNF::Actions::EBNF::Standard
 
     has &.rule = { "{self.non-terminal.($_[0])} = {$_[1]} ;" };
 
-    has &.grammar = {$_}
+    has &.grammar = {$_.join("\n")}
 }
