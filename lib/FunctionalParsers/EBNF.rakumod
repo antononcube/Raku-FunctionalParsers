@@ -137,15 +137,33 @@ multi sub parse-ebnf(@x,
 #============================================================
 proto random-sentence($ebnf, |) is export {*}
 
+multi sub random-sentence(@ebnf, *%args) {
+    return random-sentence(@ebnf.join("\n"), |%args);
+}
+
 multi sub random-sentence($ebnf,
                            UInt $n = 1,
                            UInt :$max-repetitions = 4,
                            UInt :$min-repetitions = 0,
                            Str :$sep = ' ',
+                           :$rule is copy = Whatever,
                            Bool :$eval = True,
                            ) {
+    # Automatic top rule
+    if $rule.isa(Whatever) {
+        $rule = 'top';
+        if !$ebnf.contains('<top>', :i) {
+            if $ebnf ~~ / '<' (<alnum>+) '>'/ {
+                $rule = $0.Str;
+            }
+        }
+    }
+
     $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions =
             FunctionalParsers::EBNF::Actions::Raku::Random.new(
+                    :name('Random'),
+                    :prefix('p'),
+                    :start($rule),
                     :$max-repetitions,
                     :$min-repetitions
                     );
@@ -154,6 +172,8 @@ multi sub random-sentence($ebnf,
 
     # Generate code of parser class
     my $res = &pEBNF.($ebnf.comb).List;
+
+    note $res;
 
     if $eval {
         # Evaluate the class
