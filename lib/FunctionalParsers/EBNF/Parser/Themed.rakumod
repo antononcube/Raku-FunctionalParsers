@@ -22,7 +22,7 @@ class FunctionalParsers::EBNF::Parser::Themed
                 # Sequence separation is whitespace
                 self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
 
-                # Assignment to LHS token
+                # Assignment to LHS non-terminal
                 self.pAssign = alternatives(token('->'), token('<-'), token('::='), symbol('='));
 
                 # Rules are separate with new-line
@@ -37,7 +37,7 @@ class FunctionalParsers::EBNF::Parser::Themed
                 # Sequence separation is whitespace
                 self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
 
-                # Assignment to LHS token
+                # Assignment to LHS non-terminal
                 self.pAssign = token('->');
 
                 # Rules are separate with new-line
@@ -49,11 +49,15 @@ class FunctionalParsers::EBNF::Parser::Themed
                 # Sequence separation is whitespace
                 self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
 
-                # Assignment to LHS token
+                # Assignment to LHS non-terminal
                 self.pAssign = token(':');
 
                 # Rules are separate with new-line
                 self.pSepRule = self.pSepRuleNewLine;
+            }
+
+            when $_ ~~ Str && $_.lc ∈ <standard default> {
+                # Do nothing
             }
 
             default {
