@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|4525542428488) ... }
+# -> @x { #`(Block|5352927088600) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|4525542624216) ... }
+# -> @x { #`(Block|5352927264712) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode, 12);
 ```
 ```
-# We 🤮 Perl
-# I love R
-# We ♥️ ♥️ ♥️ ♥️ WL
-# We ♥️ Perl
+# I ♥️ ♥️ ♥️ R
 # We love Julia
-# I hate R
-# We hate Julia
+# We hate Python
+# I  Julia
+# I hate Python
 # We 🤮 Julia
+# I hate Perl
 # We love Python
-# We ♥️ Perl
-# I 🤮 Perl
-# I 🤮 Perl
+# We ♥️ ♥️ R
+# We love WL
+# We love Julia
+# I hate Julia
 ```
 
 ------
@@ -417,6 +417,9 @@ graph TD
   - [ ] TODO Zero-width assertions implementation
     - [ ] TODO Lookahead
     - [ ] TODO Lookbehind
+- [ ] TODO Random sentence generation
+  - [X] DONE Basic class code
+  - [ ] TODO Preventing infinite recursion
 - [ ] TODO Documentation
     - [X] DONE README
     - [ ] DONE Parser code generation

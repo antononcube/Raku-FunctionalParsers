@@ -361,6 +361,9 @@ graph TD
   - [ ] TODO Zero-width assertions implementation
     - [ ] TODO Lookahead
     - [ ] TODO Lookbehind
+- [ ] TODO Random sentence generation
+  - [X] DONE Basic class code
+  - [ ] TODO Preventing infinite recursion
 - [ ] TODO Documentation
     - [X] DONE README
     - [ ] DONE Parser code generation
