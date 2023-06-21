@@ -173,8 +173,6 @@ multi sub random-sentence($ebnf,
     # Generate code of parser class
     my $res = &pEBNF.($ebnf.comb).List;
 
-    note $res;
-
     if $eval {
         # Evaluate the class
         if $eval {
