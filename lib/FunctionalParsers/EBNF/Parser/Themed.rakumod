@@ -3,7 +3,7 @@ use v6.d;
 use FunctionalParsers :shortcuts;
 use FunctionalParsers::EBNF::Parser::Standard;
 
-class FunctionalParsers::EBNF::Parser::SimplerStyle
+class FunctionalParsers::EBNF::Parser::Themed
         is FunctionalParsers::EBNF::Parser::Standard {
 
     submethod TWEAK {
