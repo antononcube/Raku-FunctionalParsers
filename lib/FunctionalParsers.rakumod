@@ -273,7 +273,14 @@ sub compulsion(&p) is export(:MANDATORY, :ALL) {
 #============================================================
 
 constant &sp is export(:shortcuts, :ALL) = &drop-spaces;
+
 constant &seq is export(:shortcuts, :ALL) = &sequence;
 constant &seql is export(:shortcuts, :ALL) = &sequence-pick-left;
 constant &seqr is export(:shortcuts, :ALL) = &sequence-pick-right;
+
+constant &and is export(:shortcuts, :ALL) = &sequence;
+constant &andl is export(:shortcuts, :ALL) = &sequence-pick-left;
+constant &andr is export(:shortcuts, :ALL) = &sequence-pick-right;
+
 constant &alt is export(:shortcuts, :ALL) = &alternatives;
+constant &or is export(:shortcuts, :ALL) = &alternatives;
