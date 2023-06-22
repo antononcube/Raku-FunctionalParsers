@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|4718983727672) ... }
+# -> @x { #`(Block|2971972141088) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|4718983927000) ... }
+# -> @x { #`(Block|2971972359888) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode, 12);
 ```
 ```
-# I 🤮 R
-# We love R
-# I love R
-# I ♥️ ♥️ Python
+# We hate WL
+# I love Perl
+# We 🤮 Python
+# I 🤮 Julia
 # We hate Python
-# We love Julia
-# I love R
-# I 🤮 R
-# We love Python
-# We love Julia
-# We love WL
-# I ♥️ ♥️ ♥️ Perl
+# I 🤮 Perl
+# We 🤮 Python
+# I hate Python
+# We hate Perl
+# I 🤮 WL
+# I love Julia
+# I love Python
 ```
 
 ------
@@ -294,13 +294,14 @@ fp-parse-ebnf --help
 ```
 ```
 # Usage:
-#   fp-parse-ebnf <x> [--target[=Any]] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] -- Generates random sentences for a given grammar.
+#   fp-parse-ebnf <ebnf> [--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates random sentences for a given grammar.
 #   
-#     <x>                                      EBNF text.
-#     --target[=Any]                           Target. [default: 'Raku::Class']
+#     <ebnf>                                   EBNF text.
+#     --target=<Str>                           Target. [default: 'Raku::Class']
 #     --name|--parser-name=<Str>               Parser name. [default: 'MyParser']
 #     --prefix|--rule-name-prefix=<Str>        Rule names prefix. [default: 'p']
 #     --modifier|--rule-name-modifier=<Str>    Rule names modifier. [default: 'WhateverCode']
+#     -s|--style=<Str>                         EBNF style, one of 'Standard', 'Simple', 'G4', or 'Whatever'. [default: 'Whatever']
 ```
 
 ------
