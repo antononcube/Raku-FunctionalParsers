@@ -158,7 +158,7 @@ multi sub random-sentence($ebnf,
         }
     }
 
-    $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions =
+    my $ebnfActions =
             FunctionalParsers::EBNF::Actions::Raku::Random.new(
                     :name('Random'),
                     :prefix('p'),
@@ -167,7 +167,8 @@ multi sub random-sentence($ebnf,
                     :$min-repetitions
                     );
 
-    my &pEBNF = &FunctionalParsers::EBNF::Parser::FromCharacters::pEBNF;
+    my $parsObj = FunctionalParsers::EBNF::Parser::Standard.new(:$ebnfActions);
+    my &pEBNF = $parsObj.pEBNF;
 
     # Generate code of parser class
     my $res = &pEBNF.($ebnf.comb).List;
