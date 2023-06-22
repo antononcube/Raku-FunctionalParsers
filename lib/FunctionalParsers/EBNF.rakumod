@@ -11,7 +11,7 @@ use FunctionalParsers::EBNF::Actions::Raku::Random;
 use FunctionalParsers::EBNF::Actions::WL::Code;
 use FunctionalParsers::EBNF::Actions::WL::Grammar;
 use FunctionalParsers::EBNF::Parser::FromTokens;
-use FunctionalParsers::EBNF::Parser::Standard;
+use FunctionalParsers::EBNF::Parser::Styled;
 
 unit module FunctionalParsers::EBNF;
 
@@ -22,7 +22,7 @@ proto sub parse-ebnf(|) is export {*}
 
 multi sub parse-ebnf(Str $x, $properties = Whatever, *%args) {
     my %args2 = %args.grep({ $_.key ne 'tokenized'});
-    return parse-ebnf($x.trim.comb.Array, $properties, |%args2);
+    return parse-ebnf($x.comb.Array, $properties, |%args2);
 }
 
 multi sub parse-ebnf(@x,
@@ -31,6 +31,7 @@ multi sub parse-ebnf(@x,
                      :name(:$parser-name) is copy = Whatever,
                      :prefix(:$rule-name-prefix) is copy = Whatever,
                      :modifier(:&rule-name-modifier) is copy = WhateverCode,
+                     :$style is copy = 'Standard',
                      Bool :$tokenized = False,
                      ) {
 
@@ -101,9 +102,9 @@ multi sub parse-ebnf(@x,
 
     my $parsObj;
     if $tokenized {
-        $parsObj = FunctionalParsers::EBNF::Parser::FromTokens.new(ebnfActions => $actions);
+        $parsObj = FunctionalParsers::EBNF::Parser::FromTokens.new(ebnfActions => $actions, :$style);
     } else {
-        $parsObj = FunctionalParsers::EBNF::Parser::Standard.new(ebnfActions => $actions);
+        $parsObj = FunctionalParsers::EBNF::Parser::Styled.new(ebnfActions => $actions, :$style);
     }
     my &pEBNF = $parsObj.pEBNF;
 
