@@ -1,106 +1,39 @@
 use v6.d;
 
-use FunctionalParsers;
-use FunctionalParsers::EBNF::Actions::Raku::AST;
+use FunctionalParsers :shortcuts;
+use FunctionalParsers::EBNF::Parser::Standard;
 
-unit module FunctionalParsers::EBNF::Parser::FromTokens;
+class FunctionalParsers::EBNF::Parser::FromTokens 
+        is FunctionalParsers::EBNF::Parser::Standard {
+    
+    sub is-quoted($x) { $x.match(/ ^ [ \' .*? \' |  \" .*? \" ] $ /).Bool };
 
-#============================================================
-# Self application
-#============================================================
+    sub is-ebnf-symbol($x) { $x ∈ ['|', '&', '&>', '<&', ';', ','] };
 
-our $ebnfActions = FunctionalParsers::EBNF::Actions::Raku::AST.new;
+    sub is-non-terminal($x) { $x.match(/ ^ '<' <-[<>]>+ '>' /).Bool }
 
-sub is-quoted($x) { $x.match(/ ^ [ \' .*? \' |  \" .*? \" ] $ /).Bool };
+    submethod TWEAK {
+        self.pGTerminal = -> @x {
+            satisfy({ ($_ ~~ Str) && is-quoted($_) })(@x)
+        };
 
-sub is-ebnf-symbol($x) { $x ∈ ['|', '&', '&>', '<&', ';', ','] };
+        self.pGNonTerminal = -> @x {
+            satisfy({
+                my $res = ($_ ~~ Str) && is-non-terminal($_) && !is-ebnf-symbol($_);
+                $res
+            })(@x)
+        };
 
-sub is-non-terminal($x) { $x.match(/ ^ '<' <-[<>]>+ '>' /).Bool }
+        self.seqLeftSep = apply({ self.seqLeftSepForm }, sp(symbol('<&')));
+        self.seqRightSep = apply({ self.seqRightSepForm }, sp(symbol('&>')));
 
-sub pGTerminal(@x) {
-    satisfy({ ($_ ~~ Str) && is-quoted($_) })(@x)
+        self.pGFunc = -> @x {
+            #alternatives(satisfy({$_ ~~ Str}), curly-bracketed(many(satisfy({$_ ~~ Str}))))(@x)
+            satisfy({ $_ ~~ Str })(@x)
+        };
+
+        self.pGApply = -> @x {
+            apply(self.ebnfActions.apply, sequence(self.pGTerm, sequence-pick-right(symbol('<@'), self.pGFunc)))(@x)
+        };
+    }
 }
-
-sub pGNonTerminal(@x) {
-    satisfy({
-        my $res = ($_ ~~ Str) && is-non-terminal($_) && !is-ebnf-symbol($_);
-        $res})(@x)
-}
-
-sub pGOption(@x) {
-    apply($ebnfActions.option, bracketed(&pGExpr))(@x)
-}
-
-sub pGRepetition(@x) {
-    apply($ebnfActions.repetition, curly-bracketed(&pGExpr))(@x)
-}
-
-sub pGParens(@x) {
-    parenthesized(&pGExpr)(@x)
-}
-
-sub pGNode(@x) { alternatives(
-        apply($ebnfActions.terminal, &pGTerminal),
-        apply($ebnfActions.non-terminal, &pGNonTerminal),
-        &pGParens,
-        &pGRepetition,
-        &pGOption)(@x)
-}
-
-my &seqSepForm = {Pair.new($^a,$^b)};
-my &seqSep = alternatives(symbol(','), symbol('<&'), symbol('&>'));
-
-sub pGTermSeq(@x) {
-    apply($ebnfActions.sequence, list-of(&pGNode, symbol(',')))(@x)
-}
-
-# Flatting is actually not desired
-#my &seqLeftSepForm = { $^a ~~ Pair ?? ($^a, $^b) !! [|$^a, $^b].List };
-my &seqLeftSepForm = { ($^a, $^b) };
-my &seqLeftSep = apply({&seqLeftSepForm}, symbol('<&'));
-sub pGTermSeqL(@x) {
-    apply($ebnfActions.sequence-pick-left, chain-left(&pGNode, &seqLeftSep))(@x)
-}
-
-# Flatting is actually not desired
-#my &seqRightSepForm = { $^a ~~ Pair ?? ($^a, $^b) !! [|$^a, $^b].List };
-my &seqRightSepForm = { ($^a, $^b) };
-my &seqRightSep = apply({&seqRightSepForm}, symbol('&>'));
-sub pGTermSeqR(@x) {
-    apply($ebnfActions.sequence-pick-right, chain-right(&pGNode, &seqRightSep))(@x)
-}
-
-sub pGTerm(@x) {
-    apply($ebnfActions.term, alternatives(&pGTermSeq, &pGTermSeqL, &pGTermSeqR))(@x)
-}
-
-# What is an apply function?
-# [X] Just a string
-# [ ] Raku style pure function
-# [ ] WL style pure function
-sub pGFunc(@x) {
-    #alternatives(satisfy({$_ ~~ Str}), curly-bracketed(many(satisfy({$_ ~~ Str}))))(@x)
-    satisfy({$_ ~~ Str})(@x)
-}
-
-sub pGApply(@x) {
-    apply($ebnfActions.apply, sequence(&pGTerm, sequence-pick-right(symbol('<@'), &pGFunc)))(@x)
-}
-
-sub pGExpr(@x) {
-    apply($ebnfActions.expr, list-of(alternatives(&pGTerm, &pGApply), symbol('|')))(@x)
-}
-
-sub pGRule(@x) {
-    apply($ebnfActions.rule,
-            sequence(
-            sequence-pick-left(&pGNonTerminal, symbol('=')),
-                    sequence-pick-left(&pGExpr, symbol(';'))))(@x);
-}
-
-our proto pEBNF(@x) is export {*}
-
-multi sub pEBNF(@x) {
-    apply($ebnfActions.grammar, shortest(many(&pGRule)))(@x)
-}
-
