@@ -25,7 +25,6 @@ isa-ok parse-ebnf(@tokens1, target => 'Raku::Code'), List, 'Parsing produces a l
 is parse-ebnf(@tokens1, target => 'Raku::Code').head.tail.all ~~ Str, True, 'Parsing produces a list of Strings';
 
 ## 3
-
 is parse-ebnf(@tokens1, target => 'Raku::Code').head.head.trim, '', 'Empty non-parsed';
 
 ## 4
