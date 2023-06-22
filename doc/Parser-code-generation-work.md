@@ -42,6 +42,17 @@ Here we generate the parser class code again, but here we place it into an "as-i
 parse-ebnf($ebnfCode, <CODE>, target => 'Raku::Class').head.tail;
 ```
 
+### Code
+
+In this sub-section we generate code that has "stand-alone" parser functions.
+
+Here we generate code of the parsers and place it into an "as-is" Markdown cell:
+
+```perl6, result=asis, output-prompt=NONE, output-lang=perl6
+.say for parse-ebnf($ebnfCode, <CODE>, target => 'Raku::Code', parser-name => 'MyFP').head.tail;
+```
+
+
 ### Grammar
 
 In this sub-section we generate code for Raku's built-in grammars.
@@ -63,6 +74,12 @@ Here we parse with the grammar:
 ```perl6
 $gr.parse('944'.comb);
 ```
+
+-----
+
+## Java code
+
+*TBD...*
 
 -----
 
