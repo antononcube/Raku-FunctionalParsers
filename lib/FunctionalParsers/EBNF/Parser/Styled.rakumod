@@ -3,27 +3,28 @@ use v6.d;
 use FunctionalParsers :shortcuts;
 use FunctionalParsers::EBNF::Parser::Standard;
 
-class FunctionalParsers::EBNF::Parser::Themed
+class FunctionalParsers::EBNF::Parser::Styled
         is FunctionalParsers::EBNF::Parser::Standard {
 
-    has $.theme = 'Simpler';
+    has $.style = 'Simple';
 
     has &.pSepRuleNewLine = sequence(option(many(satisfy({ $_ ~~ / \h / }))), many1(satisfy({ $_ ~~ / \v / })));
 
-    has &.pIdentifier = apply({ $_.flat.join }, many1(satisfy({ $_ ~~ / [<alnum> | <:Pd> ] / })));
+    has &.pIdentifier = apply({ $_.flat.join }, many1(satisfy({ $_ ~~ / [ <alnum> | <:Pd> ] / })));
 
     submethod TWEAK {
-        given $!theme {
-            when $_.isa(Whatever) {
+        given $!style {
+            when $_.isa(Whatever) || $_ ~~ Str && $_.lc eq 'whatever' {
 
                 # Non-terminals are words with or without angular brackets
+                #self.pGNonTerminal = alternatives(pack(sp(symbol('<')), self.pIdentifier, symbol('>')), self.pIdentifier);
                 self.pGNonTerminal = alternatives(self.pGNonTerminal, self.pIdentifier);
 
                 # Sequence separation is whitespace
-                self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
+                self.pSepSeq = many1(alternatives(satisfy({ $_ ~~ / \h / }), sp(symbol(','))));
 
                 # Assignment to LHS non-terminal
-                self.pAssign = alternatives(token(':'), token('->'), token('<-'), token('::='), symbol(':='), symbol('='));
+                self.pAssign = alternatives(token('->'), token('<-'), token('::='), symbol(':='), symbol('='), token(':'));
 
                 # Rules are separate with new-line
                 self.pSepRule = alternatives(sp(symbol(';')), self.pSepRuleNewLine);
