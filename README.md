@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|5352927088600) ... }
+# -> @x { #`(Block|4718983727672) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|5352927264712) ... }
+# -> @x { #`(Block|4718983927000) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -206,7 +206,7 @@ my &p = (&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (&) &pTh;
 (&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ⨂ &pTh
 ```
 
-**Remark:** The arguments of the apply operator `⨀` are "reversed" when compared to the arguments of the operators `(^)` and `«0`. 
+**Remark:** The arguments of the apply operator `⨀` are "reversed" when compared to the arguments of the operators `(^)` and `«o`. 
 For `⨀` the function to be applied is the first argument. 
 
 ------
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode, 12);
 ```
 ```
-# I ♥️ ♥️ ♥️ R
-# We love Julia
+# I 🤮 R
+# We love R
+# I love R
+# I ♥️ ♥️ Python
 # We hate Python
-# I  Julia
-# I hate Python
-# We 🤮 Julia
-# I hate Perl
-# We love Python
-# We ♥️ ♥️ R
-# We love WL
 # We love Julia
-# I hate Julia
+# I love R
+# I 🤮 R
+# We love Python
+# We love Julia
+# We love WL
+# I ♥️ ♥️ ♥️ Perl
 ```
 
 ------
@@ -388,11 +388,19 @@ graph TD
 
 ## TODO
 
-- [ ] TODO 
+- [X] DONE Parsing refactoring & additional features
+  - [X] DONE Class-based parsers
+    - [X] DONE From characters
+    - [X] DONE From tokens
+  - [X] DONE Themed parsers
+    - [X] DONE Inheritance based implementation
+    - [X] DONE "Simpler"
+    - [X] DONE G4 / ANTLR
+    - [X] DONE Whatever
 - [ ] TODO Interpreters of EBNF
    - [ ] TODO Java 
      - [ ] TODO ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
-   - [ ] Python?
+   - [ ] MAYBE Python
    - [ ] TODO Raku
      - [X] DONE AST
      - [X] DONE Class
@@ -404,6 +412,7 @@ graph TD
    - [ ] TODO WL
      - [X] TODO FunctionalParsers, [AAp1, AAp2]
      - [P] TODO GrammarRules
+       - Implemented to a point, not tested in WL.
 - [ ] TODO Translators
   - [ ] TODO FPs code into EBNF
   - [ ] TODO Raku grammars to FPs

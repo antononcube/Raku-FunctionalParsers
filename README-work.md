@@ -190,7 +190,7 @@ my &p = (&p1 (|) &p2 (|) &p3 (|) &p4) (&) (&pM (^) {10**6}) (&) &pTh;
 (&p1 ⨁ &p2 ⨁ &p3 ⨁ &p4) ⨂ {10**6} ⨀ &pM ⨂ &pTh
 ```
 
-**Remark:** The arguments of the apply operator `⨀` are "reversed" when compared to the arguments of the operators `(^)` and `«0`. 
+**Remark:** The arguments of the apply operator `⨀` are "reversed" when compared to the arguments of the operators `(^)` and `«o`. 
 For `⨀` the function to be applied is the first argument. 
 
 ------
@@ -332,11 +332,19 @@ graph TD
 
 ## TODO
 
-- [ ] TODO 
+- [X] DONE Parsing refactoring & additional features
+  - [X] DONE Class-based parsers
+    - [X] DONE From characters
+    - [X] DONE From tokens
+  - [X] DONE Themed parsers
+    - [X] DONE Inheritance based implementation
+    - [X] DONE "Simpler"
+    - [X] DONE G4 / ANTLR
+    - [X] DONE Whatever
 - [ ] TODO Interpreters of EBNF
    - [ ] TODO Java 
      - [ ] TODO ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
-   - [ ] Python?
+   - [ ] MAYBE Python
    - [ ] TODO Raku
      - [X] DONE AST
      - [X] DONE Class
@@ -348,6 +356,7 @@ graph TD
    - [ ] TODO WL
      - [X] TODO FunctionalParsers, [AAp1, AAp2]
      - [P] TODO GrammarRules
+       - Implemented to a point, not tested in WL.
 - [ ] TODO Translators
   - [ ] TODO FPs code into EBNF
   - [ ] TODO Raku grammars to FPs
