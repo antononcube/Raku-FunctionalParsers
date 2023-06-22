@@ -12,11 +12,12 @@ my %*SUB-MAIN-OPTS = :named-anywhere;
 
 #| Generates random sentences for a given grammar.
 multi MAIN(
-        $x,                                                           #= EBNF text.
-        :$target is copy = 'Raku::Class',                             #= Target.
+        $ebnf,                                                        #= EBNF text.
+        Str :$target is copy = 'Raku::Class',                         #= Target.
         Str :name(:$parser-name) is copy = 'MyParser',                #= Parser name.
         Str :prefix(:$rule-name-prefix) is copy = 'p',                #= Rule names prefix.
         Str :modifier(:$rule-name-modifier) is copy = 'WhateverCode', #= Rule names modifier.
+        Str :s(:$style) is copy = 'Whatever',                         #= EBNF style, one of 'Standard', 'Simple', 'G4', or 'Whatever'.
            ) {
 
     my @knownModifiers = <{$_.tc} {$_.uc} {$_.lc} {$_}>;
@@ -30,7 +31,7 @@ multi MAIN(
         die "Only rule name modifier code is allowed to be WhateverCode or one of {@knownModifiers.map({ "'$_'"}).join(', ')}.";
     }
 
-    my $res = parse-ebnf($x, <CODE>, :$target, :$parser-name, :$rule-name-prefix, :&rule-name-modifier);
+    my $res = parse-ebnf($ebnf, <CODE>, :$target, :$parser-name, :$rule-name-prefix, :&rule-name-modifier, :$style);
 
     if $res.head.head {
         say $res;
