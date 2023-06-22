@@ -47,18 +47,18 @@ class FunctionalParsers::EBNF::Parser::Standard {
 
     # Flatting is actually not desired
     #my &seqLeftSepForm = { $^a ~~ Pair ?? ($^a, $^b) !! [|$^a, $^b].List };
-    my &seqLeftSepForm = { ($^a, $^b) };
-    my &seqLeftSep = apply({ &seqLeftSepForm }, sp(token('<&')));
+    has &.seqLeftSepForm = { ($^a, $^b) };
+    has &.seqLeftSep is rw = apply({ &!seqLeftSepForm }, sp(token('<&')));
     has &.pGTermSeqL = -> @x {
-        apply($!ebnfActions.sequence-pick-left, chain-left(&!pGNode, &seqLeftSep))(@x)
+        apply($!ebnfActions.sequence-pick-left, chain-left(&!pGNode, &!seqLeftSep))(@x)
     };
 
     # Flatting is actually not desired
     #my &seqRightSepForm = { $^a ~~ Pair ?? ($^a, $^b) !! [|$^a, $^b].List };
-    my &seqRightSepForm = { ($^a, $^b) };
-    my &seqRightSep = apply({ &seqRightSepForm }, sp(token('&>')));
+    has &.seqRightSepForm = { ($^a, $^b) };
+    has &.seqRightSep is rw = apply({ &!seqRightSepForm }, sp(token('&>')));
     has &.pGTermSeqR = -> @x {
-        apply($!ebnfActions.sequence-pick-right, chain-right(&!pGNode, &seqRightSep))(@x)
+        apply($!ebnfActions.sequence-pick-right, chain-right(&!pGNode, &!seqRightSep))(@x)
     };
 
     has &.pGTerm = -> @x {
@@ -70,14 +70,14 @@ class FunctionalParsers::EBNF::Parser::Standard {
     # [X] UNIX style code
     # [ ] Raku style pure function
     # [ ] WL style pure function
-    has &.pGFunc = -> @x {
+    has &.pGFunc is rw = -> @x {
         alternatives(
                 apply({ $_.flat.join }, many1(satisfy({ $_ ~~ / <alnum> | <:Pd> / }))),
                 apply({ $_.flat.join.substr(1) }, sequence(alternatives(token('&{'), token('${')),
                 many1(satisfy({ $_ ~~ Str })), token('}'))))(@x)
     }
 
-    has &.pGApply = -> @x {
+    has &.pGApply is rw = -> @x {
         apply($!ebnfActions.apply, sequence(sp(&!pGTerm), sequence-pick-right(sp(token('<@')), sp(&!pGFunc))))(@x)
     }
 
