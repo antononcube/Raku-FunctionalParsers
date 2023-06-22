@@ -23,7 +23,7 @@ class FunctionalParsers::EBNF::Parser::Themed
                 self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
 
                 # Assignment to LHS non-terminal
-                self.pAssign = alternatives(token('->'), token('<-'), token('::='), symbol('='));
+                self.pAssign = alternatives(token(':'), token('->'), token('<-'), token('::='), symbol(':='), symbol('='));
 
                 # Rules are separate with new-line
                 self.pSepRule = alternatives(sp(symbol(';')), self.pSepRuleNewLine);
