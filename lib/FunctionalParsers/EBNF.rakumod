@@ -10,8 +10,8 @@ use FunctionalParsers::EBNF::Actions::Raku::AST;
 use FunctionalParsers::EBNF::Actions::Raku::Random;
 use FunctionalParsers::EBNF::Actions::WL::Code;
 use FunctionalParsers::EBNF::Actions::WL::Grammar;
-use FunctionalParsers::EBNF::Parser::FromCharacters;
 use FunctionalParsers::EBNF::Parser::FromTokens;
+use FunctionalParsers::EBNF::Parser::Standard;
 
 unit module FunctionalParsers::EBNF;
 
@@ -99,14 +99,13 @@ multi sub parse-ebnf(@x,
         $actions = $target
     }
 
-    my &pEBNF;
+    my $parsObj;
     if $tokenized {
-        $FunctionalParsers::EBNF::Parser::FromTokens::ebnfActions = $actions;
-        &pEBNF = &FunctionalParsers::EBNF::Parser::FromTokens::pEBNF;
+        $parsObj = FunctionalParsers::EBNF::Parser::FromTokens.new(ebnfActions => $actions);
     } else {
-        $FunctionalParsers::EBNF::Parser::FromCharacters::ebnfActions = $actions;
-        &pEBNF = &FunctionalParsers::EBNF::Parser::FromCharacters::pEBNF;
+        $parsObj = FunctionalParsers::EBNF::Parser::Standard.new(ebnfActions => $actions);
     }
+    my &pEBNF = $parsObj.pEBNF;
 
     # Result struct
     my %res;
