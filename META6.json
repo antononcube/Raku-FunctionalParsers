@@ -15,7 +15,7 @@
     "FunctionalParsers::EBNF": "lib/FunctionalParsers/EBNF.rakumod",
     "FunctionalParsers::EBNF::Actions::Common": "lib/FunctionalParsers/EBNF/Actions/Common.rakumod",
     "FunctionalParsers::EBNF::Actions::EBNF::Standard": "lib/FunctionalParsers/EBNF/Actions/EBNF/Standard.rakumod",
-    "FunctionalParsers::EBNF::Actions::Java::FuncJ": "lib/FunctionalParsers/EBNF/Actions/Java/Code.rakumod",
+    "FunctionalParsers::EBNF::Actions::Java::FuncJ": "lib/FunctionalParsers/EBNF/Actions/Java/FuncJ.rakumod",
     "FunctionalParsers::EBNF::Actions::Raku::AST": "lib/FunctionalParsers/EBNF/Actions/Raku/AST.rakumod",
     "FunctionalParsers::EBNF::Actions::Raku::Class": "lib/FunctionalParsers/EBNF/Actions/Raku/Class.rakumod",
     "FunctionalParsers::EBNF::Actions::Raku::ClassAttr": "lib/FunctionalParsers/EBNF/Actions/Raku/ClassAttr.rakumod",
