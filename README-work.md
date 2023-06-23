@@ -370,9 +370,9 @@ graph TD
   - [ ] TODO Zero-width assertions implementation
     - [ ] TODO Lookahead
     - [ ] TODO Lookbehind
-- [ ] TODO Random sentence generation
+- [X] DONE Random sentence generation
   - [X] DONE Basic class code
-  - [ ] TODO Preventing infinite recursion
+  - [X] DONE Preventing infinite recursion
 - [ ] TODO Documentation
     - [X] DONE README
     - [ ] DONE Parser code generation
@@ -384,6 +384,7 @@ graph TD
             - [X] DONE FunctionalParsers
             - [X] DONE GrammarRules
         - [ ] TODO Java
+    - [ ] TODO Random sentences generation
     - [X] TODO Mermaid flowchart
     - [ ] TODO Mermaid class diagram? 
 - [ ] TODO Videos

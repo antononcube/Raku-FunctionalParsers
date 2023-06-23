@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|2971972141088) ... }
+# -> @x { #`(Block|4948496235112) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|2971972359888) ... }
+# -> @x { #`(Block|4948496239576) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode, 12);
 ```
 ```
-# We hate WL
-# I love Perl
-# We 🤮 Python
-# I 🤮 Julia
-# We hate Python
-# I 🤮 Perl
+# I ♥️ ♥️ ♥️ R
+# We ♥️ Julia
+# I love R
+# I  Perl
+# We 🤮 WL
+# I hate Perl
+# We love R
+# I  WL
+# I 🤮 Python
+# I love WL
 # We 🤮 Python
 # I hate Python
-# We hate Perl
-# I 🤮 WL
-# I love Julia
-# I love Python
 ```
 
 ------
@@ -427,9 +427,9 @@ graph TD
   - [ ] TODO Zero-width assertions implementation
     - [ ] TODO Lookahead
     - [ ] TODO Lookbehind
-- [ ] TODO Random sentence generation
+- [X] DONE Random sentence generation
   - [X] DONE Basic class code
-  - [ ] TODO Preventing infinite recursion
+  - [X] DONE Preventing infinite recursion
 - [ ] TODO Documentation
     - [X] DONE README
     - [ ] DONE Parser code generation
@@ -441,6 +441,7 @@ graph TD
             - [X] DONE FunctionalParsers
             - [X] DONE GrammarRules
         - [ ] TODO Java
+    - [ ] TODO Random sentences generation
     - [X] TODO Mermaid flowchart
     - [ ] TODO Mermaid class diagram? 
 - [ ] TODO Videos
