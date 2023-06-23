@@ -7,10 +7,11 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
 
     has UInt $.max-repetitions = 4;
     has UInt $.min-repetitions = 0;
+    has Bool $.restrict-recursion = True;
 
     has &.terminal = {"$_"};
 
-    has &.non-terminal = {"self.{self.prefix}" ~ $_.uc.subst(/\s/,'').substr(1,*-1)};
+    has &.non-terminal = {"self.{self.prefix}" ~ $_.uc.subst(/\s/,'').subst(/^ '<'/,'').subst(/'>' $/,'') };
 
     has &.option = { "(rand > 0.5 ?? $_ !! Empty)" };
 
@@ -37,13 +38,25 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
 
     has &.rule = {
         my $mname = self.non-terminal.($_[0]).subst(/ ^ 'self.' /, '').subst(/ '($_)}' $/, '');
-        "method {$mname} \{ {$_[1]} \}"
+        if $!restrict-recursion {
+            "method { $mname } \{ \$visits.add('{ $mname }'); if \$visits<{ $mname }> ≤ \$maxReps \{ { $_[1] } \} else \{ Empty \}\}"
+        } else {
+            "method {$mname} \{ {$_[1]} \}"
+        }
     };
 
     has &.grammar = {
         my $code = "class {self.name} \{\n\t";
+        if $!restrict-recursion {
+            $code ~= "my BagHash \$visits;\n\t";
+            $code ~= "my UInt \$maxReps = { $!max-repetitions };\n\t";
+        }
         $code ~= $_.List.join("\n\t");
-        $code ~= "\n\thas \&.parser is rw = \{ self.{self.top-rule-name} \};";
+        if $!restrict-recursion {
+            $code ~= "\n\thas \&.parser is rw = \{ \$visits .= new; self.{ self.top-rule-name } \};";
+        } else {
+            $code ~= "\n\thas \&.parser is rw = \{ self.{ self.top-rule-name } \};";
+        }
         $code ~= "\n}";
         $code;
     }
