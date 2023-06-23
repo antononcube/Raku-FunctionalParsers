@@ -13,7 +13,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Class
 
     has &.terminal = {"symbol($_)"};
 
-    has &.non-terminal = {'{' ~ "self.{self.prefix}" ~ self.modifier.($_.subst(/\s/,'').substr(1,*-1)) ~ '($_)}'};
+    has &.non-terminal = {'{' ~ "self.{self.prefix}" ~ self.modifier.($_.subst(/\s/,'').subst(/^ '<'/,'').subst(/'>' $/,'')) ~ '($_)}'};
 
     has &.option = {"option($_)"};
 
