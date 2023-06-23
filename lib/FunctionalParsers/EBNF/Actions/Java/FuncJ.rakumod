@@ -2,7 +2,7 @@ use v6.d;
 
 use FunctionalParsers::EBNF::Actions::Common;
 
-class FunctionalParsers::EBNF::Actions::Java::Code
+class FunctionalParsers::EBNF::Actions::Java::FuncJ
         does FunctionalParsers::EBNF::Actions::Common {
 
     method setup-code { '
