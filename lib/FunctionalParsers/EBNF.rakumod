@@ -148,6 +148,7 @@ multi sub random-sentence($ebnf,
                            Str :$sep = ' ',
                            :$rule is copy = Whatever,
                            Bool :$eval = True,
+                           Bool :$restrict-recursion = True,
                            ) {
     # Automatic top rule
     if $rule.isa(Whatever) {
@@ -165,7 +166,8 @@ multi sub random-sentence($ebnf,
                     :prefix('p'),
                     :start($rule),
                     :$max-repetitions,
-                    :$min-repetitions
+                    :$min-repetitions,
+                    :$restrict-recursion
                     );
 
     my $parsObj = FunctionalParsers::EBNF::Parser::Standard.new(:$ebnfActions);
