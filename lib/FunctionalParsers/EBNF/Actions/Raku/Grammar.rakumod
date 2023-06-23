@@ -15,7 +15,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Grammar
 
     has &.terminal = {"$_"};
 
-    has &.non-terminal = { "<{self.prefix}{self.modifier.($_.substr(1))}"};
+    has &.non-terminal = { "<{self.prefix}{self.modifier.($_.subst(/^ '<' /, '').subst(/ '>' $ /, ''))}>"};
 
     has &.option = {"$_?"};
 
