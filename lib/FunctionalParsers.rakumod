@@ -106,6 +106,33 @@ sub infix:<⨁>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:n-ar
     alternatives(|@args)
 }
 
+## Alternatives first match
+sub alternatives-first-match(*@args) is export(:MANDATORY, :ALL) {
+    -> @x {
+        my @res;
+        my @res2;
+        for @args {
+            @res2 = $_(@x);
+            @res.append(@res2);
+            last if @res2 && @res2.head.head.elems < @x.elems;
+        }
+        @res2 ?? @res2.List !! @res;
+    }
+}
+
+# Infix ⨁
+sub infix:<«||»>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:double, :ALL) {
+    alternatives-first-match(|@args)
+}
+
+sub infix:<(||)>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:set, :ALL) {
+    alternatives-first-match(|@args)
+}
+
+sub infix:<⨁⨁>( *@args ) is equiv( &infix:<||> ) is assoc<list> is export(:n-ary, :ALL) {
+    alternatives-first-match(|@args)
+}
+
 #============================================================
 # Next combinators
 #============================================================
