@@ -6,7 +6,7 @@ use FunctionalParsers::EBNF::Parser::Standard;
 class FunctionalParsers::EBNF::Parser::Styled
         is FunctionalParsers::EBNF::Parser::Standard {
 
-    has $.style = 'Simple';
+    has $.style = 'Relaxed';
 
     has &.pSepRuleNewLine = sequence(option(many(satisfy({ $_ ~~ / \h / }))), many1(satisfy({ $_ ~~ / \v / })));
 
@@ -30,7 +30,7 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepRule = alternatives(sp(symbol(';')), self.pSepRuleNewLine);
             }
 
-            when $_ ~~ Str && $_.lc ∈ <simple simpler> {
+            when $_ ~~ Str && $_.lc ∈ <simple> {
 
                 # Non-terminals are words without angular brackets
                 self.pGNonTerminal = self.pIdentifier;
@@ -45,7 +45,24 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepRule = self.pSepRuleNewLine;
             }
 
-            when $_ ~~ Str && $_.lc ∈ <g4 antlr> {
+            when $_ ~~ Str && $_.lc ∈ <relaxed simpler> {
+
+                # Non-terminals are words without angular brackets
+                self.pGNonTerminal = alternatives(self.pGNonTerminal, self.pIdentifier);
+
+                # Sequence separation is whitespace
+                self.pSepSeq = alternatives(self.pSepSeq, many1(satisfy({ $_ ~~ / \h / })));
+
+                # Assignment to LHS non-terminal
+                self.pAssign = alternatives(token('->'), symbol('='), symbol('::='));
+
+                # Rules are separated with ';' because this makes the parsing ≈10 faster.
+            }
+
+            when $_ ~~ Str && $_.lc ∈ <antlr g4> {
+
+                # Non-terminals are words without angular brackets
+                self.pGNonTerminal = self.pIdentifier;
 
                 # Sequence separation is whitespace
                 self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
@@ -57,13 +74,17 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepRule = self.pSepRuleNewLine;
             }
 
-            when $_ ~~ Str && $_.lc ∈ <standard default> {
+            when $_ ~~ Str && $_.lc ∈ <default standard> {
                 # Do nothing
             }
 
             default {
-                note "Do not how to process the theme spec $_.";
+                note "Do not how to process the theme spec $_. Expected theme specs are <antlr default simple relaxed> or Whatever.";
             }
         }
+    }
+
+    method normalize-rule-separation(Str $ebnf) {
+        return $ebnf.split(/ \n | ';' /, :skip-empty).join(" ;\n") ~ ";";
     }
 }
