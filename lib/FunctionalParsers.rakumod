@@ -296,6 +296,17 @@ sub compulsion(&p) is export(:MANDATORY, :ALL) {
 }
 
 #============================================================
+# Extra parsers
+#============================================================
+
+constant &pInteger is export(:extra, :ALL) = apply({ $_.join.Int }, many1(satisfy({ $_ ~~ / \d+ /})));
+constant &pNumber is export(:extra, :ALL) = apply({ $_.join.Num }, many1(satisfy({ $_ ~~ / [ \d | '.' | 'e' | 'E' ]+ /})));
+
+constant &pWord is export(:extra, :ALL) = apply({ $_.flat.join }, many1(satisfy({ $_ ~~ / \w+ /})));
+constant &pLetterWord is export(:extra, :ALL) = apply({ $_.flat.join }, many1(satisfy({ $_ ~~ / [<:Ll> | <:Lu>]+ /})));
+constant &pIdentifier is export(:extra, :ALL) = apply({ $_.flat.join }, sequence(satisfy({$_ ~~ / <alpha> / }), many(satisfy({ $_ ~~ / <alnum>+ /}))));
+
+#============================================================
 # Shortcuts
 #============================================================
 
