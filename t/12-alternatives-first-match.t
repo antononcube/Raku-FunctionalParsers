@@ -3,7 +3,7 @@ use v6.d;
 use lib '.';
 use lib './lib';
 
-use FunctionalParsers;
+use FunctionalParsers :ALL;
 use Test;
 
 # Parsers
@@ -77,6 +77,25 @@ is
         &pTest9(<one two three>).head.head,
         ('three'),
         '<1 2> || <1 2 3> || 1 of first match on : one two three';
+
+## 10
+is-deeply
+        alternatives-first-match(sequence(&p1, &p2), sequence(&p1, &p2, &p3), &p1, &p2)(<one two three>),
+        ( &p1 «&» &p2 «||» &p1 «&» &p2 «&» &p3 «||» &p1 «||» &p2)(<one two three>),
+        'Infix equivalence «||» for: <1 2> || <1 2 3> || 1 of first match on : one two three';
+
+## 11
+is-deeply
+        alternatives-first-match(sequence(&p1, &p2), sequence(&p1, &p2, &p3), &p1, &p2)(<one two three>),
+        ( &p1 ⨂ &p2 ⨁⨁ &p1 ⨂ &p2 ⨂ &p3 ⨁⨁ &p1 ⨁⨁ &p2)(<one two three>),
+        'Infix equivalence ⨁⨁ for: <1 2> || <1 2 3> || 1 of first match on : one two three';
+
+## 12
+is-deeply
+        alternatives-first-match(sequence(&p1, &p2), sequence(&p1, &p2, &p3), &p1, &p2)(<one two three>),
+        ( &p1 (&) &p2 (||) &p1 (&) &p2 (&) &p3 (||) &p1 (||) &p2)(<one two three>),
+        'Infix equivalence (||) for: <1 2> || <1 2 3> || 1 of first match on : one two three';
+
 
 
 done-testing;
