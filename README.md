@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|4948496235112) ... }
+# -> @x { #`(Block|2868825880496) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|4948496239576) ... }
+# -> @x { #`(Block|2868826057976) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode, 12);
 ```
 ```
-# I ♥️ ♥️ ♥️ R
-# We ♥️ Julia
-# I love R
-# I  Perl
-# We 🤮 WL
-# I hate Perl
-# We love R
-# I  WL
+# We ♥️ ♥️ ♥️ ♥️ Perl
+# I ♥️ ♥️ ♥️ ♥️ Perl
 # I 🤮 Python
-# I love WL
-# We 🤮 Python
-# I hate Python
+# We 🤮 Perl
+# We love Python
+# I 🤮 Python
+# We 🤮 WL
+# I hate Julia
+# We love WL
+# We 🤮 R
+# I ♥️ ♥️ ♥️ Python
+# I 🤮 R
 ```
 
 ------
@@ -294,10 +294,10 @@ fp-parse-ebnf --help
 ```
 ```
 # Usage:
-#   fp-parse-ebnf <ebnf> [--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates random sentences for a given grammar.
+#   fp-parse-ebnf <ebnf> [-t|--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates random sentences for a given grammar.
 #   
 #     <ebnf>                                   EBNF text.
-#     --target=<Str>                           Target. [default: 'Raku::Class']
+#     -t|--target=<Str>                        Target. [default: 'Raku::Class']
 #     --name|--parser-name=<Str>               Parser name. [default: 'MyParser']
 #     --prefix|--rule-name-prefix=<Str>        Rule names prefix. [default: 'p']
 #     --modifier|--rule-name-modifier=<Str>    Rule names modifier. [default: 'WhateverCode']
@@ -345,7 +345,7 @@ graph TD
     RakuGrammar[Raku::Grammar]
     WLCode[WL::Code]
     WLGrammar[WL::Grammar]
-    JavaCode[Java::Code]
+    JavaFuncJ[Java::FuncJ]
     JavaANTLR[Java::ANTLR]
     Input[/- EBNF code<br/>- Properties/]
     PickTarget[Assign context]
@@ -380,7 +380,7 @@ graph TD
         WLGrammar
     end
     subgraph Java
-        JavaCode
+        JavaFuncJ
         JavaANTLR
     end
 ```
@@ -389,18 +389,34 @@ graph TD
 
 ## TODO
 
-- [X] DONE Parsing refactoring & additional features
+- [X] TODO Parsing EBNF refactoring & additional features
+  - [ ] TODO Parse any combination of sequence operators
+    - Currently, these are parsed:
+      - `'a' <& 'b' <& 'c' | 'a' &> 'd';`
+      - `'a' , 'b' , 'c' | 'a' &> 'd';`
+    - Currently, these are not parsed:
+      - `'a' , 'b' &> 'c'`
+      - `'a' <& 'b' &> 'c'`
   - [X] DONE Class-based parsers
     - [X] DONE From characters
     - [X] DONE From tokens
   - [X] DONE Themed parsers
     - [X] DONE Inheritance based implementation
     - [X] DONE "Simpler"
-    - [X] DONE G4 / ANTLR
+    - [X] DONE ANTLR / G4
     - [X] DONE Whatever
+  - [ ] TODO "Named" tokens 
+    - [ ] `'_?StringQ'` or `'_String'`
+    - [ ] `'_WordString'`, `'_LetterString'`, and `'_IdentifierString'`
+    - [ ] `'_?NumberQ'` and `'_?NumericQ'`
+    - [ ] `'_Integer'`
+    - [ ] `'Range[*from*, *to*]'`
 - [ ] TODO Interpreters of EBNF
-   - [ ] TODO Java 
-     - [ ] TODO ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
+   - [X] DONE Java 
+     - [X] DONE ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
+   - [ ] TODO Scala
+     - [ ] TODO built-in
+     - [ ] TODO [parsley](https://github.com/j-mie6/parsley) 
    - [ ] MAYBE Python
    - [ ] TODO Raku
      - [X] DONE AST
@@ -416,13 +432,18 @@ graph TD
        - Implemented to a point, not tested in WL.
 - [ ] TODO Translators
   - [ ] TODO FPs code into EBNF
-  - [ ] TODO Raku grammars to FPs
-    - Probably in "Grammar::TokenProcessing"
+  - [X] DONE Raku grammars to FPs
+    - See the class "Grammar::TokenProcessing::Actions::EBNF" of the package "Grammar::TokenProcessing".
 - [ ] TODO Extensions
+  - [X] DONE First-matched alternation
+    - The standard `alterations` parser is ["longest alternation"](https://docs.raku.org/language/regexes#Longest_alternation:_|) (in Raku's terms.)
   - [ ] TODO Extra parsers
-    - [ ] TODO `pNumber`
-    - [ ] TODO `pWord`
-    - [ ] TODO `pIdentifier`
+    - [X] DONE `pInteger`
+    - [X] DONE `pNumber`
+    - [X] DONE `pWord`
+    - [X] DONE `pLetterWord`
+    - [X] DONE `pIdentifier`
+    - [ ] TODO `pNumberRange`
     - Other?
   - [ ] TODO Zero-width assertions implementation
     - [ ] TODO Lookahead

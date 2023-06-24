@@ -288,7 +288,7 @@ graph TD
     RakuGrammar[Raku::Grammar]
     WLCode[WL::Code]
     WLGrammar[WL::Grammar]
-    JavaCode[Java::Code]
+    JavaFuncJ[Java::FuncJ]
     JavaANTLR[Java::ANTLR]
     Input[/- EBNF code<br/>- Properties/]
     PickTarget[Assign context]
@@ -323,7 +323,7 @@ graph TD
         WLGrammar
     end
     subgraph Java
-        JavaCode
+        JavaFuncJ
         JavaANTLR
     end
 ```
@@ -332,18 +332,34 @@ graph TD
 
 ## TODO
 
-- [X] DONE Parsing refactoring & additional features
+- [X] TODO Parsing EBNF refactoring & additional features
+  - [ ] TODO Parse any combination of sequence operators
+    - Currently, these are parsed:
+      - `'a' <& 'b' <& 'c' | 'a' &> 'd';`
+      - `'a' , 'b' , 'c' | 'a' &> 'd';`
+    - Currently, these are not parsed:
+      - `'a' , 'b' &> 'c'`
+      - `'a' <& 'b' &> 'c'`
   - [X] DONE Class-based parsers
     - [X] DONE From characters
     - [X] DONE From tokens
   - [X] DONE Themed parsers
     - [X] DONE Inheritance based implementation
     - [X] DONE "Simpler"
-    - [X] DONE G4 / ANTLR
+    - [X] DONE ANTLR / G4
     - [X] DONE Whatever
+  - [ ] TODO "Named" tokens 
+    - [ ] `'_?StringQ'` or `'_String'`
+    - [ ] `'_WordString'`, `'_LetterString'`, and `'_IdentifierString'`
+    - [ ] `'_?NumberQ'` and `'_?NumericQ'`
+    - [ ] `'_Integer'`
+    - [ ] `'Range[*from*, *to*]'`
 - [ ] TODO Interpreters of EBNF
-   - [ ] TODO Java 
-     - [ ] TODO ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
+   - [X] DONE Java 
+     - [X] DONE ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
+   - [ ] TODO Scala
+     - [ ] TODO built-in
+     - [ ] TODO [parsley](https://github.com/j-mie6/parsley) 
    - [ ] MAYBE Python
    - [ ] TODO Raku
      - [X] DONE AST
@@ -359,13 +375,18 @@ graph TD
        - Implemented to a point, not tested in WL.
 - [ ] TODO Translators
   - [ ] TODO FPs code into EBNF
-  - [ ] TODO Raku grammars to FPs
-    - Probably in "Grammar::TokenProcessing"
+  - [X] DONE Raku grammars to FPs
+    - See the class "Grammar::TokenProcessing::Actions::EBNF" of the package "Grammar::TokenProcessing".
 - [ ] TODO Extensions
+  - [X] DONE First-matched alternation
+    - The standard `alterations` parser is ["longest alternation"](https://docs.raku.org/language/regexes#Longest_alternation:_|) (in Raku's terms.)
   - [ ] TODO Extra parsers
-    - [ ] TODO `pNumber`
-    - [ ] TODO `pWord`
-    - [ ] TODO `pIdentifier`
+    - [X] DONE `pInteger`
+    - [X] DONE `pNumber`
+    - [X] DONE `pWord`
+    - [X] DONE `pLetterWord`
+    - [X] DONE `pIdentifier`
+    - [ ] TODO `pNumberRange`
     - Other?
   - [ ] TODO Zero-width assertions implementation
     - [ ] TODO Lookahead
