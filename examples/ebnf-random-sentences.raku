@@ -39,26 +39,58 @@ my $ebnfCode = $ebnfCode2;
 
 note $ebnfCode;
 
+#========================================================================================================================
 say '=' x 120;
 
-my $res = parse-ebnf($ebnfCode, target=>'Raku::AST', style => 'Standard').head.tail;
+my $tstart = now;
+my $res = parse-ebnf($ebnfCode, target=>'Raku::AST', style => 'Simpler').head.tail;
+my $tend = now;
 
 say $res;
+say "Time to parse simple: {$tend - $tstart}";
 
+#========================================================================================================================
 say '=' x 120;
 
-say parse-ebnf($ebnfCode, <CODE>, target=>'Raku::Grammar', style => 'Standard').head.tail;
+my $ebnfCodeSplit = FunctionalParsers::EBNF::Parser::Styled.normalize-rule-separation($ebnfCode);
+note "\$ebnfCodeSplit :\n $ebnfCodeSplit";
 
+$tstart = now;
+my $res2 = parse-ebnf($ebnfCodeSplit, target=>'Raku::AST', style => 'Simpler').head.tail;
+$tend = now;
+
+say $res2;
+say "Time to parse custom split: {$tend - $tstart}";
+
+#========================================================================================================================
 say '=' x 120;
 
+say 'Show generated grammar:';
+say parse-ebnf($ebnfCode, <CODE>, target=>'Raku::Grammar', style => 'Simpler').head.tail;
+
+#========================================================================================================================
+say '=' x 120;
+
+say 'Show generated class for random sentence generation:';
 say random-sentence($ebnfCode, 12, :!eval):restrict-recursion;
 
+#------------------------------------------------------------------------------------------------------------------------
 say '-' x 120;
+my $ebnfCodeNormal = parse-ebnf($ebnfCodeSplit, <CODE>, target=>'EBNF::Standard', style => 'Simpler').head.tail;
 
-my $ebnfCodeNormal = parse-ebnf($ebnfCode, <CODE>, target=>'EBNF::Standard', style => 'Standard').head.tail;
+note "\$ebnfCodeNormal : $ebnfCodeNormal";
 
-note $ebnfCodeNormal;
+$tstart = now;
+my $res3 = parse-ebnf($ebnfCodeNormal , target=>'Raku::AST', style => 'Standard').head.tail;
+$tend = now;
 
-.say for random-sentence($ebnfCodeNormal, 12, min-repetitions => 1, :eval):restrict-recursion;
+say $res3;
+say "Time to parse custom normalized: {$tend - $tstart}";
+
+#========================================================================================================================
+say "=" x 120;
+
+say "Generated senteces:\n";
+.say for random-sentence($ebnfCodeNormal, 12, min-repetitions => 1, :eval, :restrict-recursion).pairs;
 
 
