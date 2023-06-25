@@ -10,7 +10,7 @@ use FunctionalParsers::EBNF;
 my %*SUB-MAIN-OPTS = :named-anywhere;
 
 
-#| Generates random sentences for a given grammar.
+#| Generates parser code for a given EBNF grammar.
 multi MAIN(
         $ebnf,                                                        #= EBNF text.
         Str :t(:$target) is copy = 'Raku::Class',                     #= Target.
