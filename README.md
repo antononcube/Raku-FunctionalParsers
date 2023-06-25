@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|2868825880496) ... }
+# -> @x { #`(Block|3329393490272) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|2868826057976) ... }
+# -> @x { #`(Block|3329393728760) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode, 12);
 ```
 ```
-# We ♥️ ♥️ ♥️ ♥️ Perl
-# I ♥️ ♥️ ♥️ ♥️ Perl
-# I 🤮 Python
+# I hate R
+# We hate Perl
+# We hate Perl
+# I  WL
 # We 🤮 Perl
-# We love Python
-# I 🤮 Python
+# We ♥️ ♥️ ♥️ R
+# We ♥️ ♥️ ♥️ ♥️ R
+# We hate Perl
+# We love Perl
 # We 🤮 WL
-# I hate Julia
-# We love WL
-# We 🤮 R
-# I ♥️ ♥️ ♥️ Python
-# I 🤮 R
+# We ♥️ WL
+# We hate Python
 ```
 
 ------
@@ -294,7 +294,7 @@ fp-parse-ebnf --help
 ```
 ```
 # Usage:
-#   fp-parse-ebnf <ebnf> [-t|--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates random sentences for a given grammar.
+#   fp-parse-ebnf <ebnf> [-t|--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar.
 #   
 #     <ebnf>                                   EBNF text.
 #     -t|--target=<Str>                        Target. [default: 'Raku::Class']
@@ -427,7 +427,7 @@ graph TD
      - [ ] TODO Tokenizer (of character sequences)
      - [ ] Other EBNF styles
    - [ ] TODO WL
-     - [X] TODO FunctionalParsers, [AAp1, AAp2]
+     - [X] DONE FunctionalParsers, [AAp1, AAp2]
      - [P] TODO GrammarRules
        - Implemented to a point, not tested in WL.
 - [ ] TODO Translators

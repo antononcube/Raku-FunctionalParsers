@@ -370,7 +370,7 @@ graph TD
      - [ ] TODO Tokenizer (of character sequences)
      - [ ] Other EBNF styles
    - [ ] TODO WL
-     - [X] TODO FunctionalParsers, [AAp1, AAp2]
+     - [X] DONE FunctionalParsers, [AAp1, AAp2]
      - [P] TODO GrammarRules
        - Implemented to a point, not tested in WL.
 - [ ] TODO Translators
