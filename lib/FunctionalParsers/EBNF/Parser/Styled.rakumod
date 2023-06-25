@@ -56,7 +56,8 @@ class FunctionalParsers::EBNF::Parser::Styled
                 # Assignment to LHS non-terminal
                 self.pAssign = alternatives(token('->'), symbol('='), symbol('::='));
 
-                # Rules are separated with ';' because this makes the parsing ≈10 faster.
+                # Rules are separated with ';' or '.' because this makes the parsing ≈10 faster.
+                self.pSepRule = alternatives(self.pSepRule, sp(symbol('.')));
             }
 
             when $_ ~~ Str && $_.lc ∈ <antlr g4> {
