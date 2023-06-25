@@ -7,6 +7,8 @@ class FunctionalParsers::EBNF::Parser::Standard {
 
     has $.ebnfActions is rw = FunctionalParsers::EBNF::Actions::Raku::AST.new;
 
+    has &.pGComment =  apply({ '#' ~ $_.flat.join }, pack(sp(token("(*")), many(satisfy({True})), token('*)')));
+
     has &.pGTerminal is rw = -> @x {
         apply({ $_.flat.join },
                 alternatives(
@@ -96,7 +98,7 @@ class FunctionalParsers::EBNF::Parser::Standard {
     }
 
     has &.pEBNF = -> @x {
-        apply($!ebnfActions.grammar, shortest(many(sp(&!pGRule))))(@x)
+        apply($!ebnfActions.grammar, shortest(many(alternatives(sp(&!pGRule), sp(&!pGComment)))))(@x)
     }
 
 }
