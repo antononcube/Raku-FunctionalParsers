@@ -21,19 +21,19 @@ unit module FunctionalParsers::EBNF;
 proto sub fp-ebnf-parse(|) is export {*}
 
 multi sub fp-ebnf-parse(Str $x, $properties = Whatever, *%args) {
-    my %args2 = %args.grep({ $_.key ne 'tokenized'});
+    my %args2 = %args.grep({ $_.key ne 'tokenized' });
     return fp-ebnf-parse($x.comb.Array, $properties, |%args2);
 }
 
 multi sub fp-ebnf-parse(@x,
-                     $properties is copy = Whatever,
-                     :$target is copy = 'Raku::Class',
-                     :name(:$parser-name) is copy = Whatever,
-                     :prefix(:$rule-name-prefix) is copy = Whatever,
-                     :modifier(:&rule-name-modifier) is copy = WhateverCode,
-                     :$style is copy = 'Standard',
-                     Bool :$tokenized = False,
-                     ) {
+                        $properties is copy = Whatever,
+                        :$target is copy = 'Raku::Class',
+                        :name(:$parser-name) is copy = Whatever,
+                        :prefix(:$rule-name-prefix) is copy = Whatever,
+                        :modifier(:&rule-name-modifier) is copy = WhateverCode,
+                        :$style is copy = 'Standard',
+                        Bool :$tokenized = False,
+                        ) {
 
     # Process parser-prefix
     if $rule-name-prefix.isa(Whatever) { $rule-name-prefix = 'p'; }
@@ -142,14 +142,14 @@ multi sub random-sentence(@ebnf, *%args) {
 }
 
 multi sub random-sentence($ebnf,
-                           UInt $n = 1,
-                           UInt :$max-repetitions = 4,
-                           UInt :$min-repetitions = 0,
-                           Str :$sep = ' ',
-                           :$rule is copy = Whatever,
-                           Bool :$eval = True,
-                           Bool :$restrict-recursion = True,
-                           ) {
+                          UInt $n = 1,
+                          UInt :$max-repetitions = 4,
+                          UInt :$min-repetitions = 0,
+                          Str :$sep = ' ',
+                          :$rule is copy = Whatever,
+                          Bool :$eval = True,
+                          Bool :$restrict-recursion = True,
+                          ) {
     # Automatic top rule
     if $rule.isa(Whatever) {
         $rule = 'top';
