@@ -1,8 +1,5 @@
 #!/usr/bin/env perl6
 
-# Example to test with:
-#  fp-fp-ebnf-parse <ebnf>
-
 use v6.d;
 
 use FunctionalParsers::EBNF;
