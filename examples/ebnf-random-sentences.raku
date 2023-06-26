@@ -43,7 +43,7 @@ note $ebnfCode;
 say '=' x 120;
 
 my $tstart = now;
-my $res = parse-ebnf($ebnfCode, target=>'Raku::AST', style => 'Simpler').head.tail;
+my $res = fp-ebnf-parse($ebnfCode, target=>'Raku::AST', style => 'Simpler').head.tail;
 my $tend = now;
 
 say $res;
@@ -56,7 +56,7 @@ my $ebnfCodeSplit = FunctionalParsers::EBNF::Parser::Styled.normalize-rule-separ
 note "\$ebnfCodeSplit :\n $ebnfCodeSplit";
 
 $tstart = now;
-my $res2 = parse-ebnf($ebnfCodeSplit, target=>'Raku::AST', style => 'Simpler').head.tail;
+my $res2 = fp-ebnf-parse($ebnfCodeSplit, target=>'Raku::AST', style => 'Simpler').head.tail;
 $tend = now;
 
 say $res2;
@@ -66,7 +66,7 @@ say "Time to parse custom split: {$tend - $tstart}";
 say '=' x 120;
 
 say 'Show generated grammar:';
-say parse-ebnf($ebnfCode, <CODE>, target=>'Raku::Grammar', style => 'Simpler').head.tail;
+say fp-ebnf-parse($ebnfCode, <CODE>, target=>'Raku::Grammar', style => 'Simpler').head.tail;
 
 #========================================================================================================================
 say '=' x 120;
@@ -76,12 +76,12 @@ say random-sentence($ebnfCode, 12, :!eval):restrict-recursion;
 
 #------------------------------------------------------------------------------------------------------------------------
 say '-' x 120;
-my $ebnfCodeNormal = parse-ebnf($ebnfCodeSplit, <CODE>, target=>'EBNF::Standard', style => 'Simpler').head.tail;
+my $ebnfCodeNormal = fp-ebnf-parse($ebnfCodeSplit, <CODE>, target=>'EBNF::Standard', style => 'Simpler').head.tail;
 
 note "\$ebnfCodeNormal : $ebnfCodeNormal";
 
 $tstart = now;
-my $res3 = parse-ebnf($ebnfCodeNormal , target=>'Raku::AST', style => 'Standard').head.tail;
+my $res3 = fp-ebnf-parse($ebnfCodeNormal , target=>'Raku::AST', style => 'Standard').head.tail;
 $tend = now;
 
 say $res3;

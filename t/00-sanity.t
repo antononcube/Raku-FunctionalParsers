@@ -50,16 +50,16 @@ my $ebnfCode7 = "<top> = 'a' | 'b' ;";
 
 my @tokens7 = $ebnfCode7.split(/ \s /, :skip-empty);
 
-ok parse-ebnf(@tokens7), 'Parsing routine works';
+ok fp-ebnf-parse(@tokens7), 'Parsing routine works';
 
 ## 8
-ok parse-ebnf(@tokens7), 'Parsing routine works with :!tokenized';
+ok fp-ebnf-parse(@tokens7), 'Parsing routine works with :!tokenized';
 
 ## 9
-ok parse-ebnf($ebnfCode7), 'Parsing routine works with a string';
+ok fp-ebnf-parse($ebnfCode7), 'Parsing routine works with a string';
 
 ## 10
-ok parse-ebnf($ebnfCode7, target => 'Raku::Code'),
+ok fp-ebnf-parse($ebnfCode7, target => 'Raku::Code'),
         'Parsing routine works with a string and target => "Raku::Code"';
 
 done-testing;

@@ -1,7 +1,7 @@
 #!/usr/bin/env perl6
 
 # Example to test with:
-#  fp-parse-ebnf <ebnf>
+#  fp-fp-ebnf-parse <ebnf>
 
 use v6.d;
 
@@ -39,7 +39,7 @@ multi MAIN(
         default { $target }
     }
 
-    my $res = parse-ebnf($ebnf, <CODE>, :$target, :$parser-name, :$rule-name-prefix, :&rule-name-modifier, :$style);
+    my $res = fp-ebnf-parse($ebnf, <CODE>, :$target, :$parser-name, :$rule-name-prefix, :&rule-name-modifier, :$style);
 
     if $res.head.head {
         say $res;

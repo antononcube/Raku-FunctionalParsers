@@ -18,14 +18,14 @@ unit module FunctionalParsers::EBNF;
 #============================================================
 # Interpretation
 #============================================================
-proto sub parse-ebnf(|) is export {*}
+proto sub fp-ebnf-parse(|) is export {*}
 
-multi sub parse-ebnf(Str $x, $properties = Whatever, *%args) {
+multi sub fp-ebnf-parse(Str $x, $properties = Whatever, *%args) {
     my %args2 = %args.grep({ $_.key ne 'tokenized'});
-    return parse-ebnf($x.comb.Array, $properties, |%args2);
+    return fp-ebnf-parse($x.comb.Array, $properties, |%args2);
 }
 
-multi sub parse-ebnf(@x,
+multi sub fp-ebnf-parse(@x,
                      $properties is copy = Whatever,
                      :$target is copy = 'Raku::Class',
                      :name(:$parser-name) is copy = Whatever,

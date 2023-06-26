@@ -232,7 +232,7 @@ Here generation is the corresponding functional parsers code:
 
 ```perl6
 use FunctionalParsers::EBNF;
-.say for parse-ebnf($ebnfCode, target => 'Raku::Code').head.tail;
+.say for fp-ebnf-parse($ebnfCode, target => 'Raku::Code').head.tail;
 ```
 ```
 # my &pDIGIT = alternatives(symbol('0'), symbol('1'), symbol('2'), symbol('3'), symbol('4'), symbol('5'), symbol('6'), symbol('7'), symbol('8'), symbol('9'));
@@ -290,11 +290,11 @@ Here is generation of random sentences with the grammar above:
 The package provides a Command Line Interface (CLI) script for parsing EBNF. Here is its usage message:
 
 ```shell
-fp-parse-ebnf --help
+fp-fp-ebnf-parse --help
 ```
 ```
 # Usage:
-#   fp-parse-ebnf <ebnf> [-t|--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar.
+#   fp-fp-ebnf-parse <ebnf> [-t|--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar.
 #   
 #     <ebnf>                                   EBNF text.
 #     -t|--target=<Str>                        Target. [default: 'Raku::Class']

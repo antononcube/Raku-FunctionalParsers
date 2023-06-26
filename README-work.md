@@ -211,7 +211,7 @@ Here generation is the corresponding functional parsers code:
 
 ```perl6
 use FunctionalParsers::EBNF;
-.say for parse-ebnf($ebnfCode, target => 'Raku::Code').head.tail;
+.say for fp-ebnf-parse($ebnfCode, target => 'Raku::Code').head.tail;
 ```
 
 For more detailed examples see ["Parser-code-generation.md"](./doc/Parser-code-generation.md).
@@ -244,7 +244,7 @@ Here is generation of random sentences with the grammar above:
 The package provides a Command Line Interface (CLI) script for parsing EBNF. Here is its usage message:
 
 ```shell
-fp-parse-ebnf --help
+fp-fp-ebnf-parse --help
 ```
 
 ------
