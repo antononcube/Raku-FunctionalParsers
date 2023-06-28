@@ -30,7 +30,7 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::Common {
 
             when 'parens' {
                 $name = "parens{$ext}";
-                $node = '((block))';
+                $node = '(("()"))';
             }
 
             when 'opt' {

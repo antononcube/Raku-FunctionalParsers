@@ -7,6 +7,8 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
         does FunctionalParsers::EBNF::Actions::MermaidJS::Common
         is FunctionalParsers::EBNF::Actions::Raku::AST {
 
+    has Str $.dir-spec is rw = 'TD';
+
     multi method is-paired-with(Str $head, $s) {
         return $s ~~ Pair && $s.key eq $head;
     }
@@ -91,13 +93,12 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
         return $res;
     };
 
-    multi method trace($p where self.is-paired-with('EBNF', $p), Str $dirSpec = 'TD') {
+    multi method trace($p where self.is-paired-with('EBNF', $p)) {
         my @res = $p.value.map({ self.trace($_) });
-        my $code = "graph $dirSpec\n\t";
+        my $code = "graph {self.dir-spec}\n\t";
         $code ~= self.nodes.map({ $_.key ~ $_.value }).join("\n\t");
         $code ~= "\n\t";
         $code ~= self.rules.unique.join("\n\t");
-        $code ~= "\n\t";
 
         return $code;
     }
