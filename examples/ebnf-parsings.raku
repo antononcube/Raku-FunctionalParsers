@@ -124,4 +124,4 @@ say '-' x 120;
 
 my $ebnfCodeJava = $ebnfCode.subst('&{ $_.flat.join }');
 
-.say for fp-ebnf-parse($ebnfCodeJava, <CODE>, actions => 'Java::Code').head.tail;
+.say for fp-ebnf-parse($ebnfCodeJava, <CODE>, actions => 'Java::FuncJ').head.tail;
