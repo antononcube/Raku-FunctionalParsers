@@ -20,14 +20,14 @@ my $ebnfCode = q:to/END/;
 <top> = <number> ;
 END
 
-my $res = fp-ebnf-parse($ebnfCode, <CODE>, target => 'Raku::Class');
+my $res = fp-ebnf-parse($ebnfCode, <CODE>, actions => 'Raku::Class');
 $res.head.tail;
 ````
 
 Let us get (evaluated) class of the code above:
 
 ```perl6
-my $class = fp-ebnf-parse($ebnfCode, <EVAL>, target => 'Raku::Class', parser-name => 'MyFP');
+my $class = fp-ebnf-parse($ebnfCode, <EVAL>, actions => 'Raku::Class', parser-name => 'MyFP');
 ```
 
 Here we create an instance of the obtained class and parse with it:
@@ -39,7 +39,7 @@ $class.new.parser.('3234'.comb);
 Here we generate the parser class code again, but here we place it into an "as-is" Markdown cell:
 
 ```perl6, result=asis, output-prompt=NONE, output-lang=perl6
-fp-ebnf-parse($ebnfCode, <CODE>, target => 'Raku::Class').head.tail;
+fp-ebnf-parse($ebnfCode, <CODE>, actions => 'Raku::Class').head.tail;
 ```
 
 ### Code
@@ -49,7 +49,7 @@ In this sub-section we generate code that has "stand-alone" parser functions.
 Here we generate code of the parsers and place it into an "as-is" Markdown cell:
 
 ```perl6, result=asis, output-prompt=NONE, output-lang=perl6
-.say for fp-ebnf-parse($ebnfCode, <CODE>, target => 'Raku::Code', parser-name => 'MyFP').head.tail;
+.say for fp-ebnf-parse($ebnfCode, <CODE>, actions => 'Raku::Code', parser-name => 'MyFP').head.tail;
 ```
 
 
@@ -60,13 +60,13 @@ In this sub-section we generate code for Raku's built-in grammars.
 Here we generate grammar class and place it into an "as-is" Markdown cell:
 
 ```perl6, result=asis, output-prompt=NONE, output-lang=perl6
-fp-ebnf-parse($ebnfCode, <CODE>, target => 'Raku::Grammar', parser-name => 'MyFP').head.tail;
+fp-ebnf-parse($ebnfCode, <CODE>, actions => 'Raku::Grammar', parser-name => 'MyFP').head.tail;
 ```
 
 Here we generate the grammar code and evaluate it:
 
 ```perl6
-my $gr = fp-ebnf-parse($ebnfCode, <EVAL>, target => 'Raku::Grammar', parser-name => 'MyGr');
+my $gr = fp-ebnf-parse($ebnfCode, <EVAL>, actions => 'Raku::Grammar', parser-name => 'MyGr');
 ```
 
 Here we parse with the grammar:
@@ -103,7 +103,7 @@ my $ebnfCodeWL = $ebnfCode.subst('$_.flat.join', 'StringJoin@*Flatten');
 Here we generate WL code:
 
 ```perl6, result=asis, output-prompt=NONE, output-lang=perl6
-fp-ebnf-parse($ebnfCodeWL, <CODE>, target => 'WL::Code').head.tail.subst(/';' \s* /,";\n"):g;
+fp-ebnf-parse($ebnfCodeWL, <CODE>, actions => 'WL::Code').head.tail.subst(/';' \s* /,";\n"):g;
 ```
 
 ### GrammarRules
@@ -112,5 +112,5 @@ In this sub-section we generate code for WL's built-in
 [`GrammarRules`](https://reference.wolfram.com/language/ref/GrammarRules.html).
 
 ```perl6
-fp-ebnf-parse($ebnfCodeWL, <CODE>, target => 'WL::Grammar').head.tail;
+fp-ebnf-parse($ebnfCodeWL, <CODE>, actions => 'WL::Grammar').head.tail;
 ```
