@@ -3,6 +3,7 @@ use v6.d;
 use FunctionalParsers;
 use FunctionalParsers::EBNF::Actions::EBNF::Standard;
 use FunctionalParsers::EBNF::Actions::Java::FuncJ;
+use FunctionalParsers::EBNF::Actions::MermaidJS::Graph;
 use FunctionalParsers::EBNF::Actions::Raku::Class;
 use FunctionalParsers::EBNF::Actions::Raku::Code;
 use FunctionalParsers::EBNF::Actions::Raku::Grammar;
@@ -45,6 +46,7 @@ multi sub fp-ebnf-parse(@x,
     @expectedTargets.append('WL::' X~ <Code Grammar>);
     @expectedTargets.append('Java::' X~ <Code>);
     @expectedTargets.append('EBNF::' X~ <Standard>);
+    @expectedTargets.append('MermaidJS::' X~ <Graph>);
 
     $target = do given $target {
         when Whatever { 'Raku::Class'; }
@@ -52,6 +54,7 @@ multi sub fp-ebnf-parse(@x,
         when 'Raku' { 'Raku::Class'; }
         when 'WL' { 'WL::Code'; }
         when 'EBNF' { 'EBNF::Standard'; }
+        when 'Mermaid' { 'MermaidJS::Graph'; }
         default { $target }
     }
 
