@@ -33,5 +33,5 @@ class FunctionalParsers::EBNF::Actions::Raku::AST
 
     has &.rule = {Pair.new('EBNFRule', Pair.new($_[0], $_[1]))};
 
-    has &.grammar = {Pair.new('EBNF', $_)}
+    has &.grammar is rw = {Pair.new('EBNF', $_)}
 }
