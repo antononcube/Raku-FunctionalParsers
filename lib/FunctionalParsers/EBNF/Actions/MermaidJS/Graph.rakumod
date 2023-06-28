@@ -1,9 +1,11 @@
 use v6.d;
 
 use FunctionalParsers::EBNF::Actions::MermaidJS::Common;
+use FunctionalParsers::EBNF::Actions::Raku::AST;
 
 class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
-        does FunctionalParsers::EBNF::Actions::MermaidJS::Common {
+        does FunctionalParsers::EBNF::Actions::MermaidJS::Common
+        is FunctionalParsers::EBNF::Actions::Raku::AST {
 
     multi method is-paired-with(Str $head, $s) {
         return $s ~~ Pair && $s.key eq $head;
@@ -89,9 +91,9 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
         return $res;
     };
 
-    multi method trace($p where self.is-paired-with('EBNF', $p) ) {
+    multi method trace($p where self.is-paired-with('EBNF', $p), Str $dirSpec = 'TD') {
         my @res = $p.value.map({ self.trace($_) });
-        my $code = "graph TD\n\t";
+        my $code = "graph $dirSpec\n\t";
         $code ~= self.nodes.map({ $_.key ~ $_.value }).join("\n\t");
         $code ~= "\n\t";
         $code ~= self.rules.unique.join("\n\t");
@@ -100,4 +102,7 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
         return $code;
     }
 
+    submethod TWEAK {
+        self.grammar = { my $res = Pair.new('EBNF', $_); self.trace($res) }
+    }
 }

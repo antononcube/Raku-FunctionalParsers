@@ -2,8 +2,7 @@ use v6.d;
 
 use FunctionalParsers::EBNF::Actions::Common;
 
-role FunctionalParsers::EBNF::Actions::MermaidJS::Common
-        does FunctionalParsers::EBNF::Actions::Common {
+role FunctionalParsers::EBNF::Actions::MermaidJS::Common {
 
     has %.nodes;
     has @.rules;
