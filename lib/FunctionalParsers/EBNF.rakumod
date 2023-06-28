@@ -59,7 +59,7 @@ multi sub fp-ebnf-parse(@x,
     }
 
     die "The argument $actions is expected to be a Whatever or one of { @expectedTargets.map({ "'$_'" }).join(', ') }."
-    unless $actions ~~ Str && $actions ∈ @expectedTargets;
+    unless $actions ~~ Str && $actions ∈ @expectedTargets || $actions !~~ Str;
 
     # Process name
     if $parser-name.isa(Whatever) { $parser-name = 'FP'; }
