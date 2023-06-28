@@ -71,7 +71,7 @@ note $ebnfCode;
 #========================================================================================================================
 say '=' x 120;
 
-my $res = fp-ebnf-parse($ebnfCode, <CODE EVAL>, target => 'Raku::Grammar');
+my $res = fp-ebnf-parse($ebnfCode, <CODE EVAL>, actions => 'Raku::Grammar');
 
 .say for |$res;
 
@@ -80,16 +80,16 @@ say $res<EVAL>.^method_table;
 #========================================================================================================================
 say '=' x 120;
 
-$res = fp-ebnf-parse($ebnfCode, <CODE>, target => 'Raku::Code');
+$res = fp-ebnf-parse($ebnfCode, <CODE>, actions => 'Raku::Code');
 
 say $res.raku;
 
 #========================================================================================================================
 say '=' x 120;
 
-note fp-ebnf-parse(@tokens, <CODE>, target => 'Raku::Class', name => 'MFP', prefix => 'p').head.tail;
+note fp-ebnf-parse(@tokens, <CODE>, actions => 'Raku::Class', name => 'MFP', prefix => 'p').head.tail;
 
-my $classCode = fp-ebnf-parse(@tokens, <EVAL>, target => 'Raku::Class', name => 'MFP', prefix => 'p');
+my $classCode = fp-ebnf-parse(@tokens, <EVAL>, actions => 'Raku::Class', name => 'MFP', prefix => 'p');
 
 say '-' x 120;
 say '$classCode.raku              : ', $classCode.raku;
@@ -115,7 +115,7 @@ say '-' x 120;
 
 my $ebnfCodeWL = $ebnfCode.subst('&{ $_.flat.join }');
 
-say fp-ebnf-parse($ebnfCodeWL, <CODE>, target => 'WL::Grammar').head.tail;
+say fp-ebnf-parse($ebnfCodeWL, <CODE>, actions => 'WL::Grammar').head.tail;
 
 #========================================================================================================================
 say '=' x 120;
@@ -124,4 +124,4 @@ say '-' x 120;
 
 my $ebnfCodeJava = $ebnfCode.subst('&{ $_.flat.join }');
 
-.say for fp-ebnf-parse($ebnfCodeJava, <CODE>, target => 'Java::Code').head.tail;
+.say for fp-ebnf-parse($ebnfCodeJava, <CODE>, actions => 'Java::Code').head.tail;

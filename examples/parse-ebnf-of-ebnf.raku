@@ -12,6 +12,6 @@ note $ebnfCode;
 #========================================================================================================================
 say '=' x 120;
 
-my $res = fp-ebnf-parse($ebnfCode, <CODE>, target => 'Raku::Grammar', style => 'Simpler');
+my $res = fp-ebnf-parse($ebnfCode, <CODE>, actions => 'Raku::Grammar', style => 'Simpler');
 
 .say for $res.head.tail;
