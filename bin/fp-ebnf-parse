@@ -10,10 +10,10 @@ my %*SUB-MAIN-OPTS = :named-anywhere;
 #| Generates parser code for a given EBNF grammar.
 multi MAIN(
         $ebnf,                                                        #= EBNF text.
-        Str :t(:$target) is copy = 'Raku::Class',                     #= Target.
-        Str :name(:$parser-name) is copy = 'MyParser',                #= Parser name.
-        Str :prefix(:$rule-name-prefix) is copy = 'p',                #= Rule names prefix.
-        Str :modifier(:$rule-name-modifier) is copy = 'WhateverCode', #= Rule names modifier.
+        Str :t(:$actions) is copy = 'Raku::Class',                    #= Actions ('t' for 'target'.)
+        Str :n(:$parser-name) is copy = 'MyParser',                   #= Parser name.
+        Str :p(:$rule-name-prefix) is copy = 'p',                     #= Rule names prefix.
+        Str :m(:$rule-name-modifier) is copy = 'WhateverCode',        #= Rule names modifier.
         Str :s(:$style) is copy = 'Whatever',                         #= EBNF style, one of 'Standard', 'Simple', 'G4', or 'Whatever'.
            ) {
 
@@ -28,15 +28,17 @@ multi MAIN(
         die "Only rule name modifier code is allowed to be WhateverCode or one of {@knownModifiers.map({ "'$_'"}).join(', ')}.";
     }
 
-    $target = do given $target.lc {
+    $actions = do given $actions.lc {
         when $_ ∈ <raku perl6 code> { 'Raku::Code' }
         when 'class' { 'Raku::Class' }
         when 'grammar' { 'Raku::Grammar' }
         when 'wl' { 'WL::Code' }
-        default { $target }
+        when 'java' { 'Java::Code' }
+        when 'mermaid' { 'MermaidJS::Graph' }
+        default { $actions }
     }
 
-    my $res = fp-ebnf-parse($ebnf, <CODE>, :$target, :$parser-name, :$rule-name-prefix, :&rule-name-modifier, :$style);
+    my $res = fp-ebnf-parse($ebnf, <CODE>, :$actions, :$parser-name, :$rule-name-prefix, :&rule-name-modifier, :$style);
 
     if $res.head.head {
         say $res;
