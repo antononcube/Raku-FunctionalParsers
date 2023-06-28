@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|2690483571400) ... }
+# -> @x { #`(Block|2378058235936) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|2690483768424) ... }
+# -> @x { #`(Block|2378058411616) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -232,7 +232,7 @@ Here generation is the corresponding functional parsers code:
 
 ```perl6
 use FunctionalParsers::EBNF;
-.say for fp-ebnf-parse($ebnfCode, target => 'Raku::Code').head.tail;
+.say for fp-ebnf-parse($ebnfCode, actions => 'Raku::Code').head.tail;
 ```
 ```
 # my &pDIGIT = alternatives(symbol('0'), symbol('1'), symbol('2'), symbol('3'), symbol('4'), symbol('5'), symbol('6'), symbol('7'), symbol('8'), symbol('9'));
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode2, 12);
 ```
 ```
-# We 🤮 Perl
-# We ♥️ ♥️ ♥️ ♥️ Perl
-# I love Perl
-# I love R
-# I 🤮 WL
-# I 🤮 Perl
-# I love Julia
-# I love R
-# We love Python
-# I hate Python
-# I love Python
+# We hate Python
+# We love Julia
+# We hate Python
+# I hate WL
+# We love R
+# I ♥️ ♥️ ♥️ ♥️ WL
 # We hate Julia
+# I  R
+# I ♥️ ♥️ ♥️ ♥️ Python
+# We hate Python
+# I hate Julia
+# We hate WL
 ```
 
 ------
@@ -295,7 +295,7 @@ Here is an example:
 ```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
 my $ebnfCode3 = q:to/END/;
 <top> = <a> | <b> ;
-<a> = 'a' , { 'A' }, [ '1' ];
+<a> = 'a' , { 'A' } , [ '1' ];
 <b> = 'b' , ( 'B' | '2' );
 END
 
@@ -303,21 +303,21 @@ fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
 ```
 ```mermaid
 graph TD
-	T:a(a)
 	NT:top[top]
-	T:2(2)
-	seq5((and))
-	opt9((?))
-	NT:b[b]
-	T:A(A)
 	T:b(b)
 	T:1(1)
-	NT:a[a]
+	T:2(2)
 	T:B(B)
 	rep7((*))
-	alt14((or))
+	T:A(A)
 	seq12((and))
+	opt9((?))
+	NT:a[a]
+	NT:b[b]
 	alt1((or))
+	T:a(a)
+	alt14((or))
+	seq5((and))
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -356,21 +356,21 @@ fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail
 ```
 ```mermaid
 graph TD
-	T:A(A)
 	T:B(B)
-	seq5((and))
-	alt12((or))
 	T:a(a)
-	rep7((*))
-	T:2(2)
-	NT:b[b]
-	opt9((?))
-	NT:a[a]
 	seq13((and))
 	T:b(b)
-	alt1((or))
-	T:1(1)
+	T:2(2)
+	T:A(A)
 	NT:top[top]
+	T:1(1)
+	alt12((or))
+	opt9((?))
+	rep7((*))
+	seq5((and))
+	alt1((or))
+	NT:b[b]
+	NT:a[a]
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -398,14 +398,14 @@ fp-ebnf-parse --help
 ```
 ```
 # Usage:
-#   fp-ebnf-parse <ebnf> [-t|--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar.
+#   fp-ebnf-parse <ebnf> [-t|--actions=<Str>] [-n|--parser-name=<Str>] [-p|--rule-name-prefix=<Str>] [-m|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar.
 #   
-#     <ebnf>                                   EBNF text.
-#     -t|--target=<Str>                        Target. [default: 'Raku::Class']
-#     --name|--parser-name=<Str>               Parser name. [default: 'MyParser']
-#     --prefix|--rule-name-prefix=<Str>        Rule names prefix. [default: 'p']
-#     --modifier|--rule-name-modifier=<Str>    Rule names modifier. [default: 'WhateverCode']
-#     -s|--style=<Str>                         EBNF style, one of 'Standard', 'Simple', 'G4', or 'Whatever'. [default: 'Whatever']
+#     <ebnf>                           EBNF text.
+#     -t|--actions=<Str>               Actions ('t' for 'target'.) [default: 'Raku::Class']
+#     -n|--parser-name=<Str>           Parser name. [default: 'MyParser']
+#     -p|--rule-name-prefix=<Str>      Rule names prefix. [default: 'p']
+#     -m|--rule-name-modifier=<Str>    Rule names modifier. [default: 'WhateverCode']
+#     -s|--style=<Str>                 EBNF style, one of 'Standard', 'Simple', 'G4', or 'Whatever'. [default: 'Whatever']
 ```
 
 ------

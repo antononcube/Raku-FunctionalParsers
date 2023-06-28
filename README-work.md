@@ -211,7 +211,7 @@ Here generation is the corresponding functional parsers code:
 
 ```perl6
 use FunctionalParsers::EBNF;
-.say for fp-ebnf-parse($ebnfCode, target => 'Raku::Code').head.tail;
+.say for fp-ebnf-parse($ebnfCode, actions => 'Raku::Code').head.tail;
 ```
 
 For more detailed examples see ["Parser-code-generation.md"](./doc/Parser-code-generation.md).
