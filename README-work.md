@@ -249,8 +249,8 @@ Here is an example:
 ```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
 my $ebnfCode3 = q:to/END/;
 <top> = <a> | <b> ;
-<a> = 'a' , { 'A' };
-<b> = 'b' , ( 'B' | [ '1' ] );
+<a> = 'a' , { 'A' } , [ '1' ];
+<b> = 'b' , ( 'B' | '2' );
 END
 
 fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
@@ -270,8 +270,8 @@ Compare the following EBNF grammar and corresponding diagram with the ones above
 ```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
 my $ebnfCode4 = q:to/END/;
 <top> = <a> | <b> ;
-<a> = 'a' , { 'A' };
-<b> = 'b' , 'B' | [ '1' ];
+<a> = 'a' , { 'A' } , [ '1' ] ;
+<b> = 'b' , 'B' | '2' ;
 END
 
 fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail

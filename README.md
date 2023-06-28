@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|5072815194144) ... }
+# -> @x { #`(Block|2690483571400) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|5072815370112) ... }
+# -> @x { #`(Block|2690483768424) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode2, 12);
 ```
 ```
-# I ♥️ ♥️ ♥️ ♥️ Julia
-# I 🤮 Python
-# I love WL
-# I 🤮 Python
-# We love R
-# I hate Perl
+# We 🤮 Perl
+# We ♥️ ♥️ ♥️ ♥️ Perl
+# I love Perl
+# I love R
 # I 🤮 WL
-# I 🤮 Julia
-# I hate WL
+# I 🤮 Perl
+# I love Julia
+# I love R
+# We love Python
 # I hate Python
-# I hate WL
-# We hate R
+# I love Python
+# We hate Julia
 ```
 
 ------
@@ -295,41 +295,43 @@ Here is an example:
 ```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
 my $ebnfCode3 = q:to/END/;
 <top> = <a> | <b> ;
-<a> = 'a' , { 'A' };
-<b> = 'b' , ( 'B' | [ '1' ] );
+<a> = 'a' , { 'A' }, [ '1' ];
+<b> = 'b' , ( 'B' | '2' );
 END
 
 fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
 ```
 ```mermaid
 graph TD
-	opt14((?))
-	NT:a[a]
-	seq10((and))
 	T:a(a)
 	NT:top[top]
-	T:A(A)
-	alt12((or))
-	rep7((*))
+	T:2(2)
 	seq5((and))
-	T:b(b)
-	T:B(B)
-	alt1((or))
-	T:1(1)
+	opt9((?))
 	NT:b[b]
+	T:A(A)
+	T:b(b)
+	T:1(1)
+	NT:a[a]
+	T:B(B)
+	rep7((*))
+	alt14((or))
+	seq12((and))
+	alt1((or))
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
 	rep7 --> T:A
+	opt9 --> T:1
 	seq5 --> T:a
 	seq5 --> rep7
+	seq5 --> opt9
 	NT:a --> seq5
-	opt14 --> T:1
-	alt12 --> T:B
-	alt12 --> opt14
-	seq10 --> T:b
-	seq10 --> alt12
-	NT:b --> seq10
+	alt14 --> T:B
+	alt14 --> T:2
+	seq12 --> T:b
+	seq12 --> alt14
+	NT:b --> seq12
 ```
 
 Here is a legend:
@@ -346,41 +348,43 @@ Compare the following EBNF grammar and corresponding diagram with the ones above
 ```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
 my $ebnfCode4 = q:to/END/;
 <top> = <a> | <b> ;
-<a> = 'a' , { 'A' };
-<b> = 'b' , 'B' | [ '1' ];
+<a> = 'a' , { 'A' } , [ '1' ] ;
+<b> = 'b' , 'B' | '2' ;
 END
 
 fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail
 ```
 ```mermaid
 graph TD
-	opt14((?))
 	T:A(A)
-	T:b(b)
-	T:a(a)
-	NT:top[top]
-	rep7((*))
-	seq11((and))
-	NT:b[b]
-	T:1(1)
-	alt1((or))
-	seq5((and))
 	T:B(B)
+	seq5((and))
+	alt12((or))
+	T:a(a)
+	rep7((*))
+	T:2(2)
+	NT:b[b]
+	opt9((?))
 	NT:a[a]
-	alt10((or))
+	seq13((and))
+	T:b(b)
+	alt1((or))
+	T:1(1)
+	NT:top[top]
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
 	rep7 --> T:A
+	opt9 --> T:1
 	seq5 --> T:a
 	seq5 --> rep7
+	seq5 --> opt9
 	NT:a --> seq5
-	seq11 --> T:b
-	seq11 --> T:B
-	opt14 --> T:1
-	alt10 --> seq11
-	alt10 --> opt14
-	NT:b --> alt10
+	seq13 --> T:b
+	seq13 --> T:B
+	alt12 --> seq13
+	alt12 --> T:2
+	NT:b --> alt12
 ```
 
 ------
