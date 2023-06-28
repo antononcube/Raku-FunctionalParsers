@@ -44,7 +44,7 @@ multi sub fp-ebnf-parse(@x,
     # Process target
     my @expectedTargets = 'Raku::' X~ <AST Class ClassAttr Code Grammar>;
     @expectedTargets.append('WL::' X~ <Code Grammar>);
-    @expectedTargets.append('Java::' X~ <Code>);
+    @expectedTargets.append('Java::' X~ <FuncJ>);
     @expectedTargets.append('EBNF::' X~ <Standard>);
     @expectedTargets.append('MermaidJS::' X~ <Graph>);
 
