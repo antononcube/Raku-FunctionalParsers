@@ -28,7 +28,7 @@ multi sub fp-ebnf-parse(Str $x, $properties = Whatever, *%args) {
 
 multi sub fp-ebnf-parse(@x,
                         $properties is copy = Whatever,
-                        :$target is copy = 'Raku::Class',
+                        :target(:$actions) is copy = 'Raku::Class',
                         :name(:$parser-name) is copy = Whatever,
                         :prefix(:$rule-name-prefix) is copy = Whatever,
                         :modifier(:&rule-name-modifier) is copy = WhateverCode,
@@ -48,18 +48,18 @@ multi sub fp-ebnf-parse(@x,
     @expectedTargets.append('EBNF::' X~ <Standard>);
     @expectedTargets.append('MermaidJS::' X~ <Graph>);
 
-    $target = do given $target {
+    $actions = do given $actions {
         when Whatever { 'Raku::Class'; }
         when 'Java' { 'Java::FuncJ'; }
         when 'Raku' { 'Raku::Class'; }
         when 'WL' { 'WL::Code'; }
         when 'EBNF' { 'EBNF::Standard'; }
         when 'Mermaid' { 'MermaidJS::Graph'; }
-        default { $target }
+        default { $actions }
     }
 
-    die "The argument $target is expected to be a Whatever or one of { @expectedTargets.map({ "'$_'" }).join(', ') }."
-    unless $target ~~ Str && $target ∈ @expectedTargets;
+    die "The argument $actions is expected to be a Whatever or one of { @expectedTargets.map({ "'$_'" }).join(', ') }."
+    unless $actions ~~ Str && $actions ∈ @expectedTargets;
 
     # Process name
     if $parser-name.isa(Whatever) { $parser-name = 'FP'; }
@@ -86,28 +86,28 @@ multi sub fp-ebnf-parse(@x,
 
     # The context (or actions) is determined by lang and property.
     # Note that property can be a list.
-    my $actions = Whatever;
+    my $actionsObj = Whatever;
 
-    if $target ~~ Str {
+    if $actions ~~ Str {
 
         # Make parser generator
-        $actions = ::("FunctionalParsers::EBNF::Actions::{ $target }").new(
+        $actionsObj = ::("FunctionalParsers::EBNF::Actions::{ $actions }").new(
                 name => $parser-name,
                 prefix => $rule-name-prefix,
                 modifier => &rule-name-modifier
                 );
 
-        die "Cannot create an object of the target class" unless $actions;
+        die "Cannot create an object of the target class" unless $actionsObj;
 
     } else {
-        $actions = $target
+        $actionsObj = $actions
     }
 
     my $parsObj;
     if $tokenized {
-        $parsObj = FunctionalParsers::EBNF::Parser::FromTokens.new(ebnfActions => $actions, :$style);
+        $parsObj = FunctionalParsers::EBNF::Parser::FromTokens.new(ebnfActions => $actionsObj, :$style);
     } else {
-        $parsObj = FunctionalParsers::EBNF::Parser::Styled.new(ebnfActions => $actions, :$style);
+        $parsObj = FunctionalParsers::EBNF::Parser::Styled.new(ebnfActions => $actionsObj, :$style);
     }
     my &pEBNF = $parsObj.pEBNF;
 
@@ -116,7 +116,7 @@ multi sub fp-ebnf-parse(@x,
 
     %res<CODE> = &pEBNF.(@x).List;
 
-    if 'EVAL' ∈ $properties && (%res<CODE>:exists) && $target ∈ <Raku::Class Raku::Grammar> {
+    if 'EVAL' ∈ $properties && (%res<CODE>:exists) && $actions ∈ <Raku::Class Raku::Grammar> {
         # Evaluate the class / grammar code
         use MONKEY-SEE-NO-EVAL;
         %res<EVAL> = EVAL %res<CODE>.head.tail;
