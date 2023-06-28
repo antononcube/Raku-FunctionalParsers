@@ -7,7 +7,7 @@ use FunctionalParsers::EBNF;
 use Test;
 
 sub local-fp-ebnf-parse($x) {
-        return fp-ebnf-parse($x, :tokenized, target => 'Raku::AST');
+        return fp-ebnf-parse($x, :tokenized, actions => 'Raku::AST');
 }
 
 plan *;
@@ -152,31 +152,31 @@ my @tokens21 = $ebnfCode21.comb;
 
 ## 21
 is-deeply
-        fp-ebnf-parse(@tokens21, target => 'Raku::AST').head.tail,
+        fp-ebnf-parse(@tokens21, actions => 'Raku::AST').head.tail,
         local-fp-ebnf-parse($ebnfCode21.subst(/\s/, '')).head.tail,
         'Equivalence: tokens vs string (<& &>)';
 
 ## 22
 is-deeply
-        fp-ebnf-parse($ebnfCode21, target => 'Raku::AST').head.tail,
+        fp-ebnf-parse($ebnfCode21, actions => 'Raku::AST').head.tail,
         local-fp-ebnf-parse($ebnfCode21.subst(/\s/, '')).head.tail,
         'Equivalence: string vs string without a whitespace (<& &>)';
 
 ## 23
 is-deeply
-        fp-ebnf-parse($ebnfCode21, target => 'Raku::AST').head.tail,
+        fp-ebnf-parse($ebnfCode21, actions => 'Raku::AST').head.tail,
         local-fp-ebnf-parse($ebnfCode21.subst(/\s/, ''):g).head.tail,
         'Equivalence: string vs string without whitespaces (<& &>)';
 
 ## 24
 is-deeply
-        fp-ebnf-parse($ebnfCode11, target => 'Raku::AST').head.tail,
+        fp-ebnf-parse($ebnfCode11, actions => 'Raku::AST').head.tail,
         local-fp-ebnf-parse($ebnfCode11.subst(/\s/, ''):g).head.tail,
         'Equivalence: string vs string without whitespaces (digit)';
 
 ## 25
 is-deeply
-        fp-ebnf-parse($ebnfCode11, target => 'Raku::AST').head.tail,
+        fp-ebnf-parse($ebnfCode11, actions => 'Raku::AST').head.tail,
         local-fp-ebnf-parse($ebnfCode11.subst(/\s/, "\n"):g).head.tail,
         'Equivalence: string vs string with additional whitespaces (digit)';
 

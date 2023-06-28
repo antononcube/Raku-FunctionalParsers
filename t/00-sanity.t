@@ -59,7 +59,7 @@ ok fp-ebnf-parse(@tokens7), 'Parsing routine works with :!tokenized';
 ok fp-ebnf-parse($ebnfCode7), 'Parsing routine works with a string';
 
 ## 10
-ok fp-ebnf-parse($ebnfCode7, target => 'Raku::Code'),
-        'Parsing routine works with a string and target => "Raku::Code"';
+ok fp-ebnf-parse($ebnfCode7, actions => 'Raku::Code'),
+        'Parsing routine works with a string and actions => "Raku::Code"';
 
 done-testing;
