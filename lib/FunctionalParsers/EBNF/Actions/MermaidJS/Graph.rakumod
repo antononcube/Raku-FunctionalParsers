@@ -104,6 +104,12 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
     }
 
     submethod TWEAK {
-        self.grammar = { my $res = Pair.new('EBNF', $_); self.trace($res) }
+        self.grammar = {
+            self.nodes = Empty;
+            self.rules = Empty;
+            self.tranceIndex = 0;
+            my $res = Pair.new('EBNF', $_);
+            self.trace($res)
+        }
     }
 }

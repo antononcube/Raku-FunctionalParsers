@@ -6,7 +6,7 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::Common {
 
     has %.nodes;
     has @.rules;
-    has $.tranceIndex = 0;
+    has $.tranceIndex is rw = 0;
 
     method make-mmd-node(Str $spec, $ext is copy = Whatever) {
 
