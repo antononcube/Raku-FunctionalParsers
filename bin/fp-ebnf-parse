@@ -33,7 +33,7 @@ multi MAIN(
         when 'class' { 'Raku::Class' }
         when 'grammar' { 'Raku::Grammar' }
         when 'wl' { 'WL::Code' }
-        when 'java' { 'Java::Code' }
+        when 'java' { 'Java::FuncJ' }
         when 'mermaid' { 'MermaidJS::Graph' }
         default { $actions }
     }
