@@ -47,10 +47,13 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
         return $op;
     };
 
-    has &.apply = {"$_[0]"};
+    multi method trace($p where self.is-paired-with('EBNFApply', $p) ) {
+        my $op = self.make-mmd-node('apply');
+        self.rules.append([ "$op --> {$op}FUNC[[\"{$p.value.[0]}\"]]", "$op --> {self.trace($p.value[1])}"]);
+        return $op;
+    };
 
     multi method trace($p where self.is-paired-with('EBNFSequence', $p) ) {
-        #note 'sequence $_ : ', $_.raku;
         if $p.value ~~ Positional && $p.value.elems > 1 {
             my $op = self.make-mmd-node('seq');
             self.rules.append($p.value.map({ "$op --> {self.trace($_)}" }));
@@ -69,7 +72,6 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
     };
 
     multi method trace($p where self.is-paired-with('EBNFAlternatives', $p) ) {
-        #note 'alternatices $_ : ', $_.raku;
         if $p.value ~~ Positional && $p.value.elems > 1 {
             my $op = self.make-mmd-node('alt');
             self.rules.append($p.value.map({ "$op --> {self.trace($_)}" }));

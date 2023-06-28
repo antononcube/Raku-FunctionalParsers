@@ -18,6 +18,11 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::Common {
         }
 
         given $spec {
+            when 'apply' {
+                $name = "apply{$ext}";
+                $node = '(("@"))';
+            }
+
             when 'alt' {
                 $name = "alt{$ext}";
                 $node = '((or))';
