@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|3329393490272) ... }
+# -> @x { #`(Block|5072815194144) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|3329393728760) ... }
+# -> @x { #`(Block|5072815370112) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -218,14 +218,14 @@ Here is an EBNF grammar:
 ```perl6
 my $ebnfCode = q:to/END/;
 <digit> = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
-<number> = <digit> , { <digit> } ;
-<top> = <number> ;
+<integer> = <digit> , { <digit> } ;
+<top> = <integer> ;
 END
 ```
 ```
 # <digit> = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
-# <number> = <digit> , { <digit> } ;
-# <top> = <number> ;
+# <integer> = <digit> , { <digit> } ;
+# <top> = <integer> ;
 ```
 
 Here generation is the corresponding functional parsers code:
@@ -236,8 +236,8 @@ use FunctionalParsers::EBNF;
 ```
 ```
 # my &pDIGIT = alternatives(symbol('0'), symbol('1'), symbol('2'), symbol('3'), symbol('4'), symbol('5'), symbol('6'), symbol('7'), symbol('8'), symbol('9'));
-# my &pNUMBER = sequence(&pDIGIT, many(&pDIGIT));
-# my &pTOP = &pNUMBER;
+# my &pINTEGER = sequence(&pDIGIT, many(&pDIGIT));
+# my &pTOP = &pINTEGER;
 ```
 
 For more detailed examples see ["Parser-code-generation.md"](./doc/Parser-code-generation.md).
@@ -249,7 +249,7 @@ For more detailed examples see ["Parser-code-generation.md"](./doc/Parser-code-g
 Here is an EBNF grammar:
 
 ```perl6
-my $ebnfCode = q:to/END/;
+my $ebnfCode2 = q:to/END/;
 <top> = <who> , <verb> , <lang> ;
 <who> = 'I' | 'We' ;
 <verb> = 'love' | 'hate' | { '♥️' } | '🤮';
@@ -266,21 +266,121 @@ END
 Here is generation of random sentences with the grammar above:
 
 ```perl6
-.say for random-sentence($ebnfCode, 12);
+.say for random-sentence($ebnfCode2, 12);
 ```
 ```
-# I hate R
-# We hate Perl
-# We hate Perl
-# I  WL
-# We 🤮 Perl
-# We ♥️ ♥️ ♥️ R
-# We ♥️ ♥️ ♥️ ♥️ R
-# We hate Perl
-# We love Perl
-# We 🤮 WL
-# We ♥️ WL
-# We hate Python
+# I ♥️ ♥️ ♥️ ♥️ Julia
+# I 🤮 Python
+# I love WL
+# I 🤮 Python
+# We love R
+# I hate Perl
+# I 🤮 WL
+# I 🤮 Julia
+# I hate WL
+# I hate Python
+# I hate WL
+# We hate R
+```
+
+------
+
+## Generating Mermaid diagrams for EBNFs
+
+The function `fp-ebnf-parse` can produce 
+[Mermaid-JS diagrams](https://mermaid.js.org)
+corresponding to grammars with the target "MermaidJS::Graph".
+Here is an example:
+
+```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
+my $ebnfCode3 = q:to/END/;
+<top> = <a> | <b> ;
+<a> = 'a' , { 'A' };
+<b> = 'b' , ( 'B' | [ '1' ] );
+END
+
+fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
+```
+```mermaid
+graph TD
+	opt14((?))
+	NT:a[a]
+	seq10((and))
+	T:a(a)
+	NT:top[top]
+	T:A(A)
+	alt12((or))
+	rep7((*))
+	seq5((and))
+	T:b(b)
+	T:B(B)
+	alt1((or))
+	T:1(1)
+	NT:b[b]
+	alt1 --> NT:a
+	alt1 --> NT:b
+	NT:top --> alt1
+	rep7 --> T:A
+	seq5 --> T:a
+	seq5 --> rep7
+	NT:a --> seq5
+	opt14 --> T:1
+	alt12 --> T:B
+	alt12 --> opt14
+	seq10 --> T:b
+	seq10 --> alt12
+	NT:b --> seq10
+```
+
+Here is a legend:
+
+- The non-terminals are shown with rectangles 
+- The terminals are shown with round rectangles
+- The "conjunctions" are shown in disks 
+
+**Remark:** The Markdown cell above has the parameters `result=asis, output-lang=mermaid, output-prompt=NONE`
+which allow for direct diagram rendering of the obtained Mermaid code in various Markdown viewers (GitHub, IntelliJ, etc.)
+
+Compare the following EBNF grammar and corresponding diagram with the ones above:
+
+```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
+my $ebnfCode4 = q:to/END/;
+<top> = <a> | <b> ;
+<a> = 'a' , { 'A' };
+<b> = 'b' , 'B' | [ '1' ];
+END
+
+fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail
+```
+```mermaid
+graph TD
+	opt14((?))
+	T:A(A)
+	T:b(b)
+	T:a(a)
+	NT:top[top]
+	rep7((*))
+	seq11((and))
+	NT:b[b]
+	T:1(1)
+	alt1((or))
+	seq5((and))
+	T:B(B)
+	NT:a[a]
+	alt10((or))
+	alt1 --> NT:a
+	alt1 --> NT:b
+	NT:top --> alt1
+	rep7 --> T:A
+	seq5 --> T:a
+	seq5 --> rep7
+	NT:a --> seq5
+	seq11 --> T:b
+	seq11 --> T:B
+	opt14 --> T:1
+	alt10 --> seq11
+	alt10 --> opt14
+	NT:b --> alt10
 ```
 
 ------
@@ -290,11 +390,11 @@ Here is generation of random sentences with the grammar above:
 The package provides a Command Line Interface (CLI) script for parsing EBNF. Here is its usage message:
 
 ```shell
-fp-fp-ebnf-parse --help
+fp-ebnf-parse --help
 ```
 ```
 # Usage:
-#   fp-fp-ebnf-parse <ebnf> [-t|--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar.
+#   fp-ebnf-parse <ebnf> [-t|--target=<Str>] [--name|--parser-name=<Str>] [--prefix|--rule-name-prefix=<Str>] [--modifier|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar.
 #   
 #     <ebnf>                                   EBNF text.
 #     -t|--target=<Str>                        Target. [default: 'Raku::Class']
@@ -423,7 +523,7 @@ graph TD
      - [X] DONE Class
      - [X] DONE Code
      - [X] DONE Grammar
-     - [ ] TODO MermaidJS
+     - [X] DONE MermaidJS
      - [ ] TODO Tokenizer (of character sequences)
      - [ ] Other EBNF styles
    - [ ] TODO WL

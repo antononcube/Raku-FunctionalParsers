@@ -202,8 +202,8 @@ Here is an EBNF grammar:
 ```perl6
 my $ebnfCode = q:to/END/;
 <digit> = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
-<number> = <digit> , { <digit> } ;
-<top> = <number> ;
+<integer> = <digit> , { <digit> } ;
+<top> = <integer> ;
 END
 ```
 
@@ -223,7 +223,7 @@ For more detailed examples see ["Parser-code-generation.md"](./doc/Parser-code-g
 Here is an EBNF grammar:
 
 ```perl6
-my $ebnfCode = q:to/END/;
+my $ebnfCode2 = q:to/END/;
 <top> = <who> , <verb> , <lang> ;
 <who> = 'I' | 'We' ;
 <verb> = 'love' | 'hate' | { '♥️' } | '🤮';
@@ -234,7 +234,47 @@ END
 Here is generation of random sentences with the grammar above:
 
 ```perl6
-.say for random-sentence($ebnfCode, 12);
+.say for random-sentence($ebnfCode2, 12);
+```
+
+------
+
+## Generating Mermaid diagrams for EBNFs
+
+The function `fp-ebnf-parse` can produce 
+[Mermaid-JS diagrams](https://mermaid.js.org)
+corresponding to grammars with the target "MermaidJS::Graph".
+Here is an example:
+
+```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
+my $ebnfCode3 = q:to/END/;
+<top> = <a> | <b> ;
+<a> = 'a' , { 'A' };
+<b> = 'b' , ( 'B' | [ '1' ] );
+END
+
+fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
+```
+
+Here is a legend:
+
+- The non-terminals are shown with rectangles 
+- The terminals are shown with round rectangles
+- The "conjunctions" are shown in disks 
+
+**Remark:** The Markdown cell above has the parameters `result=asis, output-lang=mermaid, output-prompt=NONE`
+which allow for direct diagram rendering of the obtained Mermaid code in various Markdown viewers (GitHub, IntelliJ, etc.)
+
+Compare the following EBNF grammar and corresponding diagram with the ones above:
+
+```perl6, result=asis, output-lang=mermaid, output-prompt=NONE
+my $ebnfCode4 = q:to/END/;
+<top> = <a> | <b> ;
+<a> = 'a' , { 'A' };
+<b> = 'b' , 'B' | [ '1' ];
+END
+
+fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail
 ```
 
 ------
@@ -244,7 +284,7 @@ Here is generation of random sentences with the grammar above:
 The package provides a Command Line Interface (CLI) script for parsing EBNF. Here is its usage message:
 
 ```shell
-fp-fp-ebnf-parse --help
+fp-ebnf-parse --help
 ```
 
 ------
@@ -366,7 +406,7 @@ graph TD
      - [X] DONE Class
      - [X] DONE Code
      - [X] DONE Grammar
-     - [ ] TODO MermaidJS
+     - [X] DONE MermaidJS
      - [ ] TODO Tokenizer (of character sequences)
      - [ ] Other EBNF styles
    - [ ] TODO WL
