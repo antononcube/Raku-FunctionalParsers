@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|5231594323712) ... }
+# -> @x { #`(Block|5628846751992) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|5231628393720) ... }
+# -> @x { #`(Block|5628879707384) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode2, 12);
 ```
 ```
-# We hate Python
-# I love Julia
-# I love Perl
-# We hate Perl
-# We hate WL
-# I hate R
+# I 🤮 R
+# I love WL
+# I  Python
 # I 🤮 WL
+# I 🤮 R
+# I ♥️ ♥️ WL
+# We 🤮 WL
 # I 🤮 Julia
-# I hate Julia
-# We hate Julia
-# We love WL
-# We love Python
+# I  Perl
+# We 🤮 Python
+# I hate R
+# We ♥️ ♥️ ♥️ ♥️ Python
 ```
 
 ------
@@ -303,21 +303,21 @@ fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
 ```
 ```mermaid
 graph TD
-	T:A("A")
-	T:1("1")
-	opt9((?))
-	NT:a["a"]
-	rep7((*))
-	alt1((or))
-	T:a("a")
-	T:2("2")
-	T:B("B")
 	seq12((and))
+	NT:a["a"]
 	T:b("b")
 	NT:top["top"]
-	seq5((and))
-	NT:b["b"]
+	T:A("A")
+	rep7((*))
+	T:1("1")
+	T:2("2")
 	alt14((or))
+	opt9((?))
+	T:B("B")
+	NT:b["b"]
+	seq5((and))
+	T:a("a")
+	alt1((or))
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -356,21 +356,21 @@ fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail
 ```
 ```mermaid
 graph TD
-	alt1((or))
 	T:2("2")
 	alt12((or))
-	NT:top["top"]
-	NT:a["a"]
-	T:b("b")
-	rep7((*))
 	opt9((?))
+	NT:top["top"]
+	T:1("1")
 	T:B("B")
 	T:a("a")
-	T:1("1")
-	T:A("A")
 	NT:b["b"]
-	seq13((and))
+	T:A("A")
+	alt1((or))
+	NT:a["a"]
 	seq5((and))
+	T:b("b")
+	seq13((and))
+	rep7((*))
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -408,6 +408,13 @@ fp-ebnf-parse --help
 #     -m|--rule-name-modifier=<Str>    Rule names modifier. [default: 'WhateverCode']
 #     -s|--style=<Str>                 EBNF style, one of 'G4', 'Inverted', 'Standard', 'Relaxed', or 'Whatever'. [default: 'Whatever']
 #     <file>                           EBNF file name.
+```
+
+If [mermaid-cli](https://github.com/mermaid-js/mermaid-cli) 
+is installed here is an example UNIX shell pipeline with it:
+
+```
+fp-ebnf-parse ./resources/Arithmetic.ebnf -s=relaxed -t=mermaid > diag.md && mmdc -i diag.md -o diag.png -w 1200 && open diag.png
 ```
 
 ------

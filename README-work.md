@@ -287,6 +287,13 @@ The package provides a Command Line Interface (CLI) script for parsing EBNF. Her
 fp-ebnf-parse --help
 ```
 
+If [mermaid-cli](https://github.com/mermaid-js/mermaid-cli) 
+is installed here is an example UNIX shell pipeline with it:
+
+```
+fp-ebnf-parse ./resources/Arithmetic.ebnf -s=relaxed -t=mermaid > diag.md && mmdc -i diag.md -o diag.png -w 1200 && open diag.png
+```
+
 ------
 
 ## Implementation considerations
