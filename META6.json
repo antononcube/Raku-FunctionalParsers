@@ -1,7 +1,7 @@
 {
   "name": "FunctionalParsers",
   "description": "A system of functional parsers (combinators, transformers, generators.)",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
@@ -30,7 +30,13 @@
     "FunctionalParsers::EBNF::Parser::Standard": "lib/FunctionalParsers/EBNF/Parser/Standard.rakumod",
     "FunctionalParsers::EBNF::Parser::Styled": "lib/FunctionalParsers/EBNF/Parser/Styled.rakumod"
   },
-  "resources": [],
+  "resources": [
+    "Arithmetic.ebnf",
+    "Arithmetic-original.ebnf",
+    "Arithmetic-relaxed.ebnf",
+    "EBNF.ebnf",
+    "EBNF-original.ebnf"
+  ],
   "license": "Artistic-2.0",
   "tags": [
     "BNF",
