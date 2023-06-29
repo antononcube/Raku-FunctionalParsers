@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|2378058235936) ... }
+# -> @x { #`(Block|5231594323712) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|2378058411616) ... }
+# -> @x { #`(Block|5231628393720) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -270,17 +270,17 @@ Here is generation of random sentences with the grammar above:
 ```
 ```
 # We hate Python
-# We love Julia
-# We hate Python
-# I hate WL
-# We love R
-# I ♥️ ♥️ ♥️ ♥️ WL
-# We hate Julia
-# I  R
-# I ♥️ ♥️ ♥️ ♥️ Python
-# We hate Python
-# I hate Julia
+# I love Julia
+# I love Perl
+# We hate Perl
 # We hate WL
+# I hate R
+# I 🤮 WL
+# I 🤮 Julia
+# I hate Julia
+# We hate Julia
+# We love WL
+# We love Python
 ```
 
 ------
@@ -303,21 +303,21 @@ fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
 ```
 ```mermaid
 graph TD
-	NT:top[top]
-	T:b(b)
-	T:1(1)
-	T:2(2)
-	T:B(B)
-	rep7((*))
-	T:A(A)
-	seq12((and))
+	T:A("A")
+	T:1("1")
 	opt9((?))
-	NT:a[a]
-	NT:b[b]
+	NT:a["a"]
+	rep7((*))
 	alt1((or))
-	T:a(a)
-	alt14((or))
+	T:a("a")
+	T:2("2")
+	T:B("B")
+	seq12((and))
+	T:b("b")
+	NT:top["top"]
 	seq5((and))
+	NT:b["b"]
+	alt14((or))
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -356,21 +356,21 @@ fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail
 ```
 ```mermaid
 graph TD
-	T:B(B)
-	T:a(a)
-	seq13((and))
-	T:b(b)
-	T:2(2)
-	T:A(A)
-	NT:top[top]
-	T:1(1)
-	alt12((or))
-	opt9((?))
-	rep7((*))
-	seq5((and))
 	alt1((or))
-	NT:b[b]
-	NT:a[a]
+	T:2("2")
+	alt12((or))
+	NT:top["top"]
+	NT:a["a"]
+	T:b("b")
+	rep7((*))
+	opt9((?))
+	T:B("B")
+	T:a("a")
+	T:1("1")
+	T:A("A")
+	NT:b["b"]
+	seq13((and))
+	seq5((and))
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -399,13 +399,15 @@ fp-ebnf-parse --help
 ```
 # Usage:
 #   fp-ebnf-parse <ebnf> [-t|--actions=<Str>] [-n|--parser-name=<Str>] [-p|--rule-name-prefix=<Str>] [-m|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar.
+#   fp-ebnf-parse <file> [-t|--actions=<Str>] [-n|--parser-name=<Str>] [-p|--rule-name-prefix=<Str>] [-m|--rule-name-modifier=<Str>] [-s|--style=<Str>] -- Generates parser code for a given EBNF grammar file.
 #   
 #     <ebnf>                           EBNF text.
 #     -t|--actions=<Str>               Actions ('t' for 'target'.) [default: 'Raku::Class']
 #     -n|--parser-name=<Str>           Parser name. [default: 'MyParser']
 #     -p|--rule-name-prefix=<Str>      Rule names prefix. [default: 'p']
 #     -m|--rule-name-modifier=<Str>    Rule names modifier. [default: 'WhateverCode']
-#     -s|--style=<Str>                 EBNF style, one of 'Standard', 'Simple', 'G4', or 'Whatever'. [default: 'Whatever']
+#     -s|--style=<Str>                 EBNF style, one of 'G4', 'Inverted', 'Standard', 'Relaxed', or 'Whatever'. [default: 'Whatever']
+#     <file>                           EBNF file name.
 ```
 
 ------
@@ -518,6 +520,8 @@ graph TD
 - [ ] TODO Interpreters of EBNF
    - [X] DONE Java 
      - [X] DONE ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
+   - [ ] TODO [GraphViz](https://graphviz.org)
+     - [ ] TODO [DOT](https://graphviz.org/doc/info/lang.html)
    - [ ] TODO Scala
      - [ ] TODO built-in
      - [ ] TODO [parsley](https://github.com/j-mie6/parsley) 

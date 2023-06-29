@@ -397,6 +397,8 @@ graph TD
 - [ ] TODO Interpreters of EBNF
    - [X] DONE Java 
      - [X] DONE ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
+   - [ ] TODO [GraphViz](https://graphviz.org)
+     - [ ] TODO [DOT](https://graphviz.org/doc/info/lang.html)
    - [ ] TODO Scala
      - [ ] TODO built-in
      - [ ] TODO [parsley](https://github.com/j-mie6/parsley) 
