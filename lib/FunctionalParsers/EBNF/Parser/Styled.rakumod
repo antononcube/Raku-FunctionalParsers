@@ -26,8 +26,8 @@ class FunctionalParsers::EBNF::Parser::Styled
                 # Assignment to LHS non-terminal
                 self.pAssign = alternatives(token('->'), token('<-'), token('::='), symbol(':='), symbol('='), token(':'));
 
-                # Rules are separate with new-line
-                self.pSepRule = alternatives(sp(symbol(';')), self.pSepRuleNewLine);
+                # Rules are separated with ';', '.' or "\n"
+                self.pSepRule = alternatives(sp(symbol(';')),  sp(symbol('.')), self.pSepRuleNewLine);
             }
 
             when $_ ~~ Str && $_.lc ∈ <simple> {
@@ -41,16 +41,16 @@ class FunctionalParsers::EBNF::Parser::Styled
                 # Assignment to LHS non-terminal
                 self.pAssign = token('->');
 
-                # Rules are separate with new-line
+                # Rules are separated with new-line
                 self.pSepRule = self.pSepRuleNewLine;
             }
 
             when $_ ~~ Str && $_.lc ∈ <relaxed simpler> {
 
-                # Non-terminals are words without angular brackets
+                # Non-terminals can be words without angular brackets
                 self.pGNonTerminal = alternatives(self.pGNonTerminal, self.pIdentifier);
 
-                # Sequence separation is whitespace
+                # Sequence separation can be both comma or whitespace
                 self.pSepSeq = alternatives(self.pSepSeq, many1(satisfy({ $_ ~~ / \h / })));
 
                 # Assignment to LHS non-terminal
@@ -58,6 +58,21 @@ class FunctionalParsers::EBNF::Parser::Styled
 
                 # Rules are separated with ';' or '.' because this makes the parsing ≈10 faster.
                 self.pSepRule = alternatives(self.pSepRule, sp(symbol('.')));
+            }
+
+            when $_ ~~ Str && $_.lc ∈ <inverted> {
+
+                # Terminals can are words without quotes
+                self.pGTerminal = alternatives(self.pGTerminal, self.pIdentifier);
+
+                # Sequence separation is whitespace
+                self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
+
+                # Assignment to LHS non-terminal
+                self.pAssign = alternatives(token('->'), symbol('='), symbol('::='));
+
+                # Rules are separated with "\n"
+                self.pSepRule = self.pSepRuleNewLine;
             }
 
             when $_ ~~ Str && $_.lc ∈ <antlr g4> {
@@ -80,7 +95,8 @@ class FunctionalParsers::EBNF::Parser::Styled
             }
 
             default {
-                note "Do not how to process the theme spec $_. Expected theme specs are <antlr default simple relaxed> or Whatever.";
+                my @styles = <antlr default g4 inverted simple simpler standard relaxed>;
+                note "Do not how to process the style spec $_. Expected style specs are '{@styles.join("', '")}', or Whatever.";
             }
         }
     }
