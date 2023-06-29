@@ -63,12 +63,46 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
         }
     };
 
-    has &.sequence-pick-left = {
-        $_ ~~ Str ?? $_ !! "{self.sequence-pick-left.($_[0])} {$_[1].subst(/ ^ '<'/, '<.')}"
+    multi method trace($p where self.is-paired-with('EBNFSequencePickLeft', $p) ) {
+        if $p.value ~~ Positional && $p.value.elems > 1 {
+            my $op = self.make-mmd-node('seqL');
+
+            my $pick = do if $p.value.head ~~ Positional {
+                "$op --> {self.trace(Pair.new('EBNFSequencePickLeft', $p.value.head))}"
+            } else {
+                "$op --> {self.trace($p.value.head)}"
+            }
+
+            self.rules.append([
+                $pick,
+                "$op -.-> {self.trace($p.value[1])}"
+            ]);
+
+            return $op;
+        } else {
+            return self.trace($p.value);
+        }
     };
 
-    has &.sequence-pick-right = {
-        $_ ~~ Str ?? $_ !! "{$_[0].subst(/ ^ '<'/, '<.')} {self.sequence-pick-right.($_[1])}"
+    multi method trace($p where self.is-paired-with('EBNFSequencePickRight', $p) ) {
+        if $p.value ~~ Positional && $p.value.elems > 1 {
+            my $op = self.make-mmd-node('seqR');
+
+            my $pick = do if $p.value[1] ~~ Positional {
+                "$op --> {self.trace(Pair.new('EBNFSequencePickRight', $p.value[1]))}"
+            } else {
+                "$op --> {self.trace($p.value[1])}"
+            }
+
+            self.rules.append([
+                $pick,
+                "$op -.-> {self.trace($p.value[0])}"
+            ]);
+
+            return $op;
+        } else {
+            return self.trace($p.value);
+        }
     };
 
     multi method trace($p where self.is-paired-with('EBNFAlternatives', $p) ) {
@@ -80,14 +114,6 @@ class FunctionalParsers::EBNF::Actions::MermaidJS::Graph
             return self.trace($p.value);
         }
     };
-
-    has &.parens = {$_};
-
-    has &.node = {$_};
-
-    has &.term = { self.alternatives.($_) };
-
-    has &.expr = { self.alternatives.($_) };
 
     multi method trace($p where self.is-paired-with('EBNFRule', $p) ) {
         my $res = self.make-mmd-node($p.value.key);

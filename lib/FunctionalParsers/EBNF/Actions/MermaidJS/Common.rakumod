@@ -33,6 +33,16 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::Common {
                 $node = '((and))';
             }
 
+            when 'seqL' {
+                $name = "seqL{$ext}";
+                $node = '(("«and"))';
+            }
+
+            when 'seqR' {
+                $name = "seqR{$ext}";
+                $node = '(("and»"))';
+            }
+
             when 'parens' {
                 $name = "parens{$ext}";
                 $node = '(("()"))';
