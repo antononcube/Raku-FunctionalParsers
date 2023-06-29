@@ -14,7 +14,7 @@ multi MAIN(
         Str :n(:$parser-name) is copy = 'MyParser',                   #= Parser name.
         Str :p(:$rule-name-prefix) is copy = 'p',                     #= Rule names prefix.
         Str :m(:$rule-name-modifier) is copy = 'WhateverCode',        #= Rule names modifier.
-        Str :s(:$style) is copy = 'Whatever',                         #= EBNF style, one of 'Standard', 'Simple', 'G4', or 'Whatever'.
+        Str :s(:$style) is copy = 'Whatever',                         #= EBNF style, one of 'G4', 'Inverted', 'Standard', 'Relaxed', or 'Whatever'.
            ) {
 
     my @knownModifiers = <{$_.tc} {$_.uc} {$_.lc} {$_}>;
@@ -45,4 +45,16 @@ multi MAIN(
     } else {
         say $res.head.tail;
     }
+}
+
+#| Generates parser code for a given EBNF grammar file.
+multi MAIN(
+        $file where *.IO.e,                                           #= EBNF file name.
+        Str :t(:$actions) is copy = 'Raku::Class',                    #= Actions ('t' for 'target'.)
+        Str :n(:$parser-name) is copy = 'MyParser',                   #= Parser name.
+        Str :p(:$rule-name-prefix) is copy = 'p',                     #= Rule names prefix.
+        Str :m(:$rule-name-modifier) is copy = 'WhateverCode',        #= Rule names modifier.
+        Str :s(:$style) is copy = 'Whatever',                         #= EBNF style, one of 'G4', 'Inverted', 'Standard', 'Relaxed', or 'Whatever'.
+           ) {
+    return MAIN(slurp($file), :$actions, :$parser-name, :$rule-name-prefix, :$rule-name-modifier, :$style);
 }
