@@ -60,14 +60,14 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::Common {
 
             when $_ ~~ / ^ '<' <-[<>]>+ '>' $ / {
                 $name = $_.substr(1, *- 1);
-                $node = "[$name]";
+                $node = "[\"$name\"]";
                 $name = "NT:{ $name }";
                 %!nodes{$name} = $node;
             }
 
             when $_ ~~ / ^ ['\'' | '"'] <-['"]>+ '\'' | '"' $ / {
                 $name = $_.substr(1, *- 1);
-                $node = "($name)";
+                $node = "(\"$name\")";
                 $name = "T:{ $name }";
             }
 
