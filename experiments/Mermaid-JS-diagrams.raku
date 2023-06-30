@@ -4,13 +4,11 @@ use v6.d;
 use lib '.';
 use lib './lib';
 
-use EBNF::Grammar;
-use EBNF::Grammar::Standardish;
 use FunctionalParsers::EBNF;
 use FunctionalParsers::EBNF::Actions::MermaidJS::Graph;
 
 my $ebnf0 = q:to/END/;
-<top> = 'a' , <b> ;
+<top> = 'a' &> <b> ;
 <b> = 'b' | 'B' ;
 END
 
@@ -32,10 +30,15 @@ my $ebnf3 = q:to/END/;
 <top> = <number> ;
 END
 
-my $res = fp-ebnf-parse($ebnf3, actions => 'Raku::AST').head.tail;
+my $ebnf4 = q:to/END/;
+<top> = 'a' <& 'b' <& 'c' <& 'd' | <right> ;
+<right> = 'e' &> 'f' &> 'g' &> 'h' ;
+END
+
+my $res = fp-ebnf-parse($ebnf4, actions => 'Raku::AST').head.tail;
 .raku.say for $res.value;
 
-my $tracer = FunctionalParsers::EBNF::Actions::MermaidJS::Graph.new(dir-spec=>'LR');
+my $tracer = FunctionalParsers::EBNF::Actions::MermaidJS::Graph.new(dir-spec=>'TD');
 
 say $tracer.trace($res.head);
 
@@ -47,6 +50,6 @@ say $res2.head.tail;
 
 say '=' x 120;
 
-my $res3 = fp-ebnf-parse($ebnf1, actions => $tracer);
+my $res3 = fp-ebnf-parse($ebnf4, actions => $tracer);
 
 say $res3.head.tail;
