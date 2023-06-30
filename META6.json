@@ -35,7 +35,8 @@
     "Arithmetic-original.ebnf",
     "Arithmetic-relaxed.ebnf",
     "EBNF.ebnf",
-    "EBNF-original.ebnf"
+    "EBNF-original.ebnf",
+    "ListManagementGrammar.ebnf"
   ],
   "license": "Artistic-2.0",
   "tags": [
