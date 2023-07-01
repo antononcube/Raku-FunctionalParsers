@@ -165,7 +165,7 @@ multi sub random-sentence($ebnf,
 
     my $ebnfActions =
             FunctionalParsers::EBNF::Actions::Raku::Random.new(
-                    :name('Random'),
+                    :name('Random_' ~ DateTime.now.Numeric.Num.subst('.', '_')),
                     :prefix('p'),
                     :start($rule),
                     :$max-repetitions,
