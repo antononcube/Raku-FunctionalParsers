@@ -21,6 +21,14 @@ class FunctionalParsers::EBNF::Actions::Raku::AST
 
     has &.sequence-pick-right = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFSequencePickRight', $_) !! $_.head};
 
+    has &.sequence-any = {
+        if $_ ~~ Positional && $_.elems > 1 {
+            Pair.new("EBNF" ~ $_[0], ($_[1], self.sequence-any.($_[2])))
+        } else {
+            $_
+        }
+    };
+
     has &.alternatives = {$_ ~~ Positional && $_.elems > 1 ?? Pair.new('EBNFAlternatives', $_) !! $_.head};
 
     has &.parens = {$_};

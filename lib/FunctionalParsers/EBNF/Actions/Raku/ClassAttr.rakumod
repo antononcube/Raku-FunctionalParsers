@@ -1,5 +1,6 @@
 use v6.d;
 
+# IS THIS class still needed?
 # This class can be implemented by inheriting
 #   FunctionalParsers::EBNF::Actions::Code
 # But it seems simpler to just put all definitions here.
@@ -28,6 +29,14 @@ class FunctionalParsers::EBNF::Actions::Raku::ClassAttr
 
     has &.sequence-pick-right = {
         $_ ~~ Str ?? $_ !! "sequence-pick-right({$_[0]}, {self.sequence-pick-right.($_[1])})"
+    };
+
+    has &.sequence-any = {
+        if $_ ~~ Positional && $_.elems > 1 {
+            "{self.ast-head-to-func{$_[0]}}({$_[1]}, {self.sequence-any.($_[2])})"
+        } else {
+            $_
+        }
     };
 
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "alternatives({$_.join(', ')})" !! $_ };

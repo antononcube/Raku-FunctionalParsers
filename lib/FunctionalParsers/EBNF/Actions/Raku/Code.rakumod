@@ -25,6 +25,14 @@ class FunctionalParsers::EBNF::Actions::Raku::Code
         $_ ~~ Str ?? $_ !! "sequence-pick-right({$_[0]}, {self.sequence-pick-right.($_[1])})"
     };
 
+    has &.sequence-any = {
+        if $_ ~~ Positional && $_.elems > 1 {
+            "{self.ast-head-to-func{$_[0]}}({$_[1]}, {self.sequence-any.($_[2])})"
+        } else {
+            $_
+        }
+    };
+
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "alternatives({$_.join(', ')})" !! $_ };
 
     has &.parens = {$_};

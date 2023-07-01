@@ -13,24 +13,41 @@ class FunctionalParsers::EBNF::Actions::Raku::Grammar
 
     has Str $.type is rw = 'grammar';
 
-    has &.terminal = {"$_"};
+    has &.terminal = { "$_" };
 
-    has &.non-terminal = { "<{self.prefix}{self.modifier.($_.subst(/^ '<' /, '').subst(/ '>' $ /, ''))}>"};
+    has &.non-terminal = { "<{ self.prefix }{ self.modifier.($_.subst(/^ '<' /, '').subst(/ '>' $ /, '')) }>" };
 
-    has &.option = {$_.contains(/\s/) ?? "[$_]?" !! "$_?" };
+    has &.option = { $_.contains(/\s/) ?? "[$_]?" !! "$_?" };
 
     has &.repetition = { $_.contains(/\s/) ?? "[$_]*" !! "$_*" };
 
-    has &.apply = {"$_[0]"};
+    has &.apply = { "$_[0]" };
 
-    has &.sequence = { $_ ~~ Positional && $_.elems > 1 ?? "{$_.join(' ')}" !! $_ };
+    has &.sequence = { $_ ~~ Positional && $_.elems > 1 ?? "{ $_.join(' ') }" !! $_ };
 
     has &.sequence-pick-left = {
-        $_ ~~ Str ?? $_ !! "{self.sequence-pick-left.($_[0])} {$_[1].subst(/ ^ '<'/, '<.')}"
+        $_ ~~ Str ?? $_ !! "{ self.sequence-pick-left.($_[0]) } { $_[1].subst(/ ^ '<'/, '<.') }"
     };
 
     has &.sequence-pick-right = {
-        $_ ~~ Str ?? $_ !! "{$_[0].subst(/ ^ '<'/, '<.')} {self.sequence-pick-right.($_[1])}"
+        $_ ~~ Str ?? $_ !! "{ $_[0].subst(/ ^ '<'/, '<.') } { self.sequence-pick-right.($_[1]) }"
+    };
+
+    has &.sequence-any = {
+        if $_ ~~ Positional && $_.elems > 1 {
+            if $_ ~~ Str {
+                $_
+            } elsif $_[0] eq 'SequencePickLeft' {
+                "{ $_[1] } { self.sequence-any.($_[2]).subst(/ ^ '<'/, '<.') }"
+            } elsif $_[0] eq 'SequencePickRight' {
+                "{ $_[1].subst(/ ^ '<'/, '<.') } { self.sequence-any.($_[2]) }"
+            } else {
+                # Sequence
+                "{ $_[1] } { self.sequence-any.($_[2]) }"
+            }
+        } else {
+            $_
+        }
     };
 
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "{$_.join(' | ')}" !! $_ };

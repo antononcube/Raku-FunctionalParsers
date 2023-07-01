@@ -22,9 +22,23 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
 
     has &.sequence = { $_ ~~ Positional && $_.elems > 1 ?? "({$_.join(', ')})" !! "$_" };
 
-    has &.sequence-pick-left = { self.sequence.($_) };
+    has &.sequence-pick-left = { self.sequence.(self.reallyflat($_).List)  };
 
-    has &.sequence-pick-right = { self.sequence.($_) };
+    has &.sequence-pick-right = { self.sequence.(self.reallyflat($_).List) };
+
+    method flat-any-sequence($spec --> Array) {
+        return do if $spec ~~ Iterable && $spec.elems > 1 {
+            [$spec[1], |self.flat-any-sequence($spec[2])]
+        } elsif $spec ~~ Str {
+            [$spec,]
+        } else {
+            []
+        }
+    }
+
+    has &.sequence-any = {
+        my @res = self.flat-any-sequence($_).flat; self.sequence.(@res)
+    };
 
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "({$_.join(', ')}).pick" !! "$_" };
 
