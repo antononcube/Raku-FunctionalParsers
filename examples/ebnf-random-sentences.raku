@@ -53,7 +53,7 @@ say "Time to parse simple: {$tend - $tstart}";
 say '=' x 120;
 
 my $ebnfCodeSplit = FunctionalParsers::EBNF::Parser::Styled.normalize-rule-separation($ebnfCode);
-note "\$ebnfCodeSplit :\n $ebnfCodeSplit";
+note "\$ebnfCodeSplit :\n$ebnfCodeSplit";
 
 $tstart = now;
 my $res2 = fp-ebnf-parse($ebnfCodeSplit, target=>'Raku::AST', style => 'Simpler').head.tail;
