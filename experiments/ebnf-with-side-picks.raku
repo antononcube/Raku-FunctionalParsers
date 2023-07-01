@@ -49,3 +49,22 @@ sub seq-rec($_) {
 }
 
 say seq-rec($res2.head.tail);
+
+say '=' x 120;
+
+my $res3 = fp-ebnf-parse('<f> = "a" <& "b" , "c" &> "d" ;'.comb, actions => 'Raku::AST');
+say $res3;
+
+say '-' x 120;
+my $res4 = fp-ebnf-parse('<f> = "a" <& "b" , "c" &> "d" ;'.comb, actions => 'Raku::Class');
+say $res4;
+
+say '-' x 120;
+my $res5 = fp-ebnf-parse('<f> = "a" <& "b" , "c" &> "d" ;'.comb, actions => 'Raku::Code');
+say $res5;
+
+say '-' x 120;
+my $res6 = fp-ebnf-parse('<f> = <a> <& <b> , <c> &> <d> ;'.comb, actions => 'Raku::Grammar');
+say $res6;
+
+say fp-ebnf-parse('<f> = <a> <& <b> , <c> &> <d> ;'.comb, actions => 'Raku::Code');
