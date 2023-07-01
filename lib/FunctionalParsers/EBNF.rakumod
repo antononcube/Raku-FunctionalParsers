@@ -34,6 +34,7 @@ multi sub fp-ebnf-parse(@x,
                         :modifier(:&rule-name-modifier) is copy = WhateverCode,
                         :$style is copy = 'Standard',
                         Bool :$tokenized = False,
+                        *%args
                         ) {
 
     # Process parser-prefix
@@ -94,7 +95,8 @@ multi sub fp-ebnf-parse(@x,
         $actionsObj = ::("FunctionalParsers::EBNF::Actions::{ $actions }").new(
                 name => $parser-name,
                 prefix => $rule-name-prefix,
-                modifier => &rule-name-modifier
+                modifier => &rule-name-modifier,
+                |%args
                 );
 
         die "Cannot create an object of the target class" unless $actionsObj;
