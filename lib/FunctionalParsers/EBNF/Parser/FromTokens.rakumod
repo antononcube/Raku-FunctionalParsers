@@ -27,6 +27,11 @@ class FunctionalParsers::EBNF::Parser::FromTokens
         self.seqLeftSep = apply({ self.seqLeftSepForm }, sp(symbol('<&')));
         self.seqRightSep = apply({ self.seqRightSepForm }, sp(symbol('&>')));
 
+        self.pSepSeqAny = alternatives(
+                apply({ self.fformComma }, sp(symbol(','))),
+                apply({ self.fformLeft }, sp(symbol('<&'))),
+                apply({ self.fformRight }, sp(symbol('&>'))));
+
         self.pGFunc = -> @x {
             #alternatives(satisfy({$_ ~~ Str}), curly-bracketed(many(satisfy({$_ ~~ Str}))))(@x)
             satisfy({ $_ ~~ Str })(@x)
