@@ -57,7 +57,8 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::ASTTracer {
     multi method trace($p where self.is-paired-with('EBNFSequence', $p) ) {
         if $p.value ~~ Positional && $p.value.elems > 1 {
             my $op = self.make-mmd-node('seq');
-            self.rules.append($p.value.map({ self.edge-spec($op, self.trace($_)) }));
+            my $k = 1;
+            self.rules.append($p.value.map({ self.edge-spec($op, self.trace($_), ($k++).Str) }));
             return $op;
         } else {
             return self.trace($p.value);
