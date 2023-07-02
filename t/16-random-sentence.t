@@ -70,5 +70,50 @@ is 'a B C' (elem) random-sentence($ebnfCode6, 120).List,
         True,
         'Variaties, a-c, A-C';
 
+##===========================================================
+## 7
+##===========================================================
+my $ebnfCode7 = "
+<top> = 'Range[10, 14]';
+";
+
+is '10' (elem) random-sentence($ebnfCode7, 120).List,
+        True,
+        'Range[10, 14]';
+
+
+##===========================================================
+## 8
+##===========================================================
+my $ebnfCode8 = "
+<top> = '_WordString' | '_LetterString' | '_IdentifierString';
+";
+
+note random-sentence($ebnfCode8, 12);
+is random-sentence($ebnfCode8, 12).all ~~ Str,
+        True,
+        '_WordString | _LetterString | _IdentifierString';
+
+
+##===========================================================
+## 9
+##===========================================================
+my $ebnfCode9 = "
+<top> = '_Integer' ;
+";
+
+isa-ok random-sentence($ebnfCode9, 12)>>.Int.sum, Int,
+        '_Integer';
+
+##===========================================================
+## 10
+##===========================================================
+my $ebnfCode10 = "
+<top> = '_?NumericQ' ;
+";
+
+note random-sentence($ebnfCode10, 12)>>.Num;
+isa-ok random-sentence($ebnfCode10, 12)>>.Num.sum, Num,
+        '_?NumericQ';
 
 done-testing;
