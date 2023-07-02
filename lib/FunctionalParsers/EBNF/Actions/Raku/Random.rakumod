@@ -9,7 +9,35 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
     has UInt $.min-repetitions = 0;
     has Bool $.restrict-recursion = True;
 
-    has &.terminal = {"$_"};
+    has &.terminal = {
+        given $_ {
+            when $_ ~~ / Range '[' \s* (\d+) \s* ',' \s* (\d+) \s* ']' / {
+                "($0..$1).pick"
+            }
+
+            when $_ ~~ / '_WordString' / {
+                "['a'...'z', '0'...'9'].roll((3..6).pick).join"
+            }
+
+            when $_ ~~ / '_LetterString' / {
+                "['a'...'z'].roll((3..6).pick).join"
+            }
+
+            when $_ ~~ / '_IdentifierString' / {
+                "['a'...'z'].pick ~ ['a'...'z', '0'...'9'].roll((3..6).pick).join"
+            }
+
+            when $_ ~~ / '_Integer' / {
+                "(^1000).pick"
+            }
+
+            when $_ ~~ / '_?NumberQ' | '_?NumericQ'/ {
+                "1000*rand"
+            }
+
+            default { "$_" }
+        }
+    };
 
     has &.non-terminal = {"self.{self.prefix}" ~ $_.uc.subst(/\s/,'').subst(/^ '<'/,'').subst(/'>' $/,'') };
 
