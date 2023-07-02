@@ -253,7 +253,7 @@ my $ebnfCode3 = q:to/END/;
 <b> = 'b' , ( 'B' | '2' );
 END
 
-fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
+fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tail
 ```
 
 Here is a legend:
@@ -274,7 +274,7 @@ my $ebnfCode4 = q:to/END/;
 <b> = 'b' , 'B' | '2' ;
 END
 
-fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail
+fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tail
 ```
 
 ------
@@ -380,11 +380,11 @@ graph TD
 ## TODO
 
 - [X] TODO Parsing EBNF refactoring & additional features
-  - [ ] TODO Parse any combination of sequence operators
-    - Currently, these are parsed:
+  - [X] DONE Parse any combination of sequence operators
+    - Initially, only these were parsed:
       - `'a' <& 'b' <& 'c' | 'a' &> 'd';`
       - `'a' , 'b' , 'c' | 'a' &> 'd';`
-    - Currently, these are not parsed:
+    - These are also parsed:
       - `'a' , 'b' &> 'c'`
       - `'a' <& 'b' &> 'c'`
   - [X] DONE Class-based parsers

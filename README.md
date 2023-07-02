@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|5628846751992) ... }
+# -> @x { #`(Block|3119243280488) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|5628879707384) ... }
+# -> @x { #`(Block|3119276236024) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode2, 12);
 ```
 ```
-# I 🤮 R
-# I love WL
-# I  Python
-# I 🤮 WL
-# I 🤮 R
+# I hate WL
+# We ♥️ ♥️ ♥️ R
+# I love Python
+# We  WL
+# I 🤮 Python
 # I ♥️ ♥️ WL
-# We 🤮 WL
-# I 🤮 Julia
-# I  Perl
-# We 🤮 Python
-# I hate R
-# We ♥️ ♥️ ♥️ ♥️ Python
+# I love Python
+# We love R
+# I love R
+# We hate Julia
+# I  R
+# I love Julia
 ```
 
 ------
@@ -299,38 +299,38 @@ my $ebnfCode3 = q:to/END/;
 <b> = 'b' , ( 'B' | '2' );
 END
 
-fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph").head.tail
+fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tail
 ```
 ```mermaid
-graph TD
-	seq12((and))
+graph LR
 	NT:a["a"]
+	T:a("a")
 	T:b("b")
-	NT:top["top"]
-	T:A("A")
+	T:B("B")
+	alt1((or))
+	seq12((and))
+	alt14((or))
+	T:2("2")
+	NT:b["b"]
+	opt9((?))
+	seq5((and))
 	rep7((*))
 	T:1("1")
-	T:2("2")
-	alt14((or))
-	opt9((?))
-	T:B("B")
-	NT:b["b"]
-	seq5((and))
-	T:a("a")
-	alt1((or))
+	NT:top["top"]
+	T:A("A")
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
 	rep7 --> T:A
 	opt9 --> T:1
-	seq5 --> T:a
-	seq5 --> rep7
-	seq5 --> opt9
+	seq5 --> |1|T:a
+	seq5 --> |2|rep7
+	seq5 --> |3|opt9
 	NT:a --> seq5
 	alt14 --> T:B
 	alt14 --> T:2
-	seq12 --> T:b
-	seq12 --> alt14
+	seq12 --> |1|T:b
+	seq12 --> |2|alt14
 	NT:b --> seq12
 ```
 
@@ -352,36 +352,36 @@ my $ebnfCode4 = q:to/END/;
 <b> = 'b' , 'B' | '2' ;
 END
 
-fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph").head.tail
+fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tail
 ```
 ```mermaid
-graph TD
-	T:2("2")
-	alt12((or))
-	opt9((?))
-	NT:top["top"]
-	T:1("1")
-	T:B("B")
-	T:a("a")
-	NT:b["b"]
-	T:A("A")
+graph LR
 	alt1((or))
-	NT:a["a"]
-	seq5((and))
-	T:b("b")
-	seq13((and))
 	rep7((*))
+	seq5((and))
+	NT:a["a"]
+	opt9((?))
+	seq13((and))
+	T:b("b")
+	alt12((or))
+	NT:b["b"]
+	T:1("1")
+	NT:top["top"]
+	T:A("A")
+	T:a("a")
+	T:2("2")
+	T:B("B")
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
 	rep7 --> T:A
 	opt9 --> T:1
-	seq5 --> T:a
-	seq5 --> rep7
-	seq5 --> opt9
+	seq5 --> |1|T:a
+	seq5 --> |2|rep7
+	seq5 --> |3|opt9
 	NT:a --> seq5
-	seq13 --> T:b
-	seq13 --> T:B
+	seq13 --> |1|T:b
+	seq13 --> |2|T:B
 	alt12 --> seq13
 	alt12 --> T:2
 	NT:b --> alt12
@@ -503,11 +503,11 @@ graph TD
 ## TODO
 
 - [X] TODO Parsing EBNF refactoring & additional features
-  - [ ] TODO Parse any combination of sequence operators
-    - Currently, these are parsed:
+  - [X] DONE Parse any combination of sequence operators
+    - Initially, only these were parsed:
       - `'a' <& 'b' <& 'c' | 'a' &> 'd';`
       - `'a' , 'b' , 'c' | 'a' &> 'd';`
-    - Currently, these are not parsed:
+    - These are also parsed:
       - `'a' , 'b' &> 'c'`
       - `'a' <& 'b' &> 'c'`
   - [X] DONE Class-based parsers
