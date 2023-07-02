@@ -98,7 +98,15 @@ class FunctionalParsers::EBNF::Parser::Styled
                 my @styles = <antlr default g4 inverted simple simpler standard relaxed>;
                 note "Do not how to process the style spec $_. Expected style specs are '{@styles.join("', '")}', or Whatever.";
             }
+
         }
+
+        # Using the redefinition of self.pSepSeq
+        # Does not take care of "tokenized"
+        self.pSepSeqAny = alternatives(
+                apply({ self.fformComma }, self.pSepSeq),
+                apply({ self.fformLeft }, sp(token('<&'))),
+                apply({ self.fformRight }, sp(token('&>'))));
     }
 
     method normalize-rule-separation(Str $ebnf) {

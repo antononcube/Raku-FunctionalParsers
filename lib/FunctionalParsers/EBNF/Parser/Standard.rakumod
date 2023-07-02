@@ -77,7 +77,7 @@ class FunctionalParsers::EBNF::Parser::Standard {
     has &.fformRight = { ('SequencePickRight', $^a, $^b) };
 
     has &.pSepSeqAny is rw = alternatives(
-            apply({ &!fformComma }, sp(symbol(','))),
+            apply({ &!fformComma }, &!pSepSeq),
             apply({ &!fformLeft }, sp(token('<&'))),
             apply({ &!fformRight }, sp(token('&>'))));
 
