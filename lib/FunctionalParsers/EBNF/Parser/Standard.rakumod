@@ -72,12 +72,12 @@ class FunctionalParsers::EBNF::Parser::Standard {
     };
 
     # Sequence with any separator
-    has &!fformComma = { ('Sequence', $^a, $^b) };
-    has &!fformLeft = { ('SequencePickLeft', $^a, $^b) };
-    has &!fformRight = { ('SequencePickRight', $^a, $^b) };
+    has &.fformComma = { ('Sequence', $^a, $^b) };
+    has &.fformLeft = { ('SequencePickLeft', $^a, $^b) };
+    has &.fformRight = { ('SequencePickRight', $^a, $^b) };
 
-    has &.pSepSeqAny = alternatives(
-            apply({ &!fformComma }, &!pSepSeq),
+    has &.pSepSeqAny is rw = alternatives(
+            apply({ &!fformComma }, sp(symbol(','))),
             apply({ &!fformLeft }, sp(token('<&'))),
             apply({ &!fformRight }, sp(token('&>'))));
 
@@ -88,8 +88,9 @@ class FunctionalParsers::EBNF::Parser::Standard {
 
     # Term
     has &.pGTerm = -> @x {
-        #apply($!ebnfActions.term, alternatives(&!pGTermSeqAny))(@x)
-        apply($!ebnfActions.term, alternatives(&!pGTermSeq, &!pGTermSeqL, &!pGTermSeqR, &!pGTermSeqAny))(@x)
+        apply($!ebnfActions.term, &!pGTermSeqAny)(@x)
+        # This makes the parsing much slower:
+        #   apply($!ebnfActions.term, alternatives(&!pGTermSeq, &!pGTermSeqL, &!pGTermSeqR, &!pGTermSeqAny))(@x)
     };
 
     # What is an apply function?
