@@ -34,7 +34,7 @@ class FunctionalParsers::EBNF::Parser::FromTokens
 
         self.pGFunc = -> @x {
             #alternatives(satisfy({$_ ~~ Str}), curly-bracketed(many(satisfy({$_ ~~ Str}))))(@x)
-            satisfy({ $_ ~~ Str })(@x)
+            alternatives(pack(symbol('${'), satisfy({True}), symbol('}')), satisfy({True}))(@x)
         };
 
         self.pGApply = -> @x {
