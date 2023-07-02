@@ -35,7 +35,15 @@ class FunctionalParsers::EBNF::Actions::Raku::AST
 
     has &.node = {$_};
 
-    has &.term = { self.alternatives.($_) };
+    has &.term = {
+        my $res = self.sequence-any.($_);
+        if $res.Str.contains('EBNFSequencePickLeft') || $res.Str.contains('EBNFSequencePickRight') {
+            $res;
+        } else {
+            my @res = self.flatten-sequence($res);
+            @res.elems > 1 ?? Pair.new('EBNFSequence', @res.List) !! @res.head
+        }
+    };
 
     has &.expr = { self.alternatives.($_) };
 
