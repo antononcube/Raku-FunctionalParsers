@@ -15,4 +15,12 @@ role FunctionalParsers::EBNF::Actions::Common {
     method setup-code { 'use FunctionalParsers;' }
 
     multi method reallyflat (+@list) { gather @list.deepmap: *.take }
+
+    method flatten-sequence($x) {
+        if $x ~~ Pair && $x.key.starts-with('EBNFSequence') {
+            return self.flatten-sequence($x.value[1]).prepend($x.value[0]);
+        } else {
+            return [$x,];
+        }
+    }
 }
