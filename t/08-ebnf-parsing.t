@@ -144,14 +144,26 @@ is-deeply
 ## 22
 is-deeply
         [fp-ebnf-parse(@tokens18, actions => 'Raku::AST').head.tail.value.head,],
-        [:EBNFRule("<top>" => :EBNFAlternatives((:EBNFSequencePickLeft(($($(:EBNFTerminal("'a'"), :EBNFTerminal("'b'")), :EBNFTerminal("'c'")), :EBNFTerminal("'d'"))), :EBNFNonTerminal("<right>")))),],
+        $[:EBNFRule("<top>" => :EBNFAlternatives((:EBNFSequencePickLeft((:EBNFTerminal("'a'"), :EBNFSequencePickLeft((:EBNFTerminal("'b'"), :EBNFSequencePickLeft((:EBNFTerminal("'c'"), :EBNFTerminal("'d'"))))))), :EBNFNonTerminal("<right>"))))],
         'Expected rule structure, <top> (<& &>)';
 
 ## 23
 is-deeply
         [fp-ebnf-parse(@tokens18, actions => 'Raku::AST').head.tail.value[1],],
-        [:EBNFRule("<right>" => :EBNFSequencePickRight((:EBNFTerminal("'e'"), $(:EBNFTerminal("'f'"), $(:EBNFTerminal("'g'"), :EBNFTerminal("'h'")))))),],
+        $[:EBNFRule("<right>" => :EBNFSequencePickRight((:EBNFTerminal("'e'"), :EBNFSequencePickRight((:EBNFTerminal("'f'"), :EBNFSequencePickRight((:EBNFTerminal("'g'"), :EBNFTerminal("'h'"))))))))],
         'Expected rule structure, <right> (<& &>)';
 
+##===========================================================
+## 24
+##===========================================================
+my $ebnfCode24 = q:to/END/;
+<top> = 'a' , 'b' , 'c' , 'd';
+END
+
+## 24
+is-deeply
+        [fp-ebnf-parse($ebnfCode24, actions => 'Raku::AST').head.tail.value.head,],
+        $[:EBNFRule("<top>" => :EBNFSequence((:EBNFTerminal("'a'"), :EBNFTerminal("'b'"), :EBNFTerminal("'c'"), :EBNFTerminal("'d'"))))],
+        'Expected rule structure, <top> (,)';
 
 done-testing;
