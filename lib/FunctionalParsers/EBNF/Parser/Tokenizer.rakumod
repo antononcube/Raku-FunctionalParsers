@@ -39,19 +39,18 @@ class FunctionalParsers::EBNF::Parser::Tokenizer {
     # Text blob
     has &.pGText = apply({ "Text[{$_.flat.join}]" }, many1(satisfy({True})));
 
-#    sp(self.pGComment),
-#    sp(self.pGNonTerminal),
-#    sp(self.pGTerminal),
-#    sp(self.pGText),
+    # Identifier
+    has &.pGIdentifier = apply({ $_.flat.join }, sequence(satisfy({$_ ~~ /<alpha>/}), greedy(satisfy({$_ ~~ / <alnum> /}))));
 
     # Grammar
     has &.pEBNF = -> @x {
         apply({$_.flat},
-                shortest(many(alternatives-first-match(
+                shortest(many(alternatives(
                         sp(self.pGComment),
                         sp(self.pGTerminal),
                         sp(self.pGNonTerminal),
                         sp(self.pGApplyFuncPack),
+                        sp(self.pGIdentifier),
                         self.pGSymbol))))(@x)
     }
 
