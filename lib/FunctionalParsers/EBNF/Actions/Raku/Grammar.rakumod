@@ -56,7 +56,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Grammar
 
     has &.node = {$_};
 
-    has &.term = { self.alternatives.($_) };
+    has &.term = { self.sequence-any.($_) };
 
     has &.expr = { self.alternatives.($_) };
 

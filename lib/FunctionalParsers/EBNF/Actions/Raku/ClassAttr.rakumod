@@ -45,7 +45,7 @@ class FunctionalParsers::EBNF::Actions::Raku::ClassAttr
 
     has &.node = {$_};
 
-    has &.term = { self.alternatives.($_) };
+    has &.term = { self.sequence-any.($_) };
 
     has &.expr = { self.alternatives.($_) };
 
