@@ -23,13 +23,21 @@ class FunctionalParsers::EBNF::Actions::WL::Grammar
 
     has &.sequence-pick-right = { self.sequence.($_) };
 
+    has &.sequence-any = {
+        if $_ ~~ Positional && $_.elems > 1 {
+            "FixedOrder[{$_[1]}, {self.sequence-any.($_[2])}]"
+        } else {
+            $_
+        }
+    };
+
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "{$_.join(' | ')}" !! $_ };
 
     has &.parens = {$_};
 
     has &.node = {$_};
 
-    has &.term = { self.sequence.($_) };
+    has &.term = { self.sequence-any.($_) };
 
     has &.expr = { self.alternatives.($_) };
 

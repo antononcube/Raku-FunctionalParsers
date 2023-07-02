@@ -5,6 +5,13 @@ use FunctionalParsers::EBNF::Actions::Common;
 class FunctionalParsers::EBNF::Actions::Java::FuncJ
         does FunctionalParsers::EBNF::Actions::Common {
 
+    submethod TWEAK {
+        self.ast-head-to-func =
+                Sequence => 'and',
+                SequencePickLeft => 'andL',
+                SequencePickRight => 'andR';
+    }
+
     method setup-code { '
 //<dependency>
 //    <groupId>org.typemeta</groupId>
@@ -32,6 +39,14 @@ import funcj.parser;
 
     has &.sequence-pick-right = {
         $_ ~~ Str ?? $_ !! "({$_[0]}).andR({self.sequence-pick-right.($_[1])})"
+    };
+
+    has &.sequence-any = {
+        if $_ ~~ Positional && $_.elems > 1 {
+            "{$_[1]}.{self.ast-head-to-func{$_[0]}}({self.sequence-any.($_[2])})"
+        } else {
+            $_
+        }
     };
 
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "choice({$_.join(', ')})" !! $_ };
