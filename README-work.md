@@ -443,6 +443,12 @@ graph TD
 - [X] DONE Random sentence generation
   - [X] DONE Basic class code
   - [X] DONE Preventing infinite recursion
+  - [X] DONE "Named" tokens interpretation
+    - [X] `'_?StringQ'` or `'_String'`
+    - [X] `'_WordString'`, `'_LetterString'`, and `'_IdentifierString'`
+    - [X] `'_?NumberQ'` and `'_?NumericQ'`
+    - [X] `'_Integer'`
+    - [X] `'Range[*from*, *to*]'`
 - [ ] TODO Documentation
     - [X] DONE README
     - [ ] DONE Parser code generation

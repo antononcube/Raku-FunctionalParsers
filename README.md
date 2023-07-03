@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|3119243280488) ... }
+# -> @x { #`(Block|5593412288472) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|3119276236024) ... }
+# -> @x { #`(Block|5593427418432) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode2, 12);
 ```
 ```
-# I hate WL
-# We ♥️ ♥️ ♥️ R
-# I love Python
-# We  WL
-# I 🤮 Python
+# We ♥️ ♥️ ♥️ ♥️ WL
+# We 🤮 WL
+# I hate R
+# We ♥️ R
+# We love Perl
+# We ♥️ ♥️ ♥️ Python
+# We ♥️ ♥️ R
 # I ♥️ ♥️ WL
-# I love Python
-# We love R
-# I love R
-# We hate Julia
-# I  R
-# I love Julia
+# I hate Perl
+# We ♥️ ♥️ ♥️ ♥️ R
+# I ♥️ ♥️ ♥️ Perl
+# We ♥️ ♥️ ♥️ ♥️ Julia
 ```
 
 ------
@@ -303,21 +303,21 @@ fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tai
 ```
 ```mermaid
 graph LR
-	NT:a["a"]
-	T:a("a")
 	T:b("b")
 	T:B("B")
-	alt1((or))
-	seq12((and))
+	T:a("a")
+	NT:a["a"]
 	alt14((or))
-	T:2("2")
-	NT:b["b"]
 	opt9((?))
-	seq5((and))
+	seq12((and))
 	rep7((*))
 	T:1("1")
-	NT:top["top"]
+	alt1((or))
 	T:A("A")
+	seq5((and))
+	NT:top["top"]
+	T:2("2")
+	NT:b["b"]
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -356,21 +356,21 @@ fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tai
 ```
 ```mermaid
 graph LR
-	alt1((or))
-	rep7((*))
-	seq5((and))
-	NT:a["a"]
-	opt9((?))
-	seq13((and))
-	T:b("b")
-	alt12((or))
-	NT:b["b"]
-	T:1("1")
-	NT:top["top"]
-	T:A("A")
-	T:a("a")
-	T:2("2")
 	T:B("B")
+	T:a("a")
+	NT:a["a"]
+	T:2("2")
+	seq13((and))
+	opt9((?))
+	T:1("1")
+	T:A("A")
+	alt12((or))
+	rep7((*))
+	NT:b["b"]
+	seq5((and))
+	NT:top["top"]
+	T:b("b")
+	alt1((or))
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -566,6 +566,12 @@ graph TD
 - [X] DONE Random sentence generation
   - [X] DONE Basic class code
   - [X] DONE Preventing infinite recursion
+  - [X] DONE "Named" tokens interpretation
+    - [X] `'_?StringQ'` or `'_String'`
+    - [X] `'_WordString'`, `'_LetterString'`, and `'_IdentifierString'`
+    - [X] `'_?NumberQ'` and `'_?NumericQ'`
+    - [X] `'_Integer'`
+    - [X] `'Range[*from*, *to*]'`
 - [ ] TODO Documentation
     - [X] DONE README
     - [ ] DONE Parser code generation
