@@ -8,6 +8,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
     has UInt $.max-repetitions = 4;
     has UInt $.min-repetitions = 0;
     has Bool $.restrict-recursion = True;
+    has Str $.no-value = '()';
 
     has &.terminal = {
         given $_ {
@@ -45,7 +46,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
 
     has &.non-terminal = {"self.{self.prefix}" ~ $_.uc.subst(/\s/,'').subst(/^ '<'/,'').subst(/'>' $/,'') };
 
-    has &.option = { "(rand > 0.5 ?? $_ !! Empty)" };
+    has &.option = { "(rand > 0.5 ?? $_ !! $!no-value)" };
 
     has &.repetition = {"$_ xx (({self.min-repetitions}..{self.max-repetitions}).pick)"};
 
@@ -85,7 +86,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
     has &.rule = {
         my $mname = self.non-terminal.($_[0]).subst(/ ^ 'self.' /, '').subst(/ '($_)}' $/, '');
         if $!restrict-recursion {
-            "method { $mname } \{ \$visits.add('{ $mname }'); if \$visits<{ $mname }> ≤ \$maxReps \{ { $_[1] } \} else \{ Empty \}\}"
+            "method { $mname } \{ \$visits.add('{ $mname }'); if \$visits<{ $mname }> ≤ \$maxReps \{ { $_[1] } \} else \{ $!no-value \}\}"
         } else {
             "method {$mname} \{ {$_[1]} \}"
         }

@@ -114,4 +114,22 @@ my $ebnfCode10 = "
 isa-ok random-sentence($ebnfCode10, 12)>>.Num.sum, Num,
         '_?NumericQ';
 
+
+##===========================================================
+## 11
+##===========================================================
+my $res11 = q:to/END/;
+class Random_1688405698_3444304 {
+	my BagHash $visits;
+	my UInt $maxReps = 4;
+	method pTOP { $visits.add('pTOP'); if $visits<pTOP> ≤ $maxReps { ('a', 'b', 'c') } else { Empty }}
+	has &.parser is rw = { $visits .= new; self.pTOP };
+}
+END
+
+is-deeply random-sentence($ebnfCode1, no-value => 'Empty', :!eval).lines[1, *-1],
+        $res11.lines[1, *-1],
+        'With no-value => Empty';
+
+
 done-testing;

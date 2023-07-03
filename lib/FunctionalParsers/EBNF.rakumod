@@ -154,6 +154,7 @@ multi sub random-sentence($ebnf,
                           :$rule is copy = Whatever,
                           Bool :$eval = True,
                           Bool :$restrict-recursion = True,
+                          :$no-value is copy = Whatever,
                           ) {
     # Automatic top rule
     if $rule.isa(Whatever) {
@@ -165,6 +166,13 @@ multi sub random-sentence($ebnf,
         }
     }
 
+    # Process $no-value
+    if $no-value.isa(Whatever) { $no-value = '()'; }
+
+    die 'The value of the argument $no-value is expected to be a string or Whatever.'
+    unless $no-value ~~ Str;
+
+    # Create Random actions object
     my $ebnfActions =
             FunctionalParsers::EBNF::Actions::Raku::Random.new(
                     :name('Random_' ~ DateTime.now.Numeric.Num.subst('.', '_')),
@@ -172,9 +180,11 @@ multi sub random-sentence($ebnf,
                     :start($rule),
                     :$max-repetitions,
                     :$min-repetitions,
-                    :$restrict-recursion
+                    :$restrict-recursion,
+                    :$no-value
                     );
 
+    # Parse
     my $parsObj = FunctionalParsers::EBNF::Parser::Standard.new(:$ebnfActions);
     my &pEBNF = $parsObj.pEBNF;
 
