@@ -35,7 +35,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Code
 
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "alternatives({$_.join(', ')})" !! $_ };
 
-    has &.parens = {$_};
+    has &.parens = {"($_)"};
 
     has &.node = {$_};
 

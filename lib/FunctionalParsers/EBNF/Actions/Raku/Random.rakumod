@@ -15,6 +15,10 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
                 "($0..$1).pick"
             }
 
+            when $_ ~~ / '_String' | '_?StringQ' / {
+                "['0'...'Z'].roll((3..6).pick).join"
+            }
+
             when $_ ~~ / '_WordString' / {
                 "['a'...'z', '0'...'9'].roll((3..6).pick).join"
             }
@@ -31,7 +35,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
                 "(^1000).pick"
             }
 
-            when $_ ~~ / '_?NumberQ' | '_?NumericQ'/ {
+            when $_ ~~ / '_?NumberQ' | '_?NumericQ' / {
                 "1000*rand"
             }
 
@@ -70,7 +74,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
 
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "({$_.join(', ')}).pick" !! "$_" };
 
-    has &.parens = {$_};
+    has &.parens = {"($_)"};
 
     has &.node = {$_};
 

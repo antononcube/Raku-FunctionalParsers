@@ -52,7 +52,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Grammar
 
     has &.alternatives = { $_ ~~ Positional && $_.elems > 1 ?? "{$_.join(' | ')}" !! $_ };
 
-    has &.parens = {$_};
+    has &.parens = {"[$_]"};
 
     has &.node = {$_};
 
