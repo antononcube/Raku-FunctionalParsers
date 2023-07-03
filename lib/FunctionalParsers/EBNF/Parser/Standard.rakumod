@@ -35,7 +35,7 @@ class FunctionalParsers::EBNF::Parser::Standard {
 
     # Parenthesized
     has &.pGParens = -> @x {
-        pack(sp(symbol('(')), sp(&!pGExpr), sp(symbol(')')))(@x)
+        apply($!ebnfActions.parens, pack(sp(symbol('(')), sp(&!pGExpr), sp(symbol(')'))))(@x)
     }
 
     # Alternatives
