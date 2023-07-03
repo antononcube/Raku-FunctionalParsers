@@ -74,7 +74,7 @@ is 'a B C' (elem) random-sentence($ebnfCode6, 120).List,
 ## 7
 ##===========================================================
 my $ebnfCode7 = "
-<top> = 'Range[10, 14]';
+<top> = 'Range[10, 14] | Range[0,88]';
 ";
 
 is '10' (elem) random-sentence($ebnfCode7, 120).List,
@@ -89,7 +89,6 @@ my $ebnfCode8 = "
 <top> = '_WordString' | '_LetterString' | '_IdentifierString';
 ";
 
-note random-sentence($ebnfCode8, 12);
 is random-sentence($ebnfCode8, 12).all ~~ Str,
         True,
         '_WordString | _LetterString | _IdentifierString';
@@ -112,7 +111,6 @@ my $ebnfCode10 = "
 <top> = '_?NumericQ' ;
 ";
 
-note random-sentence($ebnfCode10, 12)>>.Num;
 isa-ok random-sentence($ebnfCode10, 12)>>.Num.sum, Num,
         '_?NumericQ';
 
