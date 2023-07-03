@@ -166,4 +166,46 @@ is-deeply
         $[:EBNFRule("<top>" => :EBNFSequence((:EBNFTerminal("'a'"), :EBNFTerminal("'b'"), :EBNFTerminal("'c'"), :EBNFTerminal("'d'"))))],
         'Expected rule structure, <top> (,)';
 
+
+##===========================================================
+## 25
+##===========================================================
+my $ebnfCode25 = q:to/END/;
+<top> = ( 'a' | 'b' ) , ( 'c' | 'd' );
+END
+
+my $res25 = q:to/END/;
+grammar FP {
+	rule TOP { ['a' | 'b'] ['c' | 'd'] }
+}
+END
+
+## 25
+is
+        fp-ebnf-parse($ebnfCode25, actions => 'Raku::Grammar').head.tail.trim.subst(/\s+/, ' '),
+        $res25.trim.subst(/\s+/, ' '),
+        "Expected grammar for ( 'a' | 'b' ) , ( 'c' | 'd' )";
+
+##===========================================================
+## 26
+##===========================================================
+my $ebnfCode26 = q:to/END/;
+<top> = ( 'a' | 'b' ) &> <right>;
+<right> = 'M' , ( 'c' | 'd' );
+END
+
+my $res26 = q:to/END/;
+grammar FP {
+	rule TOP { ['a' | 'b'] <pRIGHT> }
+	rule pRIGHT { 'M' ['c' | 'd'] }
+}
+END
+
+## 26
+is
+        fp-ebnf-parse($ebnfCode26, actions => 'Raku::Grammar').head.tail.trim.subst(/\s+/, ' '),
+        $res26.trim.subst(/\s+/, ' '),
+        "Expected grammar for ( 'a' | 'b' ) , ( 'c' | 'd' )";
+
+
 done-testing;
