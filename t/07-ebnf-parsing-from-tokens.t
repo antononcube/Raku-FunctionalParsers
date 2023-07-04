@@ -45,7 +45,7 @@ is-deeply
 ## 7
 is-deeply
         local-fp-ebnf-parse(@tokens1).head.tail.value.Hash,
-        {:EBNFRule("<top>" => :EBNFAlternatives((:EBNFTerminal("'a'"), :EBNFTerminal("'b'"))))},
+        {:EBNFRule("<top>" => :EBNFAlternatives((:EBNFTerminal("\"a\""), :EBNFTerminal("\"b\""))))},
         'Expected pairs';
 
 ##===========================================================
@@ -66,7 +66,7 @@ is local-fp-ebnf-parse(@tokens8).all ~~ List, True, 'Parsing produces a list of 
 ## 10
 is-deeply
         local-fp-ebnf-parse(@tokens8).head.tail.value.Hash,
-        {:EBNFRule("<b>" => :EBNFSequence((:EBNFTerminal("'b'"), :EBNFOption(:EBNFAlternatives((:EBNFTerminal("'1'"), :EBNFTerminal("'2'")))))))},
+        {:EBNFRule("<b>" => :EBNFSequence((:EBNFTerminal("\"b\""), :EBNFOption(:EBNFAlternatives((:EBNFTerminal("\"1\""), :EBNFTerminal("\"2\"")))))))},
         'Expected pairs (b opt)';
 
 ##===========================================================
@@ -129,13 +129,13 @@ is-deeply
 ## 19
 is-deeply
         [local-fp-ebnf-parse(@tokens15).head.tail.value.head,],
-        $[:EBNFRule("<top>" => :EBNFAlternatives((:EBNFSequencePickLeft((:EBNFTerminal("'a'"), :EBNFSequencePickLeft((:EBNFTerminal("'b'"), :EBNFSequencePickLeft((:EBNFTerminal("'c'"), :EBNFTerminal("'d'"))))))), :EBNFNonTerminal("<right>"))))],
+        $[:EBNFRule("<top>" => :EBNFAlternatives((:EBNFSequencePickLeft((:EBNFTerminal("\"a\""), :EBNFSequencePickLeft((:EBNFTerminal("\"b\""), :EBNFSequencePickLeft((:EBNFTerminal("\"c\""), :EBNFTerminal("\"d\""))))))), :EBNFNonTerminal("<right>"))))],
         'Expected rule structure, <top> (<& &>)';
 
 ## 20
 is-deeply
         [local-fp-ebnf-parse(@tokens15).head.tail.value[1],],
-        $[:EBNFRule("<right>" => :EBNFSequencePickRight((:EBNFTerminal("'e'"), :EBNFSequencePickRight((:EBNFTerminal("'f'"), :EBNFSequencePickRight((:EBNFTerminal("'g'"), :EBNFTerminal("'h'"))))))))],
+        $[:EBNFRule("<right>" => :EBNFSequencePickRight((:EBNFTerminal("\"e\""), :EBNFSequencePickRight((:EBNFTerminal("\"f\""), :EBNFSequencePickRight((:EBNFTerminal("\"g\""), :EBNFTerminal("\"h\""))))))))],
         'Expected rule structure, <right> (<& &>)';
 
 ##===========================================================
@@ -192,7 +192,7 @@ my @tokens24 = $ebnfCode24.split(/ \s+ /, :skip-empty);
 ## 26
 is-deeply
         [local-fp-ebnf-parse(@tokens24).head.tail.value.head,],
-        $[:EBNFRule("<top>" => :EBNFSequence((:EBNFTerminal("'a'"), :EBNFTerminal("'b'"), :EBNFTerminal("'c'"), :EBNFTerminal("'d'"))))],
+        $[:EBNFRule("<top>" => :EBNFSequence((:EBNFTerminal("\"a\""), :EBNFTerminal("\"b\""), :EBNFTerminal("\"c\""), :EBNFTerminal("\"d\""))))],
         'Expected rule structure, <top> (,)';
 
 

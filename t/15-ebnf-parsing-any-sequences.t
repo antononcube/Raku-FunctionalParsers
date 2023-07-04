@@ -17,7 +17,7 @@ my $ebnfCode1 = "
 
 ## 1
 is-deeply fp-ebnf-parse($ebnfCode1, actions => 'Raku::AST').head.tail.Hash,
-        {:EBNF((:EBNFRule("<top>" => :EBNFSequence((:EBNFTerminal("'a'"), :EBNFTerminal("'b'"), :EBNFTerminal("'c'")))),))},
+        {:EBNF((:EBNFRule("<top>" => :EBNFSequence((:EBNFTerminal("\"a\""), :EBNFTerminal("\"b\""), :EBNFTerminal("\"c\"")))),))},
         'Comma separated';
 
 ##===========================================================
@@ -29,7 +29,7 @@ my $ebnfCode2 = "
 
 ## 2
 is-deeply fp-ebnf-parse($ebnfCode2, actions => 'Raku::AST').head.tail.Hash,
-        ${:EBNF($(:EBNFRule("<top>" => :EBNFSequencePickLeft((:EBNFTerminal("'a'"), :EBNFSequencePickLeft((:EBNFTerminal("'b'"), :EBNFTerminal("'c'")))))),))},
+        ${:EBNF($(:EBNFRule("<top>" => :EBNFSequencePickLeft((:EBNFTerminal("\"a\""), :EBNFSequencePickLeft((:EBNFTerminal("\"b\""), :EBNFTerminal("\"c\"")))))),))},
         'Pick left separated';
 
 ##===========================================================
@@ -41,7 +41,7 @@ my $ebnfCode3 = "
 
 ## 3
 is-deeply fp-ebnf-parse($ebnfCode3, actions => 'Raku::AST').head.tail.Hash,
-        ${:EBNF($(:EBNFRule("<top>" => :EBNFSequencePickRight((:EBNFTerminal("'a'"), :EBNFSequencePickRight((:EBNFTerminal("'b'"), :EBNFTerminal("'c'")))))),))},
+        ${:EBNF($(:EBNFRule("<top>" => :EBNFSequencePickRight((:EBNFTerminal("\"a\""), :EBNFSequencePickRight((:EBNFTerminal("\"b\""), :EBNFTerminal("\"c\"")))))),))},
         'Pick right separated';
 
 ##===========================================================
@@ -53,7 +53,7 @@ my $ebnfCode4 = "
 
 ## 4
 is-deeply fp-ebnf-parse($ebnfCode4, actions => 'Raku::AST').head.tail.Hash,
-        {:EBNF((:EBNFRule("<top>" => :EBNFSequencePickRight((:EBNFTerminal("'a'"), :EBNFSequence((:EBNFTerminal("'b'"), :EBNFTerminal("'c'")))))),))},
+        {:EBNF((:EBNFRule("<top>" => :EBNFSequencePickRight((:EBNFTerminal("\"a\""), :EBNFSequence((:EBNFTerminal("\"b\""), :EBNFTerminal("\"c\"")))))),))},
         'Pick right and comma separated';
 
 
