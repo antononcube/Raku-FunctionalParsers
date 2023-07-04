@@ -234,7 +234,7 @@ END
 Here is generation of random sentences with the grammar above:
 
 ```perl6
-.say for random-sentence($ebnfCode2, 12);
+.say for fp-random-sentence($ebnfCode2, 12);
 ```
 
 ------
@@ -274,7 +274,7 @@ my $ebnfCode4 = q:to/END/;
 <b> = 'b' , 'B' | '2' ;
 END
 
-fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tail
+fp-grammar-graph($ebnfCode4, dir-spec => 'LR')
 ```
 
 ------
@@ -426,8 +426,11 @@ graph TD
        - Via MermaidJS classes.
 - [ ] TODO Translators
   - [ ] TODO FPs code into EBNF
+    - Very cool to have, but seems to be a lot of work. 
   - [X] DONE Raku grammars to FPs
     - See the class "Grammar::TokenProcessing::Actions::EBNF" of the package "Grammar::TokenProcessing".
+  - [X] DONE Stand-alone grammar-graph translation function.
+    - `fp-grammar-graph`
 - [ ] TODO Extensions
   - [X] DONE First-matched alternation
     - The standard `alterations` parser is ["longest alternation"](https://docs.raku.org/language/regexes#Longest_alternation:_|) (in Raku's terms.)

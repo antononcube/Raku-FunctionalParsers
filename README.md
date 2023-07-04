@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|5748938129368) ... }
+# -> @x { #`(Block|6352212853176) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|5748951617120) ... }
+# -> @x { #`(Block|6352245759584) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -266,21 +266,21 @@ END
 Here is generation of random sentences with the grammar above:
 
 ```perl6
-.say for random-sentence($ebnfCode2, 12);
+.say for fp-random-sentence($ebnfCode2, 12);
 ```
 ```
-# I 🤮 Julia
-# We 🤮 Python
-# We ♥️ ♥️ Python
-# I ♥️ ♥️ ♥️ R
-# I ♥️ ♥️ Julia
-# I hate Python
+# We love R
 # We hate WL
-# I ♥️ ♥️ ♥️ ♥️ Perl
-# We love Julia
-# I hate R
 # I love Perl
-# I ♥️ ♥️ ♥️ Perl
+# I hate Julia
+# We 🤮 R
+# We  R
+# We  Julia
+# I hate R
+# We ♥️ WL
+# I ♥️ ♥️ WL
+# We 🤮 WL
+# We love Julia
 ```
 
 ------
@@ -303,21 +303,21 @@ fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tai
 ```
 ```mermaid
 graph LR
-	NT:a["a"]
+	alt1((or))
+	NT:top["top"]
 	seq12((and))
+	T:A("A")
+	NT:b["b"]
 	T:B("B")
+	T:2("2")
+	T:a("a")
+	NT:a["a"]
 	T:b("b")
+	rep7((*))
 	alt14((or))
 	opt9((?))
-	seq5((and))
-	NT:b["b"]
-	alt1((or))
 	T:1("1")
-	T:2("2")
-	T:A("A")
-	rep7((*))
-	NT:top["top"]
-	T:a("a")
+	seq5((and))
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -352,25 +352,25 @@ my $ebnfCode4 = q:to/END/;
 <b> = 'b' , 'B' | '2' ;
 END
 
-fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tail
+fp-grammar-graph($ebnfCode4, dir-spec => 'LR')
 ```
 ```mermaid
 graph LR
-	T:a("a")
-	seq13((and))
-	T:B("B")
-	NT:a["a"]
 	T:A("A")
 	rep7((*))
-	opt9((?))
-	NT:b["b"]
-	T:1("1")
-	alt1((or))
-	T:b("b")
-	alt12((or))
-	seq5((and))
+	NT:a["a"]
+	T:B("B")
 	T:2("2")
+	seq5((and))
+	alt12((or))
 	NT:top["top"]
+	NT:b["b"]
+	T:a("a")
+	seq13((and))
+	alt1((or))
+	opt9((?))
+	T:b("b")
+	T:1("1")
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -549,8 +549,11 @@ graph TD
        - Via MermaidJS classes.
 - [ ] TODO Translators
   - [ ] TODO FPs code into EBNF
+    - Very cool to have, but seems to be a lot of work. 
   - [X] DONE Raku grammars to FPs
     - See the class "Grammar::TokenProcessing::Actions::EBNF" of the package "Grammar::TokenProcessing".
+  - [X] DONE Stand-alone grammar-graph translation function.
+    - `fp-grammar-graph`
 - [ ] TODO Extensions
   - [X] DONE First-matched alternation
     - The standard `alterations` parser is ["longest alternation"](https://docs.raku.org/language/regexes#Longest_alternation:_|) (in Raku's terms.)
