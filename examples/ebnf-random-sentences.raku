@@ -72,7 +72,7 @@ say fp-ebnf-parse($ebnfCode, <CODE>, target=>'Raku::Grammar', style => 'Simpler'
 say '=' x 120;
 
 say 'Show generated class for random sentence generation:';
-say random-sentence($ebnfCode, 12, :!eval):restrict-recursion;
+say fp-random-sentence($ebnfCode, 12, :!eval):restrict-recursion;
 
 #------------------------------------------------------------------------------------------------------------------------
 say '-' x 120;
@@ -91,6 +91,6 @@ say "Time to parse custom normalized: {$tend - $tstart}";
 say "=" x 120;
 
 say "Generated senteces:\n";
-.say for random-sentence($ebnfCodeNormal, 12, min-repetitions => 1, :eval, :restrict-recursion).pairs;
+.say for fp-random-sentence($ebnfCodeNormal, 12, min-repetitions => 1, :eval, :restrict-recursion).pairs;
 
 
