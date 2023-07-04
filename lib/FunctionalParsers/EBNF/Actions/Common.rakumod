@@ -14,6 +14,31 @@ role FunctionalParsers::EBNF::Actions::Common {
     method top-rule-name { self.prefix ~ self.modifier.(self.start) }
     method setup-code { 'use FunctionalParsers;' }
 
+    method to-quoted($s) {
+        given $s {
+            when $_ ~~ / ^ \" .* \" $ | ^ \' .+ \' $ / { $s }
+            default { "\"$s\"" }
+        }
+    }
+
+    method to-double-quoted($s) {
+        given $s {
+            when $_ ~~ / ^ \" .* \" $ / { $s }
+            when $_ ~~ / ^ \' .+ \' $ / { "\"{ $s.substr(1, *- 1) }\"" }
+            default { "\"$s\"" }
+        }
+    }
+
+    method to-single-quoted($s) {
+        given $s {
+            when $_ ~~ / ^ \' .* \' $ / { $s }
+            when $_ ~~ / ^ \" .+ \" $ / { "\"{ $s.substr(1, *- 1) }\"" }
+            default { "'$s'" }
+        }
+    }
+
+    method to-angle-bracketed($s) { $s ~~ / ^ '<' .* '>' $ / ?? $s !! "<$s>" }
+
     multi method reallyflat (+@list) { gather @list.deepmap: *.take }
 
     method flatten-sequence($x) {
