@@ -35,6 +35,12 @@ my $ebnf4 = q:to/END/;
 <right> = 'e' &> 'f' &> 'g' &> 'h' ;
 END
 
+my $ebnf5 = "
+top -> '4' | b
+b -> 'b' | 'B'
+";
+
+#`[
 my $res = fp-ebnf-parse($ebnf4, actions => 'Raku::AST').head.tail;
 .raku.say for $res.value;
 
@@ -53,3 +59,7 @@ say '=' x 120;
 my $res3 = fp-ebnf-parse($ebnf4, actions => $tracer);
 
 say $res3.head.tail;
+]
+
+say fp-ebnf-parse($ebnf5, style => 'Simple', actions => 'Raku::AST');
+say fp-grammar-graph($ebnf5, lang => 'MermaidJS', style => 'Simple');
