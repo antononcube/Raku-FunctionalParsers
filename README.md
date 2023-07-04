@@ -134,7 +134,7 @@ use FunctionalParsers :ALL;
 my &p1 = (symbol('numerical') «|» symbol('symbolic')) «&» symbol('integration');
 ```
 ```
-# -> @x { #`(Block|5593412288472) ... }
+# -> @x { #`(Block|5748938129368) ... }
 ```
 
 Here we parse sentences adhering to the grammar of the defined parser:
@@ -182,7 +182,7 @@ my &pM = symbol('million');
 my &pTh = symbol('things');
 ```
 ```
-# -> @x { #`(Block|5593427418432) ... }
+# -> @x { #`(Block|5748951617120) ... }
 ```
 
 Here are spec examples for each style of infix operators:
@@ -269,18 +269,18 @@ Here is generation of random sentences with the grammar above:
 .say for random-sentence($ebnfCode2, 12);
 ```
 ```
-# We ♥️ ♥️ ♥️ ♥️ WL
-# We 🤮 WL
+# I 🤮 Julia
+# We 🤮 Python
+# We ♥️ ♥️ Python
+# I ♥️ ♥️ ♥️ R
+# I ♥️ ♥️ Julia
+# I hate Python
+# We hate WL
+# I ♥️ ♥️ ♥️ ♥️ Perl
+# We love Julia
 # I hate R
-# We ♥️ R
-# We love Perl
-# We ♥️ ♥️ ♥️ Python
-# We ♥️ ♥️ R
-# I ♥️ ♥️ WL
-# I hate Perl
-# We ♥️ ♥️ ♥️ ♥️ R
+# I love Perl
 # I ♥️ ♥️ ♥️ Perl
-# We ♥️ ♥️ ♥️ ♥️ Julia
 ```
 
 ------
@@ -303,21 +303,21 @@ fp-ebnf-parse($ebnfCode3, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tai
 ```
 ```mermaid
 graph LR
-	T:b("b")
-	T:B("B")
-	T:a("a")
 	NT:a["a"]
+	seq12((and))
+	T:B("B")
+	T:b("b")
 	alt14((or))
 	opt9((?))
-	seq12((and))
-	rep7((*))
-	T:1("1")
-	alt1((or))
-	T:A("A")
 	seq5((and))
-	NT:top["top"]
-	T:2("2")
 	NT:b["b"]
+	alt1((or))
+	T:1("1")
+	T:2("2")
+	T:A("A")
+	rep7((*))
+	NT:top["top"]
+	T:a("a")
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -356,21 +356,21 @@ fp-ebnf-parse($ebnfCode4, target=>"MermaidJS::Graph", dir-spec => 'LR').head.tai
 ```
 ```mermaid
 graph LR
-	T:B("B")
 	T:a("a")
-	NT:a["a"]
-	T:2("2")
 	seq13((and))
-	opt9((?))
-	T:1("1")
+	T:B("B")
+	NT:a["a"]
 	T:A("A")
-	alt12((or))
 	rep7((*))
+	opt9((?))
 	NT:b["b"]
-	seq5((and))
-	NT:top["top"]
-	T:b("b")
+	T:1("1")
 	alt1((or))
+	T:b("b")
+	alt12((or))
+	seq5((and))
+	T:2("2")
+	NT:top["top"]
 	alt1 --> NT:a
 	alt1 --> NT:b
 	NT:top --> alt1
@@ -529,6 +529,7 @@ graph TD
      - [X] DONE ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
    - [ ] TODO [GraphViz](https://graphviz.org)
      - [ ] TODO [DOT](https://graphviz.org/doc/info/lang.html)
+   - [X] DONE MermaidJS
    - [ ] TODO Scala
      - [ ] TODO built-in
      - [ ] TODO [parsley](https://github.com/j-mie6/parsley) 
@@ -538,13 +539,14 @@ graph TD
      - [X] DONE Class
      - [X] DONE Code
      - [X] DONE Grammar
-     - [X] DONE MermaidJS
      - [ ] TODO Tokenizer (of character sequences)
      - [ ] Other EBNF styles
    - [ ] TODO WL
      - [X] DONE FunctionalParsers, [AAp1, AAp2]
      - [P] TODO GrammarRules
        - Implemented to a point, not tested in WL.
+     - [X] Graph 
+       - Via MermaidJS classes.
 - [ ] TODO Translators
   - [ ] TODO FPs code into EBNF
   - [X] DONE Raku grammars to FPs

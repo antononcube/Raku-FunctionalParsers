@@ -406,6 +406,7 @@ graph TD
      - [X] DONE ["funcj.parser"](https://github.com/typemeta/funcj/tree/master/parser)
    - [ ] TODO [GraphViz](https://graphviz.org)
      - [ ] TODO [DOT](https://graphviz.org/doc/info/lang.html)
+   - [X] DONE MermaidJS
    - [ ] TODO Scala
      - [ ] TODO built-in
      - [ ] TODO [parsley](https://github.com/j-mie6/parsley) 
@@ -415,13 +416,14 @@ graph TD
      - [X] DONE Class
      - [X] DONE Code
      - [X] DONE Grammar
-     - [X] DONE MermaidJS
      - [ ] TODO Tokenizer (of character sequences)
      - [ ] Other EBNF styles
    - [ ] TODO WL
      - [X] DONE FunctionalParsers, [AAp1, AAp2]
      - [P] TODO GrammarRules
        - Implemented to a point, not tested in WL.
+     - [X] Graph 
+       - Via MermaidJS classes.
 - [ ] TODO Translators
   - [ ] TODO FPs code into EBNF
   - [X] DONE Raku grammars to FPs
