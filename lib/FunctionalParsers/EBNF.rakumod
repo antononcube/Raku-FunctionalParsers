@@ -11,6 +11,7 @@ use FunctionalParsers::EBNF::Actions::Raku::AST;
 use FunctionalParsers::EBNF::Actions::Raku::Random;
 use FunctionalParsers::EBNF::Actions::WL::Code;
 use FunctionalParsers::EBNF::Actions::WL::Grammar;
+use FunctionalParsers::EBNF::Actions::WL::Graph;
 use FunctionalParsers::EBNF::Parser::FromTokens;
 use FunctionalParsers::EBNF::Parser::Styled;
 
@@ -19,6 +20,8 @@ unit module FunctionalParsers::EBNF;
 #============================================================
 # Interpretation
 #============================================================
+
+#| Parse a given EBNF grammar.
 proto sub fp-ebnf-parse(|) is export {*}
 
 multi sub fp-ebnf-parse(Str $x, $properties = Whatever, *%args) {
@@ -140,6 +143,8 @@ multi sub fp-ebnf-parse(@x,
 #============================================================
 # Random sentences
 #============================================================
+
+#| Generate random sentences for a given grammar.
 proto random-sentence($ebnf, |) is export {*}
 
 multi sub random-sentence(@ebnf, *%args) {
@@ -203,4 +208,41 @@ multi sub random-sentence($ebnf,
     } else {
         return $res.head.tail;
     }
+}
+
+
+#============================================================
+# Grammar graph
+#============================================================
+
+#| Make a graph for a given grammar.
+proto grammar-graph($g, |) is export {*}
+
+multi sub grammar-graph(Str $ebnf,
+                        :$style is copy = 'Standard',
+                        :$lang = Whatever,
+                        *%args) {
+
+    my $res = fp-ebnf-parse($ebnf, :$style, actions => 'Raku::AST').head.tail;
+
+    return grammar-graph($res.head, :$lang, |%args);
+}
+
+multi sub grammar-graph(Pair $ebnfAST where *.key eq 'EBNF',
+                        :$lang is copy = Whatever,
+                        *%args) {
+
+    if $lang.isa(Whatever) { $lang = 'MermaidJS'; }
+
+    die "The value of the argument $lang is expected to be MeramidJS, WL, or Whatever."
+    unless $lang ~~ Str && $lang.lc ∈ <mermaid mermaid-js mermaidjs wl mathematica>;
+
+    $lang = do given $lang.lc {
+        when $_  ∈ <mermaid mermaid-js mermaidjs> { 'MermaidJS' }
+        when $_  ∈ <wl mathematica> { 'WL' }
+    }
+
+    my $tracer = ::("FunctionalParsers::EBNF::Actions::{$lang}::Graph").new(|%args);
+
+    return $tracer.trace($ebnfAST);
 }
