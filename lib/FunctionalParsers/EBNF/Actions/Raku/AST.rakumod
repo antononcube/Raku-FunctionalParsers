@@ -5,9 +5,11 @@ use FunctionalParsers::EBNF::Actions::Common;
 class FunctionalParsers::EBNF::Actions::Raku::AST
         does FunctionalParsers::EBNF::Actions::Common {
 
-    has &.terminal = {Pair.new('EBNFTerminal', $_)};
+    has Bool $.normalize = True;
 
-    has &.non-terminal = {Pair.new('EBNFNonTerminal', $_)};
+    has &.terminal = {Pair.new('EBNFTerminal', $!normalize ?? self.to-double-quoted($_) !! $_) };
+
+    has &.non-terminal = {Pair.new('EBNFNonTerminal', $!normalize ?? self.to-angle-bracketed($_) !! $_)};
 
     has &.option = {Pair.new('EBNFOption', $_)};
 
@@ -47,7 +49,7 @@ class FunctionalParsers::EBNF::Actions::Raku::AST
 
     has &.expr = { self.alternatives.($_) };
 
-    has &.rule = {Pair.new('EBNFRule', Pair.new($_[0], $_[1]))};
+    has &.rule = {Pair.new('EBNFRule', Pair.new($!normalize ?? self.to-angle-bracketed($_[0]) !! $_[0], $_[1]))};
 
     has &.grammar is rw = {Pair.new('EBNF', $_)}
 }
