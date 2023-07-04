@@ -145,22 +145,22 @@ multi sub fp-ebnf-parse(@x,
 #============================================================
 
 #| Generate random sentences for a given grammar.
-proto random-sentence($ebnf, |) is export {*}
+proto fp-random-sentence($ebnf, |) is export {*}
 
-multi sub random-sentence(@ebnf, *%args) {
-    return random-sentence(@ebnf.join("\n"), |%args);
+multi sub fp-random-sentence(@ebnf, *%args) {
+    return fp-random-sentence(@ebnf.join("\n"), |%args);
 }
 
-multi sub random-sentence($ebnf,
-                          UInt $n = 1,
-                          UInt :$max-repetitions = 4,
-                          UInt :$min-repetitions = 0,
-                          Str :$sep = ' ',
-                          :$rule is copy = Whatever,
-                          Bool :$eval = True,
-                          Bool :$restrict-recursion = True,
-                          :$no-value is copy = Whatever,
-                          ) {
+multi sub fp-random-sentence($ebnf,
+                             UInt $n = 1,
+                             UInt :$max-repetitions = 4,
+                             UInt :$min-repetitions = 0,
+                             Str :$sep = ' ',
+                             :$rule is copy = Whatever,
+                             Bool :$eval = True,
+                             Bool :$restrict-recursion = True,
+                             :$no-value is copy = Whatever,
+                             ) {
     # Automatic top rule
     if $rule.isa(Whatever) {
         $rule = 'top';
@@ -216,21 +216,21 @@ multi sub random-sentence($ebnf,
 #============================================================
 
 #| Make a graph for a given grammar.
-proto grammar-graph($g, |) is export {*}
+proto fp-grammar-graph($g, |) is export {*}
 
-multi sub grammar-graph(Str $ebnf,
-                        :$style is copy = 'Standard',
-                        :$lang = Whatever,
-                        *%args) {
+multi sub fp-grammar-graph(Str $ebnf,
+                           :$style is copy = 'Standard',
+                           :actions(:$lang) = Whatever,
+                           *%args) {
 
     my $res = fp-ebnf-parse($ebnf, :$style, actions => 'Raku::AST').head.tail;
 
-    return grammar-graph($res.head, :$lang, |%args);
+    return fp-grammar-graph($res.head, :$lang, |%args);
 }
 
-multi sub grammar-graph(Pair $ebnfAST where *.key eq 'EBNF',
-                        :$lang is copy = Whatever,
-                        *%args) {
+multi sub fp-grammar-graph(Pair $ebnfAST where *.key eq 'EBNF',
+                           :actions(:$lang) is copy = Whatever,
+                           *%args) {
 
     if $lang.isa(Whatever) { $lang = 'MermaidJS'; }
 
