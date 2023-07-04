@@ -6,7 +6,7 @@ class FunctionalParsers::EBNF::Actions::WL::Graph
         is FunctionalParsers::EBNF::Actions::MermaidJS::Graph {
 
     method edge-spec(Str $start, Str $end, Str $tag = '', Str :$con = 'DirectedEdge') {
-        $tag ?? "$con\[\"$start\", \"$end\", \"$tag\"\]" !! "$con\[\"$start\", \"$end\"\]";
+        $tag ?? "DirectedEdge\[\"$start\", \"$end\", \"$tag\"\]" !! "DirectedEdge\[\"$start\", \"$end\"\]";
     }
 
     method make-mmd-node(Str $spec, $ext is copy = Whatever) {
@@ -90,7 +90,7 @@ class FunctionalParsers::EBNF::Actions::WL::Graph
         $code ~= '{' ~ self.rules.unique.join(',') ~ '},';
         $code ~= "\nVertexLabels -> \{" ~ self.nodes.map({ "\"{$_.key}\" -> Placed[{$_.value.head}, Center]" }).join(',') ~ "\},";
         $code ~= "\nVertexShapeFunction -> \{" ~ self.nodes.map({ "\"{$_.key}\" -> {$_.value[1]}" }).join(',') ~ "\},";
-        $code ~= "\nVertexSize -> 0.7";
+        $code ~= "\nEdgeLabels -> \"EdgeTag\", VertexSize -> 0.7";
         $code ~= "]";
 
         return $code;
