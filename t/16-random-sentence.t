@@ -16,7 +16,7 @@ my $ebnfCode1 = "
 ";
 
 ## 1
-is-deeply random-sentence($ebnfCode1), ("a b c",), 'Comma separated';
+is-deeply fp-random-sentence($ebnfCode1), ("a b c",), 'Comma separated';
 
 ##===========================================================
 ## 2
@@ -26,7 +26,7 @@ my $ebnfCode2 = "
 ";
 
 ## 2
-is-deeply random-sentence($ebnfCode2), ("a b c",), 'Left pick separated';
+is-deeply fp-random-sentence($ebnfCode2), ("a b c",), 'Left pick separated';
 
 
 ##===========================================================
@@ -36,7 +36,7 @@ my $ebnfCode3 = "
 <top> = 'a' &> 'b' &> 'c' ;
 ";
 
-is-deeply random-sentence($ebnfCode3), ("a b c",), 'Right pick separated';
+is-deeply fp-random-sentence($ebnfCode3), ("a b c",), 'Right pick separated';
 
 ##===========================================================
 ## 4
@@ -45,7 +45,7 @@ my $ebnfCode4 = "
 <top> = 'a' &> 'b' , 'c' ;
 ";
 
-is-deeply random-sentence($ebnfCode4), ("a b c",), 'Mix pick separated, a-c';
+is-deeply fp-random-sentence($ebnfCode4), ("a b c",), 'Mix pick separated, a-c';
 
 ##===========================================================
 ## 5
@@ -54,7 +54,7 @@ my $ebnfCode5 = "
 <top> = 'a' &> 'b' , 'c' <& 'd' <& 'e';
 ";
 
-is-deeply random-sentence($ebnfCode5), ("a b c d e",), 'Mix pick separated, a-e';
+is-deeply fp-random-sentence($ebnfCode5), ("a b c d e",), 'Mix pick separated, a-e';
 
 ##===========================================================
 ## 6
@@ -66,7 +66,7 @@ my $ebnfCode6 = "
 <c> = 'c' | 'C' ;
 ";
 
-is 'a B C' (elem) random-sentence($ebnfCode6, 120).List,
+is 'a B C' (elem) fp-random-sentence($ebnfCode6, 120).List,
         True,
         'Variaties, a-c, A-C';
 
@@ -77,7 +77,7 @@ my $ebnfCode7 = "
 <top> = 'Range[10, 14] | Range[0,88]';
 ";
 
-is '10' (elem) random-sentence($ebnfCode7, 120).List,
+is '10' (elem) fp-random-sentence($ebnfCode7, 120).List,
         True,
         'Range[10, 14]';
 
@@ -89,7 +89,7 @@ my $ebnfCode8 = "
 <top> = '_WordString' | '_LetterString' | '_IdentifierString';
 ";
 
-is random-sentence($ebnfCode8, 12).all ~~ Str,
+is fp-random-sentence($ebnfCode8, 12).all ~~ Str,
         True,
         '_WordString | _LetterString | _IdentifierString';
 
@@ -101,7 +101,7 @@ my $ebnfCode9 = "
 <top> = '_Integer' ;
 ";
 
-isa-ok random-sentence($ebnfCode9, 12)>>.Int.sum, Int,
+isa-ok fp-random-sentence($ebnfCode9, 12)>>.Int.sum, Int,
         '_Integer';
 
 ##===========================================================
@@ -111,7 +111,7 @@ my $ebnfCode10 = "
 <top> = '_?NumericQ' ;
 ";
 
-isa-ok random-sentence($ebnfCode10, 12)>>.Num.sum, Num,
+isa-ok fp-random-sentence($ebnfCode10, 12)>>.Num.sum, Num,
         '_?NumericQ';
 
 
@@ -127,7 +127,7 @@ class Random_1688405698_3444304 {
 }
 END
 
-is-deeply random-sentence($ebnfCode1, no-value => 'Empty', :!eval).lines[1, *-1],
+is-deeply fp-random-sentence($ebnfCode1, no-value => 'Empty', :!eval).lines[1, *-1],
         $res11.lines[1, *-1],
         'With no-value => Empty';
 
