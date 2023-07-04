@@ -3,7 +3,7 @@ use v6.d;
 
 role FunctionalParsers::EBNF::Actions::MermaidJS::ASTTracer {
 
-    has Str $.dir-spec is rw = 'TD';
+    has $.dir-spec is rw = 'TD';
 
     method edge-spec(Str $start, Str $end, Str $tag = '', Str :$con = '-->') {
         $tag ?? "$start $con |$tag|$end" !! "$start $con $end";
@@ -125,7 +125,7 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::ASTTracer {
 
     multi method trace($p where self.is-paired-with('EBNF', $p)) {
         my @res = $p.value.map({ self.trace($_) });
-        my $code = "graph {self.dir-spec}\n\t";
+        my $code = "graph {self.dir-spec.isa(Whatever) ?? 'TD' !! self.dir-spec}\n\t";
         $code ~= self.nodes.map({ $_.key ~ $_.value }).join("\n\t");
         $code ~= "\n\t";
         $code ~= self.rules.unique.join("\n\t");

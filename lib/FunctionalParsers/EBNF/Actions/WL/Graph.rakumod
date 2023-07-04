@@ -5,6 +5,10 @@ use FunctionalParsers::EBNF::Actions::MermaidJS::Graph;
 class FunctionalParsers::EBNF::Actions::WL::Graph
         is FunctionalParsers::EBNF::Actions::MermaidJS::Graph {
 
+    submethod TWEAK {
+        self.dir-spec = Whatever;
+    }
+
     method edge-spec(Str $start, Str $end, Str $tag = '', Str :$con = 'DirectedEdge') {
         $tag ?? "DirectedEdge\[\"$start\", \"$end\", \"$tag\"\]" !! "DirectedEdge\[\"$start\", \"$end\"\]";
     }
@@ -90,7 +94,8 @@ class FunctionalParsers::EBNF::Actions::WL::Graph
         $code ~= '{' ~ self.rules.unique.join(',') ~ '},';
         $code ~= "\nVertexLabels -> \{" ~ self.nodes.map({ "\"{$_.key}\" -> Placed[{$_.value.head}, Center]" }).join(',') ~ "\},";
         $code ~= "\nVertexShapeFunction -> \{" ~ self.nodes.map({ "\"{$_.key}\" -> {$_.value[1]}" }).join(',') ~ "\},";
-        $code ~= "\nEdgeLabels -> \"EdgeTag\", VertexSize -> 0.7";
+        $code ~= "\nEdgeLabels -> \"EdgeTag\", VertexSize -> 0.7,";
+        $code ~= "\nGraphLayout -> {self.dir-spec.isa(Whatever) ?? 'Automatic' !! "\"{self.dir-spec}\""}";
         $code ~= "]";
 
         return $code;
