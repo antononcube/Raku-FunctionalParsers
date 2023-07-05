@@ -160,6 +160,7 @@ multi sub fp-random-sentence($ebnf,
                              Bool :$eval = True,
                              Bool :$restrict-recursion = True,
                              :$no-value is copy = Whatever,
+                             :$style is copy = 'Standard'
                              ) {
     # Automatic top rule
     if $rule.isa(Whatever) {
@@ -190,7 +191,7 @@ multi sub fp-random-sentence($ebnf,
                     );
 
     # Parse
-    my $parsObj = FunctionalParsers::EBNF::Parser::Standard.new(:$ebnfActions);
+    my $parsObj = FunctionalParsers::EBNF::Parser::Styled.new(:$ebnfActions, :$style);
     my &pEBNF = $parsObj.pEBNF;
 
     # Generate code of parser class
