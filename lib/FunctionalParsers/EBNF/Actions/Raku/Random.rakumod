@@ -104,6 +104,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
         } else {
             $code ~= "\n\thas \&.parser is rw = \{ self.{ self.top-rule-name } \};";
         }
+        $code ~= "\n\t" ~ 'method FALLBACK ($name, |c) { "$name\(\)" }';
         $code ~= "\n}";
         $code;
     }
