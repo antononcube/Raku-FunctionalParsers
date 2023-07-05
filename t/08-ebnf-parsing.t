@@ -208,4 +208,26 @@ is
         "Expected grammar for ( 'a' | 'b' ) , ( 'c' | 'd' )";
 
 
+##===========================================================
+## 27
+##===========================================================
+my $ebnfCode27 = q:to/END/;
+<top> = ( 'show' | 'make' ) , <data frame>;
+<data frame> = 'data' , 'frame';
+END
+
+my $res27 = q:to/END/;
+grammar FP {
+	rule TOP { ['show' | 'make'] <pDATA_FRAME> }
+	rule pDATA_FRAME { 'data' 'frame' }
+}
+END
+
+## 26
+is
+        fp-ebnf-parse($ebnfCode27, actions => 'Raku::Grammar').head.tail.trim.subst(/\s+/, ' '),
+        $res27.trim.subst(/\s+/, ' '),
+        "Expected grammar for ( 'show' | 'make' ) , <data frame>";
+
+
 done-testing;
