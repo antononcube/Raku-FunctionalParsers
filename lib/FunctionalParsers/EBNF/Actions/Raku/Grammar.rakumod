@@ -15,7 +15,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Grammar
 
     has &.terminal = { "$_" };
 
-    has &.non-terminal = { "<{ self.prefix }{ self.modifier.($_.subst(/^ '<' /, '').subst(/ '>' $ /, '')) }>" };
+    has &.non-terminal = { "<{ self.prefix }{ self.modifier.(self.id-normalizer.($_)) }>" };
 
     has &.option = { $_.contains(/\s/) ?? "[$_]?" !! "$_?" };
 

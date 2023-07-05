@@ -5,6 +5,7 @@ role FunctionalParsers::EBNF::Actions::Common {
     has Str $.prefix is rw  = 'p';
     has Str $.start is rw = 'top';
     has &.modifier is rw = {$_.uc};
+    has &.id-normalizer is rw = {$_.subst(/ \s /, '_', :g).subst(/^ '<' | '>' $ /, '', :g)};
 
     has %.ast-head-to-func is rw =
             Sequence => 'sequence',

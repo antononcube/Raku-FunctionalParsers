@@ -7,7 +7,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Code
 
     has &.terminal = {"symbol($_)"};
 
-    has &.non-terminal = {"&{self.prefix}" ~ $_.uc.subst(/\s/,'').subst(/^ '<' /, '').subst(/ '>' $ /, '')};
+    has &.non-terminal = {"&{self.prefix}" ~ self.modifier.(self.id-normalizer.($_))};
 
     has &.option = {"option($_)"};
 
