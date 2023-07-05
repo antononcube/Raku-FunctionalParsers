@@ -24,7 +24,7 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepSeq = many1(alternatives(satisfy({ $_ ~~ / \h / }), sp(symbol(','))));
 
                 # Assignment to LHS non-terminal
-                self.pAssign = alternatives(token('->'), token('<-'), token('::='), symbol(':='), symbol('='), token(':'));
+                self.pAssign = alternatives(token('->'), token('→'), token('<-'), token('::='), token(':='), symbol('='), token(':'));
 
                 # Rules are separated with ';', '.' or "\n"
                 self.pSepRule = alternatives(sp(symbol(';')),  sp(symbol('.')), self.pSepRuleNewLine);
@@ -69,7 +69,7 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
 
                 # Assignment to LHS non-terminal
-                self.pAssign = alternatives(token('->'), symbol('='), symbol('::='));
+                self.pAssign = alternatives(token('->'), token('→'), symbol('='), token(':='), token('::='));
 
                 # Rules are separated with "\n"
                 self.pSepRule = self.pSepRuleNewLine;
