@@ -66,7 +66,7 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pGTerminal = alternatives(self.pGTerminal, self.pIdentifier);
 
                 # Sequence separation is whitespace
-                self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
+                self.pSepSeq = many1(alternatives(satisfy({ $_ ~~ / \h / }), sp(symbol(','))));
 
                 # Assignment to LHS non-terminal
                 self.pAssign = alternatives(token('->'), token('→'), symbol('='), token(':='), token('::='));
