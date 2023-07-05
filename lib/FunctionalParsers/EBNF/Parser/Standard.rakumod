@@ -20,7 +20,7 @@ class FunctionalParsers::EBNF::Parser::Standard {
 
     # Non-terminal
     has &.pGNonTerminal is rw = -> @x {
-        apply({ $_.flat.join }, sequence(symbol('<'), many1(satisfy({ $_ ~~ / <alnum> | <:Pd> / })), symbol('>')))(@x)
+        apply({ $_.flat.join }, sequence(symbol('<'), many1(satisfy({ $_ ~~ / <alnum> | <:Pd> | \h / })), symbol('>')))(@x)
     };
 
     # Option
