@@ -56,7 +56,57 @@ fp-ebnf-parse($ebnfCode4, target=>'MermaidJS::Graph', dir-spec => 'LR').head.tai
 Consider this grammar:
 
 ```perl6
+my $ebnfExpr = q:to/END/;
+start   = expr ;
+expr    = term '+' expr | term '-' expr | term ;
+term    = term '*' factor | term '/' factor | factor ;
+factor  = '+' factor | '-' factor | (expr) | integer | integer '.' integer ;
+integer = digit integer | digit ;
+digit   = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
+END
 ```
 
+Here we produce the graph using special parsing style:
+
+```perl6, result=asis, output.lang=mermaid, output.prompt=NONE
+fp-grammar-graph($ebnfExpr, style => 'Relaxed')
+```
 
 ------
+
+## Generating Mermaid diagrams for Raku grammars
+
+In order to generate graphs for Raku grammars we use the following steps:
+
+1. Translate Raku-grammar code into EBNF code
+2. Translate EBNF code into graph code (Mermaid-JS or WL)
+
+Consider a grammar for parsing integers:
+
+```perl6
+grammar LangLove {
+    rule TOP  { <workflow-command> }
+    rule workflow-command  { <who> 'really'? <love> <lang> }
+    token who { 'I' | 'We' }
+    token love { 'hate' | 'love' }
+    token lang { 'Raku' | 'Perl' | 'Rust' | 'Go' | 'Python' | 'Ruby' }
+}
+```
+
+Here is an example parsing:
+
+```perl6
+LangLove.parse('I hate Perl')
+```
+
+First we derive the corresponding EBNF grammar:
+
+```perl6
+my $ebnfLangLove = to-ebnf-grammar(LangLove)
+```
+
+Here is the corresponding Mermaid-JS graph:
+
+```perl6, result=asis, output.lang=mermaid, output.prompt=NONE
+fp-grammar-graph($ebnfLangLove)
+```
