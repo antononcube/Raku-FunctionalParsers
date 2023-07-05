@@ -29,7 +29,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
             }
 
             when $_ ~~ / '_IdentifierString' / {
-                "['a'...'z', 'A'...'Z'].pick ~ ['a'...'z' 'A'...'Z' '0'...'9'].roll((3..6).pick).join"
+                "['a'...'z', 'A'...'Z'].pick ~ ['a'...'z', 'A'...'Z', '0'...'9'].roll((3..6).pick).join"
             }
 
             when $_ ~~ / '_Integer' / {
