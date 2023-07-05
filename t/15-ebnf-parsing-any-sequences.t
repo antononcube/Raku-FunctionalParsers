@@ -98,6 +98,7 @@ is-deeply fp-ebnf-parse($ebnfCode6, actions => 'Raku::Code').head.tail.subst(/ \
 my $res8 = q:to/END/;
 class FP {
   method pTOP(@x) { sequence-pick-right({self.pA($_)}, sequence({self.pB($_)}, sequence-pick-left({self.pC($_)}, {self.pD($_)})))(@x) }
+  method FALLBACK ($name, |c) { "$name\(\)" }
   has &.parser is rw = -> @x { self.pTOP(@x) };
 }
 END
