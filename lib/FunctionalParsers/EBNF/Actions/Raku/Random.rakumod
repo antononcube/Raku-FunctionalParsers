@@ -20,16 +20,16 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
                 "['0'...'Z'].roll((3..6).pick).join"
             }
 
-            when $_ ~~ / '_WordString' / {
-                "['a'...'z', '0'...'9'].roll((3..6).pick).join"
+            when $_ ~~ / '_WordString' | [ '[a-zA-Z0-9]' | '[0-9a-zA-Z]' ] ['+' | '*']? / {
+                "['a'...'z', 'A'...'Z', '0'...'9'].roll((3..6).pick).join"
             }
 
-            when $_ ~~ / '_LetterString' / {
-                "['a'...'z'].roll((3..6).pick).join"
+            when $_ ~~ / '_LetterString' | '[a-zA-Z]' ['+' | '*']? / {
+                "['a'...'z', 'A'...'Z'].roll((3..6).pick).join"
             }
 
             when $_ ~~ / '_IdentifierString' / {
-                "['a'...'z'].pick ~ ['a'...'z', '0'...'9'].roll((3..6).pick).join"
+                "['a'...'z', 'A'...'Z'].pick ~ ['a'...'z' 'A'...'Z' '0'...'9'].roll((3..6).pick).join"
             }
 
             when $_ ~~ / '_Integer' / {
