@@ -166,7 +166,7 @@ multi sub fp-random-sentence($ebnf,
     if $rule.isa(Whatever) {
         $rule = 'top';
         if !$ebnf.contains('<top>', :i) {
-            if $ebnf ~~ / '<' (<alnum>+) '>'/ {
+            if $ebnf ~~ / '<' (<alnum>+) '>' | (<alnum>+) / {
                 $rule = $0.Str;
             }
         }
