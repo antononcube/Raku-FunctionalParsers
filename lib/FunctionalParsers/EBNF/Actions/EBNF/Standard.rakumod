@@ -7,7 +7,7 @@ class FunctionalParsers::EBNF::Actions::EBNF::Standard
 
     has &.terminal = {$_};
 
-    has &.non-terminal = {'<' ~ $_.uc.subst(/\s/,'').subst(/^ '<' /, '').subst(/ '>' $ /, '') ~ '>'};
+    has &.non-terminal = {'<' ~ self.modifier.(self.id-normalizer.($_)) ~ '>'};
 
     has &.option = {"[ $_ ]"};
 
