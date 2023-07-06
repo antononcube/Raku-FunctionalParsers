@@ -24,6 +24,18 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
                 "['a'...'z', 'A'...'Z', '0'...'9'].roll((3..6).pick).join"
             }
 
+            when $_ ~~ / '[A-Z]' ['+' | '*']? / {
+                "['A'...'Z'].roll((3..6).pick).join"
+            }
+
+            when $_ ~~ / '[a-z]' ['+' | '*']? / {
+                "['a'...'z'].roll((3..6).pick).join"
+            }
+
+            when $_ ~~ / '[0-9]' ['+' | '*']? / {
+                "['0'...'9'].roll((3..6).pick).join"
+            }
+
             when $_ ~~ / '_LetterString' | '[a-zA-Z]' ['+' | '*']? / {
                 "['a'...'z', 'A'...'Z'].roll((3..6).pick).join"
             }
