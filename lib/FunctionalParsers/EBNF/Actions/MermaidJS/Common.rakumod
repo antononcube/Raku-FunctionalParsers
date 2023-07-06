@@ -61,6 +61,7 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::Common {
             when $_ ~~ / ^ '<' <-[<>]>+ '>' $ / {
                 $name = $_.substr(1, *- 1);
                 $node = "[\"$name\"]";
+                if $name ~~ / ^ \W $ / { $name = $name.uniname.subst(' ', '_'):g }
                 $name = "NT:{ $name }";
                 %!nodes{$name} = $node;
             }
@@ -68,6 +69,7 @@ role FunctionalParsers::EBNF::Actions::MermaidJS::Common {
             when $_ ~~ / ^ ['\'' | '"'] <-['"]>+ '\'' | '"' $ / {
                 $name = $_.substr(1, *- 1);
                 $node = "(\"$name\")";
+                if $name ~~ / ^ \W $ / { $name = $name.uniname.subst(' ', '_'):g }
                 $name = "T:{ $name }";
             }
 
