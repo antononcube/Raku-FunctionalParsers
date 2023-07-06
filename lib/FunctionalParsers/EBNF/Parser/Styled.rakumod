@@ -24,7 +24,7 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepSeq = many1(alternatives(satisfy({ $_ ~~ / \h / }), sp(symbol(','))));
 
                 # Assignment to LHS non-terminal
-                self.pAssign = alternatives(token('->'), token('→'), token('<-'), token('::='), token(':='), symbol('='), token(':'));
+                self.pAssign = alternatives(token('->'), token('→'), token('<-'), token('::='), token(':='), token('='), token(':'));
 
                 # Rules are separated with ';', '.' or "\n"
                 self.pSepRule = alternatives(sp(symbol(';')),  sp(symbol('.')), self.pSepRuleNewLine);
@@ -39,7 +39,7 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepSeq = many1(satisfy({ $_ ~~ / \h / }));
 
                 # Assignment to LHS non-terminal
-                self.pAssign = token('->');
+                self.pAssign = alternatives(token('->'), token('→'), token('='), token(':='), token('::='));
 
                 # Rules are separated with new-line
                 self.pSepRule = self.pSepRuleNewLine;
@@ -54,7 +54,7 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepSeq = alternatives(self.pSepSeq, many1(satisfy({ $_ ~~ / \h / })));
 
                 # Assignment to LHS non-terminal
-                self.pAssign = alternatives(token('->'), symbol('='), symbol('::='));
+                self.pAssign = alternatives(token('->'), token('→'), token('='), token(':='), token('::='));
 
                 # Rules are separated with ';' or '.' because this makes the parsing ≈10 faster.
                 self.pSepRule = alternatives(self.pSepRule, sp(symbol('.')));
@@ -69,7 +69,7 @@ class FunctionalParsers::EBNF::Parser::Styled
                 self.pSepSeq = many1(alternatives(satisfy({ $_ ~~ / \h / }), sp(symbol(','))));
 
                 # Assignment to LHS non-terminal
-                self.pAssign = alternatives(token('->'), token('→'), symbol('='), token(':='), token('::='));
+                self.pAssign = alternatives(token('->'), token('→'), token('='), token(':='), token('::='));
 
                 # Rules are separated with "\n"
                 self.pSepRule = self.pSepRuleNewLine;
