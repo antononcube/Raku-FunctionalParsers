@@ -53,7 +53,7 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
             }
 
             when $_ ~~ / '_Whitespace' / {
-                "(' ') x (3.pick)"
+                "(' ' x (1..3).pick)"
             }
 
             default { "$_" }
