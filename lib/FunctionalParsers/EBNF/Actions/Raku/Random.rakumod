@@ -52,6 +52,10 @@ class FunctionalParsers::EBNF::Actions::Raku::Random
                 "1000*rand"
             }
 
+            when $_ ~~ / '_Whitespace' / {
+                "(' ') x (3.pick)"
+            }
+
             default { "$_" }
         }
     };
