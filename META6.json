@@ -1,7 +1,7 @@
 {
   "name": "FunctionalParsers",
   "description": "A system of functional parsers (combinators, transformers, generators.)",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
