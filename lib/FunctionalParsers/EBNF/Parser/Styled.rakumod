@@ -12,13 +12,15 @@ class FunctionalParsers::EBNF::Parser::Styled
 
     has &.pIdentifier = apply({ $_.flat.join }, many1(satisfy({ $_ ~~ / [ <alnum> | <:Pd> ] / })));
 
+    has &.pWhitespace = apply({ '_Whitespace' }, sequence(alternatives(token('\h'), token('\s'), token('\v')), option(alternatives(token('?'), token('*'), token('+')))));
+
     submethod TWEAK {
         given $!style {
             when $_.isa(Whatever) || $_ ~~ Str && $_.lc eq 'whatever' {
 
                 # Non-terminals are words with or without angular brackets
                 #self.pGNonTerminal = alternatives(pack(sp(symbol('<')), self.pIdentifier, symbol('>')), self.pIdentifier);
-                self.pGNonTerminal = alternatives(self.pGNonTerminal, self.pIdentifier);
+                self.pGNonTerminal = alternatives(self.pGNonTerminal, self.pIdentifier, self.pWhitespace);
 
                 # Sequence separation is whitespace
                 self.pSepSeq = many1(alternatives(satisfy({ $_ ~~ / \h / }), sp(symbol(','))));
@@ -48,7 +50,7 @@ class FunctionalParsers::EBNF::Parser::Styled
             when $_ ~~ Str && $_.lc ∈ <relaxed simpler> {
 
                 # Non-terminals can be words without angular brackets
-                self.pGNonTerminal = alternatives(self.pGNonTerminal, self.pIdentifier);
+                self.pGNonTerminal = alternatives(self.pGNonTerminal, self.pIdentifier, self.pWhitespace);
 
                 # Sequence separation can be both comma or whitespace
                 self.pSepSeq = alternatives(self.pSepSeq, many1(satisfy({ $_ ~~ / \h / })));
@@ -63,7 +65,7 @@ class FunctionalParsers::EBNF::Parser::Styled
             when $_ ~~ Str && $_.lc ∈ <inverted> {
 
                 # Terminals can are words without quotes
-                self.pGTerminal = alternatives(self.pGTerminal, self.pIdentifier);
+                self.pGTerminal = alternatives(self.pGTerminal, self.pIdentifier, self.pWhitespace);
 
                 # Sequence separation is whitespace
                 self.pSepSeq = many1(alternatives(satisfy({ $_ ~~ / \h / }), sp(symbol(','))));
