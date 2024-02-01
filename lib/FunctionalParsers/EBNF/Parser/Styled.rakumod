@@ -15,6 +15,26 @@ class FunctionalParsers::EBNF::Parser::Styled
     has &.pWhitespace = apply({ '_Whitespace' }, sequence(alternatives(token('\h'), token('\s'), token('\v')), option(alternatives(token('?'), token('*'), token('+')))));
 
     submethod TWEAK {
+
+        if $!style !~~ Str:D || $!style.lc ∉ <default standard> {
+            ## All except the standard style can parse the option specs <some>? and many specs <some>*
+
+            self.pGOption = -> @x { apply(self.ebnfActions.option, alternatives(
+                    pack(sp(symbol('[')), sp(self.pGExpr), sp(symbol(']'))),
+                    sequence-pick-left(sp(self.pGNodeSimple), sp(symbol('?')))))(@x) };
+
+            self.pGOption = alternatives(
+                    self.pGOption,
+                    -> @x { apply(self.ebnfActions.option, sequence-pick-left(sp(self.pGNodeSimple), sp(symbol('?'))))(@x) });
+
+            self.pGRepetition = alternatives(
+                    self.pGRepetition,
+                    -> @x { apply(self.ebnfActions.repetition,
+                            sequence-pick-left(
+                            sp(self.pGNodeSimple), sp(alternatives(symbol('*'), symbol('+')))))(@x) });
+        }
+
+        ## According to style
         given $!style {
             when $_.isa(Whatever) || $_ ~~ Str && $_.lc eq 'whatever' {
 

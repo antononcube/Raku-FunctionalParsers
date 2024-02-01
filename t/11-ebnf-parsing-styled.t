@@ -134,4 +134,19 @@ is-deeply
         $[:EBNFRule("<right>"=>(:EBNFSequencePickRight((:EBNFTerminal("\"e\""), :EBNFSequencePickRight((:EBNFTerminal("\"f\""), :EBNFSequencePickRight((:EBNFTerminal("\"g\""), :EBNFTerminal("\"h\"")))))))))],
         'Expected rule structure, <right> (<& &>)';
 
+##===========================================================
+## 21 - 23
+##===========================================================
+
+my $ebnfCode21 = q:to/END/;
+<command> ::= <action> <object>* <criteria>? ;
+<action> ::= <show> | <find> ;
+<show> ::= "Show" | "Show me" ;
+<find> ::= "Find" | "Look for" ;
+<object> ::= "fruit" | "milk" "products" ;
+<criteria> ::= "that" "are" ( "fresh" | "cheap" ) ;
+END
+
+isa-ok fp-ebnf-parse($ebnfCode21, style => Whatever, actions => 'Raku::AST'), List, 'Parsing option ? and many *';
+
 done-testing;

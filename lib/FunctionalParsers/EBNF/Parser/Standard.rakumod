@@ -24,12 +24,12 @@ class FunctionalParsers::EBNF::Parser::Standard {
     };
 
     # Option
-    has &.pGOption = -> @x {
+    has &.pGOption is rw = -> @x {
         apply($!ebnfActions.option, pack(sp(symbol('[')), sp(&!pGExpr), sp(symbol(']'))))(@x)
     };
 
     # Repetition
-    has &.pGRepetition = -> @x {
+    has &.pGRepetition is rw = -> @x {
         apply($!ebnfActions.repetition, pack(sp(symbol('{')), sp(&!pGExpr), sp(symbol('}'))))(@x)
     };
 
@@ -46,6 +46,16 @@ class FunctionalParsers::EBNF::Parser::Standard {
                 sp(&!pGParens),
                 sp(&!pGRepetition),
                 sp(&!pGOption))(@x)
+    };
+
+    # Simpler alternatives
+    # Needed to parse <some>? and <some>* with the non-standard styles.
+    # Otherwise hanging via left recursion would start.
+    has &.pGNodeSimple = -> @x {
+        alternatives(
+                apply($!ebnfActions.terminal, sp(&!pGTerminal)),
+                apply($!ebnfActions.non-terminal, sp(&!pGNonTerminal)),
+                sp(&!pGParens))(@x)
     };
 
     # Standard sequence
