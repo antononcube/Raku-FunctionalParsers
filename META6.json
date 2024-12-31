@@ -1,56 +1,53 @@
 {
-  "name": "FunctionalParsers",
-  "description": "A system of functional parsers (combinators, transformers, generators.)",
-  "version": "0.1.8",
-  "perl": "6.d",
-  "authors": [
-    "Anton Antonov"
-  ],
-  "auth": "zef:antononcube",
-  "depends": [],
-  "build-depends": [],
-  "test-depends": [],
-  "provides": {
-    "FunctionalParsers": "lib/FunctionalParsers.rakumod",
-    "FunctionalParsers::EBNF": "lib/FunctionalParsers/EBNF.rakumod",
-    "FunctionalParsers::EBNF::Actions::Common": "lib/FunctionalParsers/EBNF/Actions/Common.rakumod",
-    "FunctionalParsers::EBNF::Actions::EBNF::Standard": "lib/FunctionalParsers/EBNF/Actions/EBNF/Standard.rakumod",
-    "FunctionalParsers::EBNF::Actions::Java::FuncJ": "lib/FunctionalParsers/EBNF/Actions/Java/FuncJ.rakumod",
-    "FunctionalParsers::EBNF::Actions::MermaidJS::ASTTracer": "lib/FunctionalParsers/EBNF/Actions/MermaidJS/ASTTracer.rakumod",
-    "FunctionalParsers::EBNF::Actions::MermaidJS::Common": "lib/FunctionalParsers/EBNF/Actions/MermaidJS/Common.rakumod",
-    "FunctionalParsers::EBNF::Actions::MermaidJS::Graph": "lib/FunctionalParsers/EBNF/Actions/MermaidJS/Graph.rakumod",
-    "FunctionalParsers::EBNF::Actions::Raku::AST": "lib/FunctionalParsers/EBNF/Actions/Raku/AST.rakumod",
-    "FunctionalParsers::EBNF::Actions::Raku::Class": "lib/FunctionalParsers/EBNF/Actions/Raku/Class.rakumod",
-    "FunctionalParsers::EBNF::Actions::Raku::ClassAttr": "lib/FunctionalParsers/EBNF/Actions/Raku/ClassAttr.rakumod",
-    "FunctionalParsers::EBNF::Actions::Raku::Code": "lib/FunctionalParsers/EBNF/Actions/Raku/Code.rakumod",
-    "FunctionalParsers::EBNF::Actions::Raku::Grammar": "lib/FunctionalParsers/EBNF/Actions/Raku/Grammar.rakumod",
-    "FunctionalParsers::EBNF::Actions::Raku::Random": "lib/FunctionalParsers/EBNF/Actions/Raku/Random.rakumod",
-    "FunctionalParsers::EBNF::Actions::WL::Code": "lib/FunctionalParsers/EBNF/Actions/WL/Code.rakumod",
-    "FunctionalParsers::EBNF::Actions::WL::Grammar": "lib/FunctionalParsers/EBNF/Actions/WL/Grammar.rakumod",
-    "FunctionalParsers::EBNF::Actions::WL::Graph": "lib/FunctionalParsers/EBNF/Actions/WL/Graph.rakumod",
-    "FunctionalParsers::EBNF::Parser::FromTokens": "lib/FunctionalParsers/EBNF/Parser/FromTokens.rakumod",
-    "FunctionalParsers::EBNF::Parser::Standard": "lib/FunctionalParsers/EBNF/Parser/Standard.rakumod",
-    "FunctionalParsers::EBNF::Parser::Styled": "lib/FunctionalParsers/EBNF/Parser/Styled.rakumod"
-  },
-  "resources": [
-    "Arithmetic.ebnf",
-    "Arithmetic-original.ebnf",
-    "Arithmetic-relaxed.ebnf",
-    "EBNF.ebnf",
-    "EBNF-original.ebnf",
-    "ListManagementGrammar.ebnf"
-  ],
-  "license": "Artistic-2.0",
-  "tags": [
-    "BNF",
-    "EBNF",
-    "combinator",
-    "generator",
-    "grammar",
-    "interpreter",
-    "parser",
-    "transformer"
-  ],
-  "api": "1",
-  "source-url": "https://github.com/antononcube/Raku-FunctionalParsers.git"
+    "name": "FunctionalParsers",
+    "description": "A system of functional parsers (combinators, transformers, generators.)",
+    "version": "0.1.9",
+    "authors": [
+        "Anton Antonov"
+    ],
+    "auth": "zef:antononcube",
+    "build-depends": [],
+    "provides": {
+        "FunctionalParsers": "lib/FunctionalParsers.rakumod",
+        "FunctionalParsers::EBNF": "lib/FunctionalParsers/EBNF.rakumod",
+        "FunctionalParsers::EBNF::Actions::Common": "lib/FunctionalParsers/EBNF/Actions/Common.rakumod",
+        "FunctionalParsers::EBNF::Actions::EBNF::Standard": "lib/FunctionalParsers/EBNF/Actions/EBNF/Standard.rakumod",
+        "FunctionalParsers::EBNF::Actions::Java::FuncJ": "lib/FunctionalParsers/EBNF/Actions/Java/FuncJ.rakumod",
+        "FunctionalParsers::EBNF::Actions::MermaidJS::ASTTracer": "lib/FunctionalParsers/EBNF/Actions/MermaidJS/ASTTracer.rakumod",
+        "FunctionalParsers::EBNF::Actions::MermaidJS::Common": "lib/FunctionalParsers/EBNF/Actions/MermaidJS/Common.rakumod",
+        "FunctionalParsers::EBNF::Actions::MermaidJS::Graph": "lib/FunctionalParsers/EBNF/Actions/MermaidJS/Graph.rakumod",
+        "FunctionalParsers::EBNF::Actions::Raku::AST": "lib/FunctionalParsers/EBNF/Actions/Raku/AST.rakumod",
+        "FunctionalParsers::EBNF::Actions::Raku::Class": "lib/FunctionalParsers/EBNF/Actions/Raku/Class.rakumod",
+        "FunctionalParsers::EBNF::Actions::Raku::ClassAttr": "lib/FunctionalParsers/EBNF/Actions/Raku/ClassAttr.rakumod",
+        "FunctionalParsers::EBNF::Actions::Raku::Code": "lib/FunctionalParsers/EBNF/Actions/Raku/Code.rakumod",
+        "FunctionalParsers::EBNF::Actions::Raku::Grammar": "lib/FunctionalParsers/EBNF/Actions/Raku/Grammar.rakumod",
+        "FunctionalParsers::EBNF::Actions::Raku::Random": "lib/FunctionalParsers/EBNF/Actions/Raku/Random.rakumod",
+        "FunctionalParsers::EBNF::Actions::WL::Code": "lib/FunctionalParsers/EBNF/Actions/WL/Code.rakumod",
+        "FunctionalParsers::EBNF::Actions::WL::Grammar": "lib/FunctionalParsers/EBNF/Actions/WL/Grammar.rakumod",
+        "FunctionalParsers::EBNF::Actions::WL::Graph": "lib/FunctionalParsers/EBNF/Actions/WL/Graph.rakumod",
+        "FunctionalParsers::EBNF::Parser::FromTokens": "lib/FunctionalParsers/EBNF/Parser/FromTokens.rakumod",
+        "FunctionalParsers::EBNF::Parser::Standard": "lib/FunctionalParsers/EBNF/Parser/Standard.rakumod",
+        "FunctionalParsers::EBNF::Parser::Styled": "lib/FunctionalParsers/EBNF/Parser/Styled.rakumod"
+    },
+    "resources": [
+        "Arithmetic.ebnf",
+        "Arithmetic-original.ebnf",
+        "Arithmetic-relaxed.ebnf",
+        "EBNF.ebnf",
+        "EBNF-original.ebnf",
+        "ListManagementGrammar.ebnf"
+    ],
+    "license": "Artistic-2.0",
+    "tags": [
+        "BNF",
+        "EBNF",
+        "combinator",
+        "generator",
+        "grammar",
+        "interpreter",
+        "parser",
+        "transformer"
+    ],
+    "api": "1",
+    "source-url": "https://github.com/antononcube/Raku-FunctionalParsers.git"
 }
