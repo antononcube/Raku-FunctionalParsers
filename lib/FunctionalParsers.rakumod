@@ -296,6 +296,21 @@ sub compulsion(&p) is export(:MANDATORY, :ALL) {
 }
 
 #============================================================
+# Fuzzy symbol match
+#============================================================
+
+## Fuzzy symbol helper
+our sub string-distance(Str:D $w1, Str:D $w2) is export {
+    +StrDistance.new(before => $w1, after => $w2)
+}
+
+# Fuzzy symbol
+# Very similar to symbol() except for the use of string-distance()
+sub fuzzy-symbol(Str:D $a, UInt:D $d = 1) is export(:MANDATORY, :ALL) {
+    -> @x { @x.elems && (@x[0] ~~ Str:D) && string-distance(@x[0], $a) ≤ $d ?? ((@x.tail(*- 1).List, $a),) !! () }
+}
+
+#============================================================
 # Extra parsers
 #============================================================
 
