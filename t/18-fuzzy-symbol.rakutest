@@ -1,0 +1,20 @@
+use v6.d;
+
+use FunctionalParsers;
+use Test;
+
+plan *;
+
+## 1
+isa-ok fuzzy-symbol('doomsday'), Callable:D;
+
+## 2
+is fuzzy-symbol('doomsday', 1)('doomsdat'.words).head.tail, 'doomsday';
+
+## 3
+is fuzzy-symbol('doomsday', 2)('domsdat'.words).head.tail, 'doomsday';
+
+## 4
+is FunctionalParsers::string-distance('clock', 'croc'), 2;
+
+done-testing;
