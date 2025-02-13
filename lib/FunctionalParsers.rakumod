@@ -268,7 +268,9 @@ sub chain-left(&p, &sep) is export(:MANDATORY, :ALL) {
 
 # Chain right
 sub chain-right(&p, &sep) is export(:MANDATORY, :ALL) {
-    apply( { reduce( { $^b[1]($^b[0], $^a) }, $_[1], |$_[0].reverse) }, sequence(many(sequence(&p, &sep)), &p))
+    apply( { reduce( -> $a, $b? {
+        $b.defined ?? $b[1]($b[0], $a) !! $a
+    }, $_[1], |$_[0].reverse) }, sequence(many(sequence(&p, &sep)), &p))
 }
 
 #============================================================
