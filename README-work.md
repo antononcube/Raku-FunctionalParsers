@@ -77,7 +77,7 @@ I could not help myself making a complete package.
 ### Elevate the "tyranny" of Raku grammars and transferring to other languages
 
 The "first class citizen" treatment of grammars is one of the most important and unique features of Raku. 
-It is one of the reason why I treat Raku as a "secret weapon." 
+It is one of the reasons why I treat Raku as a "secret weapon." 
 
 But that uniqueness does not necessarily facilitate easy utilization or transfer in large software systems.
 FPs, on the other hand, are implemented in almost every programming language. 
@@ -105,7 +105,7 @@ The Raku code implementing FPs was quick to write and looks concise and elegant.
 
 ### Package name
 
-I considered names like "Parser::Combinator", "Parser::Functional", etc. Of course, looked up
+I considered names like "Parser::Combinator", "Parser::Functional", etc. Of course, I looked up
 names of similar packages.
 
 Ultimately, I decided to use "FunctionalParsers" because:
