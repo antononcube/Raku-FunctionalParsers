@@ -1,8 +1,7 @@
 #!/usr/bin/env raku
 use v6.d;
 
-use lib '.';
-use lib './lib';
+# use <. lib>;
 
 use DSL::Entity::WeatherData;
 use FunctionalParsers :ALL;
